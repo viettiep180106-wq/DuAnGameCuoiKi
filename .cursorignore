@@ -1,0 +1,9 @@
+Library/
+Temp/
+Logs/
+UserSettings/
+obj/
+*.csproj
+*.unityproj
+*.sln
+*.meta
