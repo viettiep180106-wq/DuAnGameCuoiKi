@@ -13,14 +13,21 @@ public class PlayerAnimationController : MonoBehaviour
     }
     public void Status(TypeAnimationAtivity name)
     {
-        if(name != TypeAnimationAtivity.isIdel)
+        if (player == null)
         {
+            player = GetComponent<Animator>();
+        }
+        if (player == null) return;
+
+        if (name != TypeAnimationAtivity.isIdel)
+        {
+            player.ResetTrigger(name.ToString());
             player.SetTrigger(name.ToString());
-            player.SetBool("isIdel",false);
+            player.SetBool("isIdel", false);
         }
         else
         {
-            player.SetBool(name.ToString(),true);
+            player.SetBool("isIdel", true);
         }
     }
     private void OnDisable()

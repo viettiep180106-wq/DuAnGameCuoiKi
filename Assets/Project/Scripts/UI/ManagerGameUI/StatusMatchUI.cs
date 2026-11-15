@@ -23,11 +23,8 @@ public class StatusMatchUI : MonoBehaviour
     }
     public void TransAll(bool set)
     {
-        Lock.gameObject.SetActive(set);
-        SkillPassive();
-        int hs = set? -1:1;
-        SkillActive(hs);
-        Controller();
+        if (Lock != null) Lock.gameObject.SetActive(set);
+        // SkillContainer và OptionSkillCharacter được giữ cố định trên UI, không kéo/trượt
     }
     public void SkillPassive()
     {

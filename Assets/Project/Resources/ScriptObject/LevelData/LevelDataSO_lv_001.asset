@@ -14,179 +14,174 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelData:
     level: 1
-    sizeGird: {x: 4, y: 4}
+    sizeGird: {x: 6, y: 6}
     listStep:
     - step: 1
-      distance: 1000
-      height: 20
-      listStone:
-      - position: {x: 0, y: 19}
-        type: 0
-      - position: {x: 0, y: 0}
-        type: 3
-      - position: {x: 0, y: 1}
-        type: 5
-      - position: {x: 1, y: 0}
-        type: 3
-      - position: {x: 1, y: 1}
-        type: 1
-      - position: {x: 2, y: 0}
-        type: 1
-      - position: {x: 3, y: 0}
-        type: 3
-      - position: {x: 2, y: 1}
-        type: 3
-      - position: {x: 3, y: 1}
-        type: 5
-      - position: {x: 3, y: 2}
-        type: 5
-      - position: {x: 0, y: 3}
-        type: 5
-      - position: {x: 0, y: 2}
-        type: 3
-      - position: {x: 1, y: 2}
-        type: 0
-      - position: {x: 2, y: 2}
-        type: 1
-      - position: {x: 1, y: 3}
-        type: 5
-      - position: {x: 2, y: 3}
-        type: 1
-      - position: {x: 2, y: 4}
-        type: 3
-      - position: {x: 3, y: 3}
-        type: 0
-      - position: {x: 0, y: 4}
-        type: 0
-      - position: {x: 1, y: 4}
-        type: 0
-      - position: {x: 1, y: 6}
-        type: 0
-      - position: {x: 1, y: 5}
-        type: 1
-      - position: {x: 2, y: 5}
-        type: 5
-      - position: {x: 1, y: 7}
-        type: 5
-      - position: {x: 3, y: 4}
-        type: 1
-      - position: {x: 0, y: 5}
-        type: 1
-      - position: {x: 0, y: 6}
-        type: 5
-      - position: {x: 3, y: 5}
-        type: 5
-      - position: {x: 2, y: 6}
-        type: 0
-      - position: {x: 0, y: 7}
-        type: 5
-      - position: {x: 2, y: 7}
-        type: 3
-      - position: {x: 0, y: 8}
-        type: 3
-      - position: {x: 1, y: 8}
-        type: 0
-      - position: {x: 2, y: 8}
-        type: 1
-      - position: {x: 3, y: 8}
-        type: 3
-      - position: {x: 3, y: 6}
-        type: 1
-      - position: {x: 3, y: 7}
-        type: 0
-      - position: {x: 0, y: 9}
-        type: 1
-      - position: {x: 1, y: 9}
-        type: 5
-      - position: {x: 2, y: 9}
-        type: 5
-      - position: {x: 3, y: 9}
-        type: 0
-      - position: {x: 3, y: 10}
-        type: 1
-      - position: {x: 2, y: 10}
-        type: 3
-      - position: {x: 1, y: 10}
-        type: 0
-      - position: {x: 0, y: 10}
-        type: 5
-      - position: {x: 0, y: 11}
-        type: 3
-      - position: {x: 1, y: 11}
-        type: 1
-      - position: {x: 3, y: 11}
-        type: 0
-      - position: {x: 2, y: 11}
-        type: 5
-      - position: {x: 2, y: 12}
-        type: 3
-      - position: {x: 3, y: 12}
-        type: 1
-      - position: {x: 1, y: 12}
-        type: 0
-      - position: {x: 0, y: 12}
-        type: 5
-      - position: {x: 2, y: 13}
-        type: 5
-      - position: {x: 3, y: 13}
-        type: 0
-      - position: {x: 0, y: 13}
-        type: 3
-      - position: {x: 1, y: 13}
-        type: 1
-      - position: {x: 0, y: 14}
-        type: 5
-      - position: {x: 3, y: 14}
-        type: 1
-      - position: {x: 1, y: 14}
-        type: 0
-      - position: {x: 2, y: 14}
-        type: 3
-      - position: {x: 3, y: 15}
-        type: 0
-      - position: {x: 2, y: 15}
-        type: 5
-      - position: {x: 0, y: 15}
-        type: 3
-      - position: {x: 1, y: 15}
-        type: 1
-      - position: {x: 1, y: 16}
-        type: 0
-      - position: {x: 3, y: 16}
-        type: 1
-      - position: {x: 2, y: 16}
-        type: 3
-      - position: {x: 0, y: 16}
-        type: 1
-      - position: {x: 1, y: 19}
-        type: 1
-      - position: {x: 2, y: 19}
-        type: 3
-      - position: {x: 3, y: 19}
-        type: 1
-      - position: {x: 2, y: 18}
-        type: 5
-      - position: {x: 0, y: 18}
-        type: 5
-      - position: {x: 1, y: 18}
-        type: 3
-      - position: {x: 3, y: 18}
-        type: 3
-      - position: {x: 0, y: 17}
-        type: 0
-      - position: {x: 3, y: 17}
-        type: 1
-      - position: {x: 1, y: 17}
-        type: 5
-      - position: {x: 2, y: 17}
-        type: 3
+      waveType: 0
+      stepDifficulty: 0
+      formationType: 1
       listEnemy:
-      - name: 0
+      - name: 16
+        Amount: 2
+        row: 0
+      - name: 17
         Amount: 1
-        distnacseToPlayer: 4.5
-      - name: 0
+        row: 0
+      - name: 19
         Amount: 1
-        distnacseToPlayer: 5
-      - name: 0
+        row: 1
+      - name: 18
         Amount: 1
-        distnacseToPlayer: 5.5
+        row: 1
+      eventType: 0
+      waveEnergyReward: 18
+    - step: 2
+      waveType: 1
+      stepDifficulty: 0
+      formationType: 0
+      listEnemy: []
+      eventType: 3
+      waveEnergyReward: 0
+    - step: 3
+      waveType: 0
+      stepDifficulty: 0
+      formationType: 2
+      listEnemy:
+      - name: 17
+        Amount: 1
+        row: 0
+      - name: 19
+        Amount: 1
+        row: 0
+      - name: 2
+        Amount: 1
+        row: 1
+      - name: 23
+        Amount: 1
+        row: 1
+      - name: 4
+        Amount: 1
+        row: 1
+      eventType: 0
+      waveEnergyReward: 12
+    - step: 4
+      waveType: 0
+      stepDifficulty: 0
+      formationType: 1
+      listEnemy:
+      - name: 3
+        Amount: 2
+        row: 0
+      - name: 5
+        Amount: 1
+        row: 1
+      - name: 2
+        Amount: 1
+        row: 1
+      - name: 4
+        Amount: 1
+        row: 1
+      eventType: 0
+      waveEnergyReward: 18
+    - step: 5
+      waveType: 1
+      stepDifficulty: 0
+      formationType: 0
+      listEnemy: []
+      eventType: 5
+      waveEnergyReward: 0
+    - step: 6
+      waveType: 0
+      stepDifficulty: 0
+      formationType: 2
+      listEnemy:
+      - name: 3
+        Amount: 1
+        row: 0
+      - name: 5
+        Amount: 1
+        row: 0
+      - name: 32
+        Amount: 1
+        row: 1
+      - name: 25
+        Amount: 1
+        row: 1
+      - name: 12
+        Amount: 1
+        row: 1
+      eventType: 0
+      waveEnergyReward: 12
+    - step: 7
+      waveType: 1
+      stepDifficulty: 0
+      formationType: 0
+      listEnemy: []
+      eventType: 6
+      waveEnergyReward: 0
+    - step: 8
+      waveType: 0
+      stepDifficulty: 0
+      formationType: 1
+      listEnemy:
+      - name: 30
+        Amount: 1
+        row: 0
+      - name: 31
+        Amount: 1
+        row: 0
+      - name: 31
+        Amount: 1
+        row: 1
+      - name: 32
+        Amount: 1
+        row: 1
+      - name: 33
+        Amount: 1
+        row: 1
+      eventType: 0
+      waveEnergyReward: 18
+    - step: 9
+      waveType: 0
+      stepDifficulty: 0
+      formationType: 2
+      listEnemy:
+      - name: 17
+        Amount: 1
+        row: 0
+      - name: 19
+        Amount: 1
+        row: 0
+      - name: 2
+        Amount: 1
+        row: 1
+      - name: 26
+        Amount: 1
+        row: 1
+      - name: 9
+        Amount: 1
+        row: 1
+      eventType: 0
+      waveEnergyReward: 12
+    - step: 10
+      waveType: 0
+      stepDifficulty: 1
+      formationType: 2
+      listEnemy:
+      - name: 20
+        Amount: 1
+        row: 0
+      - name: 30
+        Amount: 1
+        row: 0
+      - name: 7
+        Amount: 1
+        row: 1
+      - name: 25
+        Amount: 1
+        row: 1
+      - name: 24
+        Amount: 1
+        row: 1
+      eventType: 0
+      waveEnergyReward: 18

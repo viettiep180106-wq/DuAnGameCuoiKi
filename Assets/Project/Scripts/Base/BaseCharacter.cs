@@ -3,50 +3,85 @@ using UnityEngine;
 using DG.Tweening;
 using System;
 using System.Collections.Generic;
-public class BaseCharacter : MonoBehaviour,IPoolable
+
+public class BaseCharacter : MonoBehaviour, IPoolable
 {
     [Header("----Setting UI----")]
     public TextUI textHP;
     public FillBarUI fillBarUI;
     public SpriteRenderer spriteRenderer;
+
     [Header("Setting Data")]
     public BaseCharacterDataSO data;
-    [SerializeField]private float HP; 
-    [SerializeField]private float MaxHP;
+    [SerializeField] protected float HP; 
+    [SerializeField] protected float MaxHP;
+    [SerializeField] protected ElementType currentElement = ElementType.Wood;
     public Tween moveTwen;
     public Vector3 currentTargetPos;
     public Color colorOrigin;
-    private Dictionary<Effect,BaseEffect> effectDictionary = new Dictionary<Effect, BaseEffect>();
-    private void Awake()
+
+    public ElementType Element 
+    { 
+        get => currentElement; 
+        set => currentElement = value; 
+    }
+
+    public float CurrentHP => HP;
+    public float MaxHealth => MaxHP;
+
+    public event Action<float, bool, ElementType> OnTakeDamageDetail;
+
+    private Dictionary<Effect, BaseEffect> effectDictionary = new Dictionary<Effect, BaseEffect>();
+
+    protected virtual void Awake()
     {
-        colorOrigin = spriteRenderer.color;
-        BaseEffect[]list = GetComponents<BaseEffect>();
-        foreach(BaseEffect effect in list)
+        if (spriteRenderer != null)
         {
-            effectDictionary.Add(effect.EffectType,effect);
+            colorOrigin = spriteRenderer.color;
+        }
+
+        BaseEffect[] list = GetComponents<BaseEffect>();
+        foreach (BaseEffect effect in list)
+        {
+            if (!effectDictionary.ContainsKey(effect.EffectType))
+            {
+                effectDictionary.Add(effect.EffectType, effect);
+            }
         }
     }
-    public void OnSpawn()
+
+    public virtual void OnSpawn()
     {
-        HP = data.HP;
-        MaxHP = HP;
-        UpdateHPUI(HP/MaxHP);
+        if (data != null)
+        {
+            HP = data.HP;
+            MaxHP = HP;
+        }
+        UpdateHPUI(MaxHP > 0 ? HP / MaxHP : 1f);
     }
-    public void OnDespawn()
+
+    public virtual void OnDespawn()
     {
         CleanUpAllEffect();
     }
-    public virtual void Trans(Vector3 posTarget,Ease easeType = Ease.Linear)
+
+    public virtual void Trans(Vector3 posTarget, Ease easeType = Ease.Linear)
     {
-        transform.GetComponent<EnemyAnimationController>().ActiveAnimation(TypeAnimationAtivity.isFly);
+        var anim = GetComponent<EnemyAnimationController>();
+        if (anim != null)
+        {
+            anim.ActiveAnimation(TypeAnimationAtivity.isFly);
+        }
+
         currentTargetPos = posTarget;
         Vector2 currentPos2D = transform.position;
         Vector2 targetPos2D = posTarget;
         float distance = Vector2.Distance(targetPos2D, currentPos2D);
-        Debug.Log(distance);
+
         if (distance > 0.1f)
         {
-            float duration = distance / data.Speed_Trans;
+            float speed = data != null && data.Speed_Trans > 0 ? data.Speed_Trans : 1f;
+            float duration = distance / speed;
             moveTwen?.Kill();
             moveTwen = transform.DOMove(posTarget, duration).SetEase(easeType).OnComplete(() =>
             {
@@ -54,66 +89,96 @@ public class BaseCharacter : MonoBehaviour,IPoolable
             });
         }
     }
+
+    /// <summary>
+    /// Nhận sát thương cơ bản
+    /// </summary>
     public virtual void TakeDamage(float damage)
     {
-        damage -= data.Dev;
-        if (HP - damage > 0)
+        TakeDamage(damage, false, ElementType.Wood);
+    }
+
+    /// <summary>
+    /// Nhận sát thương chi tiết có tính Ngũ Hành, Bạo Kích và Phòng Thủ
+    /// </summary>
+    public virtual void TakeDamage(float rawDamage, bool isCrit, ElementType attackerElement)
+    {
+        float defense = data != null ? data.Dev : 0f;
+        float elementMultiplier = ElementalHelper.GetMultiplier(attackerElement, currentElement);
+        
+        // Công thức GDD: (Sát thương x Khắc chế) - Thủ, tối thiểu 1 sát thương
+        float finalDamage = Mathf.Max(1f, (rawDamage * elementMultiplier) - defense);
+
+        if (HP - finalDamage > 0)
         {
-            HP-=damage;
+            HP -= finalDamage;
         }
         else
         {
             HP = 0;
             Deid();
         }
-        UpdateHPUI(HP/MaxHP);
+
+        UpdateHPUI(MaxHP > 0 ? HP / MaxHP : 0f);
+
+        // Phát sự kiện để Floating Damage Text hiển thị
+        OnTakeDamageDetail?.Invoke(finalDamage, isCrit, attackerElement);
+        if (DamageTextManager.Instance != null)
+        {
+            DamageTextManager.Instance.SpawnDamage(finalDamage, isCrit, attackerElement, transform.position + Vector3.up * 0.5f);
+        }
     }
+
     public void UpdateHPUI(float current)
     {
-        if(fillBarUI!= null)fillBarUI.DoFill(current,0.4f);
-        if(textHP!= null)textHP.UpdateText(HP,0.4f);
+        if (fillBarUI != null) fillBarUI.DoFill(current, 0.4f);
+        if (textHP != null) textHP.UpdateText(HP, 0.4f);
     }
-    public void PlayEffect(EffectPayLoad effectPayLoad)
+
+    public virtual void PlayEffect(EffectPayLoad effectPayLoad)
     {
-        if(effectDictionary.TryGetValue(effectPayLoad.EffectType, out BaseEffect effect))
+        if (effectDictionary.TryGetValue(effectPayLoad.EffectType, out BaseEffect effect))
         {
             effect.Active(effectPayLoad);
         }
     }
+
     public void Health(float buffHp)
     {
-        MaxHP+= buffHp;
-        HP+=buffHp;
-        UpdateHPUI(HP/MaxHP);
+        HP = Mathf.Min(MaxHP, HP + buffHp);
+        UpdateHPUI(MaxHP > 0 ? HP / MaxHP : 1f);
     }
+
     public virtual void Deid()
     {
         CleanUpAllEffect();
         StartCoroutine(Death());
     }
+
     public IEnumerator Death()
     {
-        // hiệu ứng died xong mới tắt
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.6f);
         ObjectPoolingManager.Instance.Despawn(gameObject);
     }
+
     public void CleanUpAllEffect()
     {
-        foreach(BaseEffect effect in effectDictionary.Values)
+        foreach (BaseEffect effect in effectDictionary.Values)
         {
             effect.RemoveEffect();
         }
         moveTwen?.Kill();
     }
-
 }
-public enum Effect{DoT,Stun,Bleed,Slow,Freeze,Knockback};
+
+public enum Effect { DoT, Stun, Bleed, Slow, Freeze, Knockback };
+
 public struct EffectPayLoad
 {
     public Effect EffectType;
     public float duration;
     public float value;
-    public float tickRate;// cd mỗi lần nhảy sát thương
+    public float tickRate; // cd mỗi lần nhảy sát thương
     public float slowRate; 
     public float disKnockback;
 }

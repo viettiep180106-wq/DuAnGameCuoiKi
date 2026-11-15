@@ -1,6 +1,7 @@
 using DG.Tweening;
 using UnityEngine;
 using System.Collections;
+
 [RequireComponent(typeof(Collider2D), typeof(Rigidbody2D))]
 public class SkillPassive : MonoBehaviour, IPoolable
 {
@@ -14,23 +15,28 @@ public class SkillPassive : MonoBehaviour, IPoolable
     protected bool isDespawned = false;
     protected Rigidbody2D rb;
     protected Collider2D col;
+
+    // Zero-GC buffer for Physics2D Overlap according to unity-performance.md
+    private static readonly Collider2D[] _overlapBuffer = new Collider2D[24];
+
     protected virtual void Awake()
     {
         col = GetComponent<Collider2D>();
         rb = GetComponent<Rigidbody2D>();
     }
+
     public virtual void OnSpawn()
     {
         target = null; 
         isDespawned = false;
-        col.isTrigger = true;
+        if (col != null) col.isTrigger = true;
     }
 
     public virtual void OnDespawn()
     {
         target = null;
         isDespawned = true;
-        rb.linearVelocity = Vector2.zero;
+        if (rb != null) rb.linearVelocity = Vector2.zero;
         DOTween.Kill(this.gameObject.GetInstanceID());
     }
 
@@ -38,33 +44,88 @@ public class SkillPassive : MonoBehaviour, IPoolable
     {
         skillValue = value;
     }
+
     public TypeStone GetTypeStone() => stoneType;
+
+    public ElementType GetElementType()
+    {
+        return stoneType switch
+        {
+            TypeStone.Fire => ElementType.Fire,
+            TypeStone.Ice => ElementType.Water,
+            TypeStone.Water => ElementType.Water,
+            TypeStone.Earth => ElementType.Earth,
+            TypeStone.Wood => ElementType.Wood,
+            TypeStone.Light => ElementType.Metal,
+            TypeStone.Wind => ElementType.Metal,
+            _ => ElementType.Metal
+        };
+    }
+
+    /// <summary>
+    /// Kiểm tra xem một vị trí trong world space có nằm trong tầm nhìn của Camera (đang hiển thị trên màn hình) hay không
+    /// </summary>
+    public static bool IsVisibleInCamera(Vector3 worldPos, float padding = 0.2f)
+    {
+        Camera cam = Camera.main;
+        if (cam == null) return true;
+        Vector3 vp = cam.WorldToViewportPoint(worldPos);
+        return vp.z > 0 && vp.x >= -padding && vp.x <= (1f + padding) && vp.y >= -padding && vp.y <= (1f + padding);
+    }
+
+    /// <summary>
+    /// Tìm mục tiêu gần nhất sử dụng NonAlloc để đạt hiệu năng Zero-GC, chỉ nhắm vào kẻ địch trong tầm nhìn màn hình
+    /// </summary>
     public Transform FindNearest(float radius)
     {
-        Collider2D []hits = Physics2D.OverlapCircleAll(transform.position,radius,targetLayer);
-        float minDis= Mathf.Infinity;
+        int count = Physics2D.OverlapCircleNonAlloc(transform.position, radius, _overlapBuffer, targetLayer);
+        float minDis = Mathf.Infinity;
         Transform nearest = null;
-        foreach(var hit in hits)
+
+        for (int i = 0; i < count; i++)
         {
-            float dis =  Vector2.Distance(hit.transform.position,transform.position);
-            if(dis < minDis)
+            Collider2D hit = _overlapBuffer[i];
+            if (hit == null) continue;
+
+            // Loại trừ quái vật ở tận ngoài màn hình chưa bước vào khung hình
+            if (!IsVisibleInCamera(hit.transform.position, 0.25f)) continue;
+
+            float dis = Vector2.Distance(hit.transform.position, transform.position);
+            if (dis < minDis)
             {
                 minDis = dis;
                 nearest = hit.transform;
             }
         }
+
         return nearest;
     }
+
     public float GetRateBuffSkill()
     {
-        return skillValue/3;
+        return skillValue / 3f;
     }
+
+    /// <summary>
+    /// Tính sát thương theo công thức GDD: (match/3) * playerAtk * baseSkillDamageRatio * Crit
+    /// </summary>
+    public (float finalRawDamage, bool isCrit) CalculateDamage(float baseSkillDamageRatio = 1.0f)
+    {
+        float playerAtk = Player.Instance != null ? Player.Instance.PlayerATK : 200f;
+        float factor = Mathf.Max(1f, skillValue / 3f);
+        
+        var (isCrit, critMul) = Player.Instance != null ? Player.Instance.RollCrit() : (false, 1f);
+
+        float raw = factor * playerAtk * baseSkillDamageRatio * critMul;
+
+        return (raw, isCrit);
+    }
+
     public virtual void Active()
     {
         DOVirtual.DelayedCall(timeToLive, () =>
         {
-           if(gameObject.activeSelf!= false)ObjectPoolingManager.Instance.Despawn(gameObject); 
+            if (gameObject.activeSelf) ObjectPoolingManager.Instance.Despawn(gameObject); 
         }).SetId(gameObject.GetInstanceID());
     }
 }
-//

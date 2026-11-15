@@ -1,7 +1,6 @@
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
-using UnityEditor.ShaderGraph.Internal;
 
 public class FillBarUI : MonoBehaviour
 {

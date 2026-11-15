@@ -5,37 +5,43 @@ using UnityEngine;
 public class ActiveSkillPassive : MonoBehaviour
 {
     public static ActiveSkillPassive instance;
-    public float atkRange = 4f;
+
+    [Header("Settings")]
+    public float atkRange = 4.2f;
     public LayerMask enemyLayer;
-    public float cdUseSkill;
+    public float cdUseSkill = 0.8f;
 
     private void Awake()
     {
         instance = this;
     }
-    public bool CheckEnemyInAtkRange()
+
+    public void StartCombat()
     {
-        Collider2D[]hits = Physics2D.OverlapCircleAll(transform.position,atkRange);
-        if(hits.Length>0)return true;
-        else return false;
+        DOTween.Kill(gameObject.GetInstanceID() + "_retry_skill");
+        DOTween.Kill(gameObject.GetInstanceID() + "_use_skill");
+        // Cơ chế mới: Tấn công tức thì khi match stone trên bàn cờ (không dùng hàng đợi hay delay 0.8s nữa)
     }
+
+    public void StopCombat()
+    {
+        DOTween.Kill(gameObject.GetInstanceID() + "_retry_skill");
+        DOTween.Kill(gameObject.GetInstanceID() + "_use_skill");
+    }
+
     public void ActiveSkill()
     {
-        if (CheckEnemyInAtkRange() == false) return;
-        SkillPassive skill = SkillPassiveManager.instance.GetSkill();
-        if(skill== null)return;
-        skill.transform.position =transform.position;
-        skill.transform.localScale = new Vector3(2f,2f,2f);
-        skill.Active();
-        transform.GetComponent<PlayerAnimationController>().ActiveAnimation(TypeAnimationAtivity.isAttack);
-        DOVirtual.DelayedCall(cdUseSkill, () =>
-        {
-            ActiveSkill();
-        }).SetId(gameObject.GetInstanceID() + "_use_" +skill.GetType().ToString());
+        // Deprecated: Đòn tấn công hiện được kích hoạt trực tiếp từ BoardController & SkillPassiveManager
     }
+
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position,atkRange);
+        Gizmos.DrawWireSphere(transform.position, atkRange);
+    }
+
+    private void OnDestroy()
+    {
+        StopCombat();
     }
 }

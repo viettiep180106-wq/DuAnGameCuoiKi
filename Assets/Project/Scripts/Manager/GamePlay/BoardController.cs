@@ -2,156 +2,685 @@ using System;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
+using DG.Tweening;
+using UnityEngine.UI;
 public class BoardController : MonoBehaviour
 {
     public static BoardController instance;
-    public Action<Direction,StoneBase>OnSwapStone;
+    public Action<Direction, StoneBase> OnSwapStone;
+
     [Header("----Setting Base----")]
-    [SerializeField]private int rows = 5;
-    [SerializeField]private int cols = 5;
-    [SerializeField]private int maxY = 5;
-    [SerializeField]private bool canTrans = true;
+    [SerializeField] private int rows = 6;
+    [SerializeField] private int cols = 6;
+    [SerializeField] private int maxY = 6;
+    [SerializeField] private bool canTrans = true;
     public RectTransform center;
-    Dictionary<TypeStone,StoneBase> prefabs = new Dictionary<TypeStone,StoneBase>();
+
+    private Dictionary<TypeStone, StoneBase> prefabs = new Dictionary<TypeStone, StoneBase>();
     public SlotStoneBase prefabSlot;
-    [SerializeField]private List<List<SlotStoneBase>> grid;
-    [SerializeField]private float height;
-    [SerializeField]private float width ;
-    Dictionary<Vector2Int,TypeStone> listData = new Dictionary<Vector2Int, TypeStone>();
-    Vector2 sizeSlot;
-    bool isRevert = false;
+    [SerializeField] private List<List<SlotStoneBase>> grid;
+    [SerializeField] private float height = 720f;
+    [SerializeField] private float width = 720f;
+    [SerializeField] private float boardFrameSize = 740f; // Kích thước khung viền nền bàn cờ (Image)
+    [SerializeField] private float boardFrameWidth = 880f; // Bề ngang toàn màn hình (Full Width)
+    [SerializeField] private float boardFrameHeight = 740f; // Bề dọc khung viền bàn cờ
+
+    private Dictionary<Vector2Int, TypeStone> listData = new Dictionary<Vector2Int, TypeStone>();
+    private List<TypeStone> activeElements = new List<TypeStone>();
+    private List<TypeStone> targetTypeStones = new List<TypeStone>();
+    private Vector2 sizeSlot;
+    private bool isRevert = false;
+
+    private readonly TypeStone[] defaultElements = new TypeStone[] 
+    { 
+        TypeStone.Fire, 
+        TypeStone.Ice, 
+        TypeStone.Wood, 
+        TypeStone.Earth, 
+        TypeStone.Light 
+    };
+
+    [Header("----Container Layering----")]
+    [SerializeField] private RectTransform slotsContainer;
+    [SerializeField] private RectTransform stonesContainer;
+
     private void Awake()
     {  
         instance = this;
+        if (center != null)
+        {
+            center.anchoredPosition = new Vector2(center.anchoredPosition.x, -1600f);
+        }
+
+        EnsureContainers();
+        EnsureSkipTurnButton();
         LoadPrefabFromResource();
     }
 
+
+    public void EnsureSkipTurnButton()
+    {
+        if (center == null) return;
+        Transform parentTrans = center.parent != null ? center.parent : transform;
+        Transform existing = parentTrans.Find("SkipTurnButton");
+        if (existing == null)
+        {
+            GameObject skipObj = new GameObject("SkipTurnButton", typeof(RectTransform), typeof(UnityEngine.UI.Image), typeof(UnityEngine.UI.Button), typeof(SkipTurnButtonUI));
+            skipObj.transform.SetParent(parentTrans, false);
+            RectTransform rt = skipObj.GetComponent<RectTransform>();
+            rt.anchorMin = new Vector2(0.5f, 0f);
+            rt.anchorMax = new Vector2(0.5f, 0f);
+            rt.pivot = new Vector2(0.5f, 0f);
+            rt.sizeDelta = new Vector2(170f, 48f);
+            rt.anchoredPosition = new Vector2(250f, 20f);
+
+            var img = skipObj.GetComponent<UnityEngine.UI.Image>();
+            img.color = new Color(0.2f, 0.65f, 0.95f, 0.95f);
+
+            GameObject textObj = new GameObject("Label", typeof(RectTransform), typeof(TMPro.TextMeshProUGUI));
+            textObj.transform.SetParent(skipObj.transform, false);
+            RectTransform textRt = textObj.GetComponent<RectTransform>();
+            textRt.anchorMin = Vector2.zero;
+            textRt.anchorMax = Vector2.one;
+            textRt.sizeDelta = Vector2.zero;
+            textRt.anchoredPosition = Vector2.zero;
+            var tmp = textObj.GetComponent<TMPro.TextMeshProUGUI>();
+            tmp.text = "SKIP LƯỢT";
+            tmp.fontSize = 20;
+            tmp.fontStyle = TMPro.FontStyles.Bold;
+            tmp.alignment = TMPro.TextAlignmentOptions.Center;
+            tmp.color = Color.white;
+        }
+    }
+
+    public void EnsureSlotPrefab()
+    {
+        if (prefabSlot == null)
+        {
+            prefabSlot = Resources.Load<SlotStoneBase>("Prefab/Base/Slot/SLot");
+        }
+    }
+
+    public void EnsureContainers()
+    {
+        EnsureSlotPrefab();
+        if (center == null) return;
+
+        // Tự động bảo vệ và phục hồi kích thước chuẩn nếu bị serialize = 0
+        if (width <= 0f) width = 720f;
+        if (height <= 0f) height = 720f;
+        if (boardFrameSize <= 0f) boardFrameSize = 740f;
+        if (boardFrameWidth <= 0f) boardFrameWidth = 880f;
+        if (boardFrameHeight <= 0f) boardFrameHeight = 740f;
+
+        // Image bàn có kích thước phủ kín bề ngang màn hình (Full Width 880px)
+        center.sizeDelta = new Vector2(boardFrameWidth, Mathf.Max(boardFrameSize, boardFrameHeight));
+
+        if (slotsContainer == null)
+        {
+            Transform existingSlots = center.Find("SlotsContainer");
+            if (existingSlots != null)
+            {
+                slotsContainer = existingSlots.GetComponent<RectTransform>();
+            }
+            else
+            {
+                GameObject slotsObj = new GameObject("SlotsContainer", typeof(RectTransform));
+                slotsContainer = slotsObj.GetComponent<RectTransform>();
+                slotsContainer.SetParent(center, false);
+                slotsContainer.anchorMin = new Vector2(0.5f, 0.5f);
+                slotsContainer.anchorMax = new Vector2(0.5f, 0.5f);
+                slotsContainer.pivot = new Vector2(0.5f, 0.5f);
+                slotsContainer.sizeDelta = new Vector2(width, height);
+                slotsContainer.anchoredPosition = Vector2.zero;
+                slotsContainer.localPosition = Vector3.zero;
+                slotsContainer.localScale = Vector3.one;
+            }
+        }
+
+        if (stonesContainer == null)
+        {
+            Transform existingStones = center.Find("StonesContainer");
+            if (existingStones != null)
+            {
+                stonesContainer = existingStones.GetComponent<RectTransform>();
+            }
+            else
+            {
+                GameObject stonesObj = new GameObject("StonesContainer", typeof(RectTransform));
+                stonesContainer = stonesObj.GetComponent<RectTransform>();
+                stonesContainer.SetParent(center, false);
+            }
+        }
+
+        // Bắt buộc chuẩn hóa vị trí, scale = 1, z = 0 và sizeDelta cho cả 2 container
+        ResetContainerTransform(slotsContainer);
+        ResetContainerTransform(stonesContainer);
+
+        // slotsContainer luôn luôn là lớp dưới (Sibling 0)
+        slotsContainer.SetSiblingIndex(0);
+        // stonesContainer luôn luôn là lớp trên (Sibling 1)
+        stonesContainer.SetSiblingIndex(1);
+    }
+
+    private void ResetContainerTransform(RectTransform container)
+    {
+        if (container == null) return;
+        container.anchorMin = new Vector2(0.5f, 0.5f);
+        container.anchorMax = new Vector2(0.5f, 0.5f);
+        container.pivot = new Vector2(0.5f, 0.5f);
+        container.sizeDelta = new Vector2(width, height);
+        container.anchoredPosition = Vector2.zero;
+        container.localPosition = Vector3.zero;
+        container.localScale = Vector3.one;
+        container.localRotation = Quaternion.identity;
+    }
 
     private void OnEnable()
     {
         OnSwapStone += Trans;
     }
+
     private void OnDisable()
     {
         OnSwapStone -= Trans;
     }
+
     public void LoadPrefabFromResource()
     {
+        prefabs.Clear();
         string path = "Prefab/Base/Stone";
         StoneBase[] request = Resources.LoadAll<StoneBase>(path);
-        foreach(StoneBase stone in request)
+        foreach (StoneBase stone in request)
         {
-            prefabs.Add(stone.nameStone,stone);
+            if (!prefabs.ContainsKey(stone.nameStone))
+            {
+                prefabs.Add(stone.nameStone, stone);
+            }
         }
     }
-    public void InitDataBoard(Dictionary<Vector2Int,TypeStone> data,Vector2Int Size)
+
+    private StoneBase GetStonePrefab(TypeStone type)
     {
-        listData = data;
-        rows = Size.x; cols = Size.x;
-        maxY = Size.y;
+        if (prefabs.TryGetValue(type, out var p)) return p;
+        if (type == TypeStone.Water && prefabs.TryGetValue(TypeStone.Ice, out var ice)) return ice;
+        if (type == TypeStone.Ice && prefabs.TryGetValue(TypeStone.Water, out var water)) return water;
+        if (type == TypeStone.Light && prefabs.TryGetValue(TypeStone.Wind, out var wind)) return wind;
+
+        foreach (var any in prefabs.Values) return any;
+        return null;
+    }
+
+    public void InitDataBoard(List<TypeStone> elements, Vector2Int Size)
+    {
+        ClearOldBoard();
+        if (prefabs.Count == 0) LoadPrefabFromResource();
+        activeElements = (elements != null && elements.Count > 0)
+            ? new List<TypeStone>(elements)
+            : new List<TypeStone>(defaultElements);
+        targetTypeStones = new List<TypeStone>(activeElements);
+        listData.Clear();
+        // Cố định kích thước nxm là 6x6 theo yêu cầu người dùng
+        cols = 6;
+        rows = 6;
+        maxY = rows;
         SetUpBoard();
     }
+
+    /// <summary>
+    /// Tỷ lệ rơi đá ngẫu nhiên mặc định luôn cân bằng đều 20% cho cả 5 loại đá (Kim, Mộc, Thủy, Hỏa, Thổ)
+    /// </summary>
+    public TypeStone GetGDDStoneDrop(List<TypeStone> targets = null)
+    {
+        return defaultElements[UnityEngine.Random.Range(0, defaultElements.Length)];
+    }
+
+    
+
+    public void ClearOldBoard()
+    {
+        if (grid != null)
+        {
+            for (int x = 0; x < grid.Count; x++)
+            {
+                for (int y = 0; y < grid[x].Count; y++)
+                {
+                    if (grid[x][y] != null)
+                    {
+                        var stone = grid[x][y].GetStone();
+                        if (stone != null && stone.gameObject.activeInHierarchy)
+                        {
+                            if (ObjectPoolingManager.Instance != null)
+                            {
+                                ObjectPoolingManager.Instance.Despawn(stone.gameObject);
+                            }
+                            else
+                            {
+#if UNITY_EDITOR
+                                if (!Application.isPlaying) DestroyImmediate(stone.gameObject);
+                                else Destroy(stone.gameObject);
+#else
+                                Destroy(stone.gameObject);
+#endif
+                            }
+                        }
+#if UNITY_EDITOR
+                        if (!Application.isPlaying) DestroyImmediate(grid[x][y].gameObject);
+                        else Destroy(grid[x][y].gameObject);
+#else
+                        Destroy(grid[x][y].gameObject);
+#endif
+                    }
+                }
+            }
+            grid.Clear();
+        }
+
+        if (slotsContainer != null)
+        {
+            for (int i = slotsContainer.childCount - 1; i >= 0; i--)
+            {
+#if UNITY_EDITOR
+                if (!Application.isPlaying) DestroyImmediate(slotsContainer.GetChild(i).gameObject);
+                else Destroy(slotsContainer.GetChild(i).gameObject);
+#else
+                Destroy(slotsContainer.GetChild(i).gameObject);
+#endif
+            }
+        }
+
+        // Dọn dẹp triệt để stonesContainer: chỉ despawn các đá đang active, KHÔNG destroy các đá đã nằm trong pool (activeSelf == false)
+        if (stonesContainer != null)
+        {
+            for (int i = stonesContainer.childCount - 1; i >= 0; i--)
+            {
+                var child = stonesContainer.GetChild(i).gameObject;
+                if (child != null && child.activeSelf)
+                {
+                    if (ObjectPoolingManager.Instance != null)
+                    {
+                        ObjectPoolingManager.Instance.Despawn(child);
+                    }
+                    else
+                    {
+#if UNITY_EDITOR
+                        if (!Application.isPlaying) DestroyImmediate(child);
+                        else Destroy(child);
+#else
+                        Destroy(child);
+#endif
+                    }
+                }
+            }
+        }
+    }
+
     public void SetUpBoard()
     {
-        float sizeXSlot = (float)width/cols;
-        float sizeYSlot = (float)height/rows;
-        sizeSlot = new Vector2(sizeXSlot,sizeYSlot);
-        grid = new List<List<SlotStoneBase>>(rows);
+        EnsureSlotPrefab();
+        EnsureContainers();
+
+        if (prefabSlot == null)
+        {
+            Debug.LogError("[BoardController] Không tìm thấy prefabSlot để khởi tạo bàn cờ!");
+            return;
+        }
+
+        // Tự động bảo vệ và phục hồi kích thước chuẩn nếu width/height <= 0
+        if (width <= 0f) width = 720f;
+        if (height <= 0f) height = 720f;
+
+        // Công thức tính size 1 slot = 1 item stone động: kích thước vùng bàn chia cho số hàng/cột (không cố định)
+        float cellWidth = width / cols;
+        float cellHeight = height / rows;
+        float cellSize = Mathf.Min(cellWidth, cellHeight);
+        sizeSlot = new Vector2(cellSize, cellSize);
+
+        Transform slotParent = slotsContainer != null ? slotsContainer : center;
+
+        float totalGridW = cols * cellSize;
+        float totalGridH = rows * cellSize;
+        float startX = -totalGridW / 2f + cellSize / 2f;
+        float startY = -totalGridH / 2f + cellSize / 2f;
+
+        grid = new List<List<SlotStoneBase>>(cols);
         for (int x = 0; x < cols; x++)
         {
             List<SlotStoneBase> colList = new List<SlotStoneBase>(rows);
             for (int y = 0; y < rows; y++)
             {
-                float posX = sizeXSlot*x - (width/2) + sizeXSlot/2 ;
-                float posY = sizeYSlot*y-(height/2) + sizeYSlot/2;
-                SlotStoneBase prefab = Instantiate(prefabSlot, center);
-                prefab.SlotItem.sizeDelta = sizeSlot;
-                prefab.SlotItem.anchoredPosition = new Vector2(posX, posY);
-                colList.Add(prefab);
+                float posX = startX + (x * cellSize);
+                float posY = startY + (y * cellSize);
+                SlotStoneBase prefab = Instantiate(prefabSlot, slotParent);
+                if (prefab != null)
+                {
+                    if (prefab.SlotItem != null)
+                    {
+                        prefab.SlotItem.sizeDelta = sizeSlot;
+                        prefab.SlotItem.anchoredPosition = new Vector2(posX, posY);
+                    }
+                    prefab.transform.localPosition = new Vector3(posX, posY, 0f);
+                    prefab.transform.localScale = Vector3.one;
+                    colList.Add(prefab);
+                }
             }
             grid.Add(colList);
         }
         UpdateStoneToBoard();
     }
-    public void UpdateStoneToBoard()
+
+    /// <summary>
+    /// Thuật toán khởi tạo bàn cờ không Match-3 (No Match-3 Init Algorithm) chuẩn GDD.
+    /// Quét 1 lượt tuyến tính O(R x C) = 36 bước, kiểm tra 2 ô liền kề bên trái và 2 ô liền kề phía dưới
+    /// để loại trừ nguy cơ Match-3 ngang và dọc. Đảm bảo 100% không Match-3 khi bắt đầu trận đấu.
+    /// </summary>
+    public TypeStone[,] GenerateNoMatch3Matrix(int widthCols, int heightRows, List<TypeStone> targetStones = null)
     {
+        TypeStone[,] matrix = new TypeStone[widthCols, heightRows];
+        List<TypeStone> candidatePool = new List<TypeStone>(5);
+        HashSet<TypeStone> blacklist = new HashSet<TypeStone>();
+
+        for (int x = 0; x < widthCols; x++)
+        {
+            for (int y = 0; y < heightRows; y++)
+            {
+                blacklist.Clear();
+
+                // 1. Nhận diện rủi ro Hàng Ngang (Check Horizontal Match)
+                if (x >= 2)
+                {
+                    TypeStone left1 = matrix[x - 1, y];
+                    TypeStone left2 = matrix[x - 2, y];
+                    if (left1 == left2)
+                    {
+                        blacklist.Add(left1);
+                    }
+                }
+
+                // 2. Nhận diện rủi ro Hàng Dọc (Check Vertical Match)
+                if (y >= 2)
+                {
+                    TypeStone down1 = matrix[x, y - 1];
+                    TypeStone down2 = matrix[x, y - 2];
+                    if (down1 == down2)
+                    {
+                        blacklist.Add(down1);
+                    }
+                }
+
+                // 3. Lọc danh sách khả dụng (Filter Available Candidates)
+                candidatePool.Clear();
+                for (int i = 0; i < defaultElements.Length; i++)
+                {
+                    TypeStone stone = defaultElements[i];
+                    if (!blacklist.Contains(stone))
+                    {
+                        candidatePool.Add(stone);
+                    }
+                }
+
+                // Theo nguyên lý Dirichlet: Blacklist tối đa 2 loại, candidatePool luôn >= 3 loại (không bao giờ rỗng)
+                if (candidatePool.Count == 0)
+                {
+                    candidatePool.AddRange(defaultElements);
+                }
+
+                // 4. Random chốt kết quả (Commit Random Cell)
+                TypeStone chosen = PickCandidateStone(candidatePool, targetStones);
+                matrix[x, y] = chosen;
+            }
+        }
+
+        return matrix;
+    }
+
+    private TypeStone PickCandidateStone(List<TypeStone> candidates, List<TypeStone> targets)
+    {
+        if (candidates == null || candidates.Count == 0)
+        {
+            return defaultElements[UnityEngine.Random.Range(0, defaultElements.Length)];
+        }
+
+        if (targets == null || targets.Count == 0)
+        {
+            return candidates[UnityEngine.Random.Range(0, candidates.Count)];
+        }
+
+        // Tách danh sách ứng viên thành nhóm mục tiêu (targets) và nhóm còn lại (remains)
+        List<TypeStone> targetCandidates = new List<TypeStone>();
+        List<TypeStone> remainCandidates = new List<TypeStone>();
+
+        for (int i = 0; i < candidates.Count; i++)
+        {
+            TypeStone c = candidates[i];
+            if (targets.Contains(c)) targetCandidates.Add(c);
+            else remainCandidates.Add(c);
+        }
+
+        // Áp dụng tỷ lệ rơi ưu tiên theo GDD (Mục tiêu 60% - Còn lại 40%)
+        if (targetCandidates.Count > 0 && remainCandidates.Count > 0)
+        {
+            bool pickTarget = UnityEngine.Random.value < 0.60f;
+            if (pickTarget)
+            {
+                return targetCandidates[UnityEngine.Random.Range(0, targetCandidates.Count)];
+            }
+            return remainCandidates[UnityEngine.Random.Range(0, remainCandidates.Count)];
+        }
+
+        return candidates[UnityEngine.Random.Range(0, candidates.Count)];
+    }
+
+    /// <summary>
+    /// Khóa ngẫu nhiên một số viên đá trên bàn cờ Match-3 (Kỹ năng của quái Pháp sư)
+    /// </summary>
+    public void LockRandomStones(int count, int rounds = 1)
+    {
+        if (grid == null) return;
+        List<StoneBase> unlockedStones = new List<StoneBase>();
         for (int x = 0; x < cols; x++)
         {
-            for(int y = 0; y < rows; y++)
+            if (x >= grid.Count) continue;
+            for (int y = 0; y < rows; y++)
+            {
+                if (y >= grid[x].Count) continue;
+                if (grid[x][y] != null && grid[x][y].GetStone() != null)
+                {
+                    StoneBase s = grid[x][y].GetStone();
+                    if (!s.isLocked) unlockedStones.Add(s);
+                }
+            }
+        }
+
+        for (int i = 0; i < count && unlockedStones.Count > 0; i++)
+        {
+            int randIdx = UnityEngine.Random.Range(0, unlockedStones.Count);
+            StoneBase chosen = unlockedStones[randIdx];
+            chosen.LockStone(rounds);
+            unlockedStones.RemoveAt(randIdx);
+        }
+    }
+
+    /// <summary>
+    /// Đóng băng một hàng đá trên bàn cờ Match-3 (Kỹ năng của Tinh Linh Băng Giá)
+    /// </summary>
+    public void FreezeRow(int rowIndex, int rounds = 2)
+    {
+        if (grid == null || rowIndex < 0 || rowIndex >= rows) return;
+        for (int x = 0; x < cols; x++)
+        {
+            if (x < grid.Count && rowIndex < grid[x].Count && grid[x][rowIndex] != null && grid[x][rowIndex].GetStone() != null)
+            {
+                grid[x][rowIndex].GetStone().FreezeStone(rounds);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Giảm thời hạn khóa/đóng băng của toàn bộ đá sau mỗi Round
+    /// </summary>
+    public void TickStoneLocks()
+    {
+        if (grid == null) return;
+        for (int x = 0; x < cols; x++)
+        {
+            if (x >= grid.Count) continue;
+            for (int y = 0; y < rows; y++)
+            {
+                if (y >= grid[x].Count) continue;
+                if (grid[x][y] != null && grid[x][y].GetStone() != null)
+                {
+                    grid[x][y].GetStone().TickLockRound();
+                }
+            }
+        }
+    }
+
+    public void UpdateStoneToBoard()
+    {
+        // Khởi tạo ma trận 6x6 ngẫu nhiên 100% KHÔNG CÓ MATCH-3 theo thuật toán GDD
+        TypeStone[,] noMatchMatrix = GenerateNoMatch3Matrix(cols, rows, targetTypeStones);
+
+        for (int x = 0; x < cols; x++)
+        {
+            for (int y = 0; y < rows; y++)
             {
                 Vector2 posTarget = grid[x][y].SlotItem.anchoredPosition;
-                grid[x][y].SetStone(InitStone(posTarget,new Vector2Int(x,y),0.5f));
+                TypeStone stoneType = noMatchMatrix[x, y];
+                grid[x][y].SetStone(InitStoneWithType(posTarget, new Vector2Int(x, y), stoneType, 0f));
             }
         }
     }
-    public StoneBase InitStone(Vector2 posTarget,Vector2Int idx,float time)
+
+    public StoneBase InitStone(Vector2 posTarget, Vector2Int idx, float time)
     {
-        Vector2Int index = idx;
-        if (!listData.ContainsKey(index))
+        TypeStone stoneTypeToSpawn;
+        if (listData.ContainsKey(idx))
         {
-            if(isRevert == true)
-            {
-                int y = rows-1;
-                while(!listData.ContainsKey(new Vector2Int(index.x, y)) && y< maxY)
-                {
-                    y++;
-                    if(listData.ContainsKey(new Vector2Int(index.x,y)) && y < maxY)
-                    {
-                        index = new Vector2Int(index.x,y);
-                        isRevert = false;
-                        break;
-                    }
-                }
-            }
-            else return null;
+            stoneTypeToSpawn = listData[idx];
+            listData.Remove(idx);
         }
-        Vector2 posInit = grid[idx.x][rows-1].SlotItem.anchoredPosition +new Vector2(0,sizeSlot.y);
-        StoneBase stone = ObjectPoolingManager.Instance.Spawn(prefabs[listData[index]],posInit,Quaternion.identity,center);
-        stone.item.sizeDelta = sizeSlot;stone.SetOriginIndex(idx.x,idx.y);
-        stone.StoneTrans(posTarget,time);
-        listData.Remove(index);
-        Debug.Log(index);
+        else
+        {
+            stoneTypeToSpawn = GetGDDStoneDrop(targetTypeStones);
+        }
+        return InitStoneWithType(posTarget, idx, stoneTypeToSpawn, time);
+    }
+
+    public StoneBase InitStoneWithType(Vector2 posTarget, Vector2Int idx, TypeStone stoneTypeToSpawn, float time)
+    {
+        EnsureContainers();
+
+        StoneBase prefab = GetStonePrefab(stoneTypeToSpawn);
+        if (prefab == null) return null;
+
+        Transform stoneParent = stonesContainer != null ? stonesContainer : center;
+        Vector2 posInit = (time > 0f)
+            ? (grid[idx.x][rows - 1].SlotItem.anchoredPosition + new Vector2(0, sizeSlot.y))
+            : posTarget;
+
+        Vector3 spawnPos = new Vector3(posInit.x, posInit.y, 0f);
+        StoneBase stone = (ObjectPoolingManager.Instance != null)
+            ? ObjectPoolingManager.Instance.Spawn(prefab, spawnPos, Quaternion.identity, stoneParent)
+            : Instantiate(prefab, spawnPos, Quaternion.identity, stoneParent);
+
+        if (stone.transform.parent != stoneParent)
+        {
+            stone.transform.SetParent(stoneParent, false);
+        }
+        // Luôn đảm bảo đá nổi trên các ô slot, z = 0 và scale = 1
+        stone.transform.SetAsLastSibling();
+        stone.transform.localPosition = spawnPos;
+        stone.transform.localScale = Vector3.one;
+
+        if (stone.item != null)
+        {
+            stone.item.sizeDelta = sizeSlot;
+            stone.item.anchoredPosition = posInit;
+            stone.item.localScale = Vector3.one;
+        }
+
+        stone.SetOriginIndex(idx.x, idx.y);
+
+        if (time > 0f)
+        {
+            stone.StoneTrans(posTarget, time);
+        }
+        else
+        {
+            if (stone.item != null)
+            {
+                stone.item.DOKill();
+                stone.item.anchoredPosition = posTarget;
+            }
+            stone.transform.localPosition = new Vector3(posTarget.x, posTarget.y, 0f);
+        }
+
         return stone;
     }
+
     public IEnumerator MatchAllBoard()
     {
-        HashSet<Vector2Int> listMatch = new HashSet<Vector2Int>(0);
-        for(int x = 0; x < cols; x++)
+        HashSet<Vector2Int> listMatch = new HashSet<Vector2Int>();
+        for (int x = 0; x < cols; x++)
         {
-            for(int y = 0; y < rows; y++)
+            for (int y = 0; y < rows; y++)
             {
+                if (grid[x][y].GetStone() == null) continue;
                 TypeStone name = grid[x][y].GetStone().nameStone;
-                if(x + 2<cols)
+
+                // Kiểm tra hàng ngang
+                if (x + 2 < cols)
                 {
-                    if(name == grid[x+1][y].GetStone().nameStone && name == grid[x + 2][y].GetStone().nameStone)
+                    if (grid[x + 1][y].GetStone() != null && grid[x + 2][y].GetStone() != null)
                     {
-                        listMatch.Add(new Vector2Int(x,y));
-                        listMatch.Add(new Vector2Int(x+1,y));
-                        listMatch.Add(new Vector2Int(x+2,y));
-                       
+                        if (name == grid[x + 1][y].GetStone().nameStone && name == grid[x + 2][y].GetStone().nameStone)
+                        {
+                            listMatch.Add(new Vector2Int(x, y));
+                            listMatch.Add(new Vector2Int(x + 1, y));
+                            listMatch.Add(new Vector2Int(x + 2, y));
+                        }
                     }
                 }
-                if(y + 2<rows)
+
+                // Kiểm tra hàng dọc
+                if (y + 2 < rows)
                 {
-                    if(name == grid[x][y+1].GetStone().nameStone && name == grid[x][y+2].GetStone().nameStone)
+                    if (grid[x][y + 1].GetStone() != null && grid[x][y + 2].GetStone() != null)
                     {
-                        listMatch.Add(new Vector2Int(x,y));
-                        listMatch.Add(new Vector2Int(x,y+1));
-                        listMatch.Add(new Vector2Int(x,y+2));
+                        if (name == grid[x][y + 1].GetStone().nameStone && name == grid[x][y + 2].GetStone().nameStone)
+                        {
+                            listMatch.Add(new Vector2Int(x, y));
+                            listMatch.Add(new Vector2Int(x, y + 1));
+                            listMatch.Add(new Vector2Int(x, y + 2));
+                        }
                     }
                 }
             }
         }
-        if(listMatch.Count == 0)
+
+        if (listMatch.Count == 0)
         {
             canTrans = true;
             yield break;
         }
         else
         {
-            SkillPassiveManager.instance.CaculatorSkill(listMatch,grid);
+            if (SkillPassiveManager.instance != null)
+            {
+                try
+                {
+                    // Tấn công ngay lập tức theo đúng thứ tự match stone, không chờ hàng đợi nữa!
+                    SkillPassiveManager.instance.ExecuteInstantMatchAttacks(listMatch, grid);
+                }
+                catch (System.Exception ex)
+                {
+                    Debug.LogError($"[BoardController] Lỗi khi thực thi tấn công kỹ năng: {ex.Message}");
+                }
+            }
         }
-        foreach(Vector2Int e in listMatch)
+
+        foreach (Vector2Int e in listMatch)
         {
             SlotStoneBase slot = grid[e.x][e.y];
             if (slot.GetStone() != null)
@@ -160,156 +689,221 @@ public class BoardController : MonoBehaviour
                 slot.SetStone(null);
             }
         }
-        yield return new WaitForSeconds(0.5f);
+
+        yield return new WaitForSeconds(0.3f);
         float maxTime = 0;
-        for(int x = 0; x < cols; x++)
+
+        for (int x = 0; x < cols; x++)
         {
-            int SlotEmpty = 0;
-            for(int y = 0; y < rows; y++)
+            int slotEmpty = 0;
+            for (int y = 0; y < rows; y++)
             {
                 StoneBase stoneCurrent = grid[x][y].GetStone();
-                if(stoneCurrent != null)
+                if (stoneCurrent != null)
                 {
-                    if(SlotEmpty < y)
+                    if (slotEmpty < y)
                     {
                         grid[x][y].SetStone(null);
-                        if((y-SlotEmpty)*0.2f > maxTime)maxTime = (y-SlotEmpty)*0.2f;
-                        stoneCurrent.StoneTrans(grid[x][SlotEmpty].SlotItem.anchoredPosition,(y-SlotEmpty)*0.2f);
-                        stoneCurrent.SetOriginIndex(x,SlotEmpty);
-                        grid[x][SlotEmpty].SetStone(stoneCurrent);
+                        float moveDuration = (y - slotEmpty) * 0.15f;
+                        if (moveDuration > maxTime) maxTime = moveDuration;
+                        stoneCurrent.StoneTrans(grid[x][slotEmpty].SlotItem.anchoredPosition, moveDuration);
+                        stoneCurrent.SetOriginIndex(x, slotEmpty);
+                        grid[x][slotEmpty].SetStone(stoneCurrent);
                     }
-                    SlotEmpty++;
+                    slotEmpty++;
                 }
             }
-            for(int t = SlotEmpty; t < rows; t++)
+
+            for (int t = slotEmpty; t < rows; t++)
             {
-                if((rows-t)*0.2f > maxTime)maxTime = (rows-t)*0.2f;
-                isRevert = true;
-                grid[x][t].SetStone(InitStone(grid[x][t].SlotItem.anchoredPosition,new Vector2Int(x,t),(rows-t)*0.2f));
+                float fallDuration = (rows - t) * 0.15f;
+                if (fallDuration > maxTime) maxTime = fallDuration;
+                grid[x][t].SetStone(InitStone(grid[x][t].SlotItem.anchoredPosition, new Vector2Int(x, t), fallDuration));
             }
         }
-        yield return new WaitForSeconds(maxTime+0.05f);
+
+        yield return new WaitForSeconds(maxTime + 0.05f);
         StartCoroutine(MatchAllBoard());
     }
-    public void Trans(Direction type,StoneBase stone)
+
+    public void Trans(Direction type, StoneBase stone)
     {
-        if(canTrans == false)return;
-        if(CheckTrans(type,stone.GetOriginIndex()) == false)return;
-        else {
-            canTrans = false;
-            StartCoroutine(TryMatch(type,stone));
+        if (!canTrans) return;
+
+        // Kiểm tra chi phí Lõi Năng Lượng trước khi cho phép swap (GDD Rule)
+        if (CombatTurnManager.Instance != null && !CombatTurnManager.Instance.CanPlayerAffordNextMatch())
+        {
+            CombatTurnManager.Instance.CheckAndHandleEnergyDepletion();
+            return;
+        }
+
+        if (!CheckTrans(type, stone.GetOriginIndex())) return;
+
+        canTrans = false;
+        StartCoroutine(TryMatch(type, stone));
+    }
+
+    /// <summary>
+    /// Khóa toàn bộ tương tác trên bàn cờ khi kết thúc wave / thời điểm reset
+    /// </summary>
+    public void LockBoardInteractions()
+    {
+        canTrans = false;
+        if (GameManager.instance != null && GameManager.instance.LockBoard != null)
+        {
+            GameManager.instance.LockBoard.gameObject.SetActive(true);
         }
     }
 
+    /// <summary>
+    /// Mở khóa tương tác bàn cờ khi bắt đầu vào trận
+    /// </summary>
+    public void UnlockBoardInteractions()
+    {
+        canTrans = true;
+        if (GameManager.instance != null && GameManager.instance.LockBoard != null)
+        {
+            GameManager.instance.LockBoard.gameObject.SetActive(false);
+        }
+    }
 
-    public IEnumerator TryMatch(Direction type,StoneBase stone)
+    public IEnumerator TryMatch(Direction type, StoneBase stone)
     {
         Vector2Int Index = stone.GetOriginIndex();
         StoneBase stoneB = null;
+
         switch (type)
         {
-            case Direction.right :
-            stoneB = grid[Index.x+1][Index.y].GetStone();
-            break;
-            case Direction.left :
-            stoneB = grid[Index.x-1][Index.y].GetStone();
-            break;
-            case Direction.up :
-            stoneB = grid[Index.x][Index.y+1].GetStone();
-            break;
-            case Direction.down :
-            stoneB = grid[Index.x][Index.y-1].GetStone();
-            break;
+            case Direction.right:
+                stoneB = grid[Index.x + 1][Index.y].GetStone();
+                break;
+            case Direction.left:
+                stoneB = grid[Index.x - 1][Index.y].GetStone();
+                break;
+            case Direction.up:
+                stoneB = grid[Index.x][Index.y + 1].GetStone();
+                break;
+            case Direction.down:
+                stoneB = grid[Index.x][Index.y - 1].GetStone();
+                break;
         }
-        Vector2Int IndexB = stoneB.GetOriginIndex();
-        TrySwap(stone,stoneB);
-        grid[Index.x][Index.y].SwapStoneToSlot(grid[IndexB.x][ IndexB.y]);
-        yield return new WaitForSeconds(0.5f);
-        if(CheckMatch(stone.nameStone,IndexB.x,IndexB.y) == true|| CheckMatch(stoneB.nameStone, Index.x, Index.y)==true)
+
+        if (stoneB == null)
         {
+            canTrans = true;
+            yield break;
+        }
+
+        Vector2Int IndexB = stoneB.GetOriginIndex();
+        TrySwap(stone, stoneB);
+        grid[Index.x][Index.y].SwapStoneToSlot(grid[IndexB.x][IndexB.y]);
+
+        yield return new WaitForSeconds(0.35f);
+
+        if (CheckMatch(stone.nameStone, IndexB.x, IndexB.y) || CheckMatch(stoneB.nameStone, Index.x, Index.y))
+        {
+            if (CombatTurnManager.Instance != null)
+            {
+                CombatTurnManager.Instance.TryConsumeMatchEnergy();
+            }
             StartCoroutine(MatchAllBoard());
         }
         else
         {
-            TrySwap(stone,stoneB);
-            grid[Index.x][Index.y].SwapStoneToSlot(grid[IndexB.x][ IndexB.y]);
-            yield return new WaitForSeconds(0.5f);
+            TrySwap(stone, stoneB);
+            grid[Index.x][Index.y].SwapStoneToSlot(grid[IndexB.x][IndexB.y]);
+            yield return new WaitForSeconds(0.35f);
             canTrans = true;
         }
     }
+
     public void TrySwap(StoneBase stoneA, StoneBase stoneB)
     {
+        if (stoneA != null) stoneA.transform.SetAsLastSibling();
+        if (stoneB != null) stoneB.transform.SetAsLastSibling();
         Vector2 posA = stoneA.item.anchoredPosition;
         Vector2 posB = stoneB.item.anchoredPosition;
-        stoneA.StoneTrans(posB,0.5f);
-        stoneB.StoneTrans(posA,0.5f);
+        stoneA.StoneTrans(posB, 0.3f);
+        stoneB.StoneTrans(posA, 0.3f);
     }
-    public bool CheckMatch(TypeStone nameStone,int x, int y)
+
+    public bool CheckMatch(TypeStone nameStone, int x, int y)
     {
-        int demUp = 0;
-        int demDown = 0;
-        int demRight = 0;
-        int demLeft =0;
-        for(int i = 1; i <= 2; i++)
+        int demUp = 0, demDown = 0, demRight = 0, demLeft = 0;
+        for (int i = 1; i <= 2; i++)
         {
-            if (x - i>= 0 )
+            if (x - i >= 0)
             {
-                if(grid[x-i][y].GetStone() == null)return false;
-                if(nameStone == grid[x-i][y].GetStone().nameStone)demLeft++;
+                if (grid[x - i][y].GetStone() == null) return false;
+                if (nameStone == grid[x - i][y].GetStone().nameStone) demLeft++;
                 else demLeft--;
             }
             if (x + i < cols)
             {
-                if(grid[x+i][y].GetStone() == null)return false;
-                if(nameStone == grid[x+i][y].GetStone().nameStone)demRight++;
+                if (grid[x + i][y].GetStone() == null) return false;
+                if (nameStone == grid[x + i][y].GetStone().nameStone) demRight++;
                 else demRight--;
             }
-            if(y+i < rows)
+            if (y + i < rows)
             {
-                if(grid[x][y+i].GetStone() == null)return false;
-                if(nameStone == grid[x][y+i].GetStone().nameStone)demUp++;
+                if (grid[x][y + i].GetStone() == null) return false;
+                if (nameStone == grid[x][y + i].GetStone().nameStone) demUp++;
                 else demUp--;
             }
             if (y - i >= 0)
             {
-                if(grid[x][y-i].GetStone() == null)return false;
-                if(nameStone == grid[x][y-i].GetStone().nameStone)demDown++;
+                if (grid[x][y - i].GetStone() == null) return false;
+                if (nameStone == grid[x][y - i].GetStone().nameStone) demDown++;
                 else demDown--;
             }
-            if((demDown==1 &&  demUp== 1)||(demLeft==1 && demRight ==1))return true;
+            if ((demDown == 1 && demUp == 1) || (demLeft == 1 && demRight == 1)) return true;
         }
-        if(demDown == 2 || demLeft==2 ||demRight == 2||demUp==2)return true;
-        else {
-            return false;
-        }
-       
+
+        return (demDown == 2 || demLeft == 2 || demRight == 2 || demUp == 2);
     }
-    public bool CheckTrans(Direction type,Vector2 Index)
+
+    public bool CheckTrans(Direction type, Vector2 Index)
     {
-        if(type is Direction.right)
-        {
-            if(Index.x == cols - 1)return false;
-        }
-        if(type is Direction.left)
-        {
-            if(Index.x == 0)return false;
-        }
-        if(type is Direction.up)
-        {
-            if(Index.y == rows-1)return false;
-        }
-        if(type is Direction.down)
-        {
-            if(Index.y == 0)return false;
-        }
+        if (type == Direction.right && Index.x >= cols - 1) return false;
+        if (type == Direction.left && Index.x <= 0) return false;
+        if (type == Direction.up && Index.y >= rows - 1) return false;
+        if (type == Direction.down && Index.y <= 0) return false;
         return true;
     }
-   
+
+    /// <summary>
+    /// Hiệu ứng trượt bàn cờ lên giữa màn hình khớp đúng vị trí DialoguePanel (GDD Item B17)
+    /// </summary>
+    public void SlideInBoard(float duration = 0.45f, Action onComplete = null)
+    {
+        if (center != null)
+        {
+            center.DOKill();
+            float targetY = GetTargetSlideInY();
+            center.DOAnchorPosY(targetY, duration).SetEase(Ease.OutBack).OnComplete(() => onComplete?.Invoke());
+        }
+    }
+
+    /// <summary>
+    /// Tính toán vị trí Y khi trượt bàn cờ lên: Cố định chuẩn xác tại y = -580f ngay bên dưới PlayerStatsBar
+    /// </summary>
+    public float GetTargetSlideInY()
+    {
+        return -540f;
+    }
+
+    /// <summary>
+    /// Hiệu ứng trượt bàn cờ xuống dưới biến mất khi vào giai đoạn combat (GDD Item B21)
+    /// </summary>
+    public void SlideOutBoard(float duration = 0.4f, Action onComplete = null)
+    {
+        if (center != null)
+        {
+            center.DOKill();
+            center.DOAnchorPosY(-1600f, duration).SetEase(Ease.InCubic).OnComplete(() =>
+            {
+                onComplete?.Invoke();
+            });
+        }
+    }
 }
-
-
-
-
-
-
-
