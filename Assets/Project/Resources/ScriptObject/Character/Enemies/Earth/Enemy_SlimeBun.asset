@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6a5fa8202e35df469e78669bf9efe4d, type: 3}
+  m_Name: Enemy_SlimeBun
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDataSO
+  enemyType: 16
+  enemyName: "Slime B\xF9n"
+  element: 4
+  category: 0
+  role: 1
+  defaultRow: 0
+  maxHP: 400
+  atk: 30
+  def: 80
+  critRate: 0.05
+  critDmg: 1.2
+  speed: 0.25
+  attackCd: 2
+  reflect: 0
+  scale: 0.8
+  isBoss: 0
+  combatType: 0
+  attackRange: 0.85
+  activeSkillName: "B\u1ECDc B\xF9n Gi\u1EA3m S\xE1t Th\u01B0\u01A1ng"
+  skillMultiplier: 1.35
+  skillCdRound: 2
+  activeSkillDesc: "T\u1EA1o l\u1EDBp m\xE0ng b\xF9n b\u1EA3o v\u1EC7: Gi\u1EA3m
+    35% m\u1ECDi s\xE1t th\u01B0\u01A1ng nh\u1EADn v\xE0o trong 2 Round"
+  passiveSkillDesc: "T\u0103ng 10% DEF khi m\xE1u xu\u1ED1ng d\u01B0\u1EDBi 50%"
+  normalAttackDesc: "\u0110\u1EADp b\xF9n qu\xE1nh g\xE2y 100% ATK (24 ST)"
+  enemyPrefab: {fileID: 0}

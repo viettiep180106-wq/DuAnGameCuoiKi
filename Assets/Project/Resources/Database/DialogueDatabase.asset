@@ -1,0 +1,536 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1622a99720f428a4a8da333c2e478f10, type: 3}
+  m_Name: DialogueDatabase
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueDatabaseSO
+  entries:
+  - ID: SC_01
+    Category: "M\u1EDF \u0111\u1EA7u Wave (Pre-Wave)"
+    Context: "1. Di chuy\u1EC3n sang Wave m\u1EDBi (Bay 3 gi\xE2y)"
+    Speaker: "Ph\xE1p S\u01B0"
+    Text: "B\u1EADt ch\u1EBF \u0111\u1ED9 l\u01B0\u1EDBt gi\xF3 l\u1EB9 l\xE0ng n\xE0o!
+      \u0110ang bay m\xE0 gi\xF3 t\xE1p v\xE0o m\u1EB7t m\xE1t r\u01B0\u1EE3i, ti\u1EBFn
+      sang wave ti\u1EBFp theo th\xF4i!"
+    AnimationNote: "Bay l\u01B0\u1EE3n chibi, \xE1o cho\xE0ng tung bay, thanh ti\u1EBFn
+      tr\xECnh l\u1EA5p \u0111\u1EA7y t\u1EEB 0 -> 1 b\xE1m theo icon nh\xE2n v\u1EADt."
+    IsPlayer: 1
+  - ID: SC_02
+    Category: "M\u1EDF \u0111\u1EA7u Wave (Pre-Wave)"
+    Context: "1. Di chuy\u1EC3n sang Wave m\u1EDBi (Bay 3 gi\xE2y)"
+    Speaker: "Th\xE1nh V\u1EADt"
+    Text: "\u0110\u1ECBnh v\u1ECB radar \u0111ang qu\xE9t khu v\u1EF1c ph\xEDa tr\u01B0\u1EDBc!
+      3 gi\xE2y t\u1ED1c bi\u1EBFn, gi\u1EEF ch\u1EB7t m\u0169 bay k\u1EBBo r\u1EDBt
+      k\xECa b\u1EA1n \xEAi!"
+    AnimationNote: "Xoay tr\xF2n ph\xE1t s\xE1ng neon, hi\u1EC7n icon m\u0169i t\xEAn
+      ti\u1EBFn l\xEAn d\u1EABn \u0111\u01B0\u1EDDng, n\u1EC1n cu\u1ED9n ng\u01B0\u1EE3c
+      3.0s."
+    IsPlayer: 0
+  - ID: SC_03
+    Category: "M\u1EDF \u0111\u1EA7u Trong Wave"
+    Context: "2. Banner Wave Kh\xE1m Ph\xE1 xu\u1EA5t hi\u1EC7n"
+    Speaker: "Th\xE1nh V\u1EADt"
+    Text: "Ting ting! Radar b\xE1o ph\xEDa tr\u01B0\u1EDBc ho\xE0n to\xE0n y\xEAn
+      \u1EA3, ch\u1EC9 n\u1ED3ng n\u1EB7c m\xF9i th\u01A1m c\u1EE7a c\u01A1 h\u1ED9i
+      th\xF4i! M\u1ED9t kh\xF4ng gian b\xED \u1EA9n \u0111ang v\u1EABy g\u1ECDi!"
+    AnimationNote: "Chi\u1EBFu \u0111\xE8n neon l\u1EA5p l\xE1nh, hi\u1EC7n bi\u1EC3u
+      t\u01B0\u1EE3ng x\xFAc x\u1EAFc v\xE0 r\u01B0\u01A1ng b\xE1u, m\u1EDF l\u1ED1i
+      v\xE0o khu v\u1EF1c may r\u1EE7i."
+    IsPlayer: 0
+  - ID: SC_04
+    Category: "M\u1EDF \u0111\u1EA7u Trong Wave"
+    Context: "2. Banner Wave Kh\xE1m Ph\xE1 xu\u1EA5t hi\u1EC7n"
+    Speaker: "Ph\xE1p S\u01B0"
+    Text: "\u1ED2 h\u1ED1! Tr\xFAng qu\u1EA3 wave th\u01B0 gi\xE3n r\u1ED3i! \u0110\u1EC3
+      tr\u1EABm v\xE0o th\xE1m hi\u1EC3m xem c\xF3 m\xF3n b\u1EA3o v\u1EADt hay th\u1EA7n
+      may m\u1EAFn n\xE0o \u0111\u1ED9 kh\xF4ng n\xE0o!"
+    AnimationNote: "H\u0103m h\u1EDF xoa hai b\xE0n tay, hai m\u1EAFt s\xE1ng h\xECnh
+      ng\xF4i sao, l\u01B0\u1EDBt v\xE0o khu v\u1EF1c s\u1EF1 ki\u1EC7n kh\xE1m ph\xE1."
+    IsPlayer: 1
+  - ID: SC_05
+    Category: "S\u1EF1 ki\u1EC7n Nh\xE1nh"
+    Context: "2. Nh\xE1nh 1: Ph\xE1t hi\u1EC7n Phi\u1EBFn \u0111\xE1 c\u1ED5"
+    Speaker: "Ph\xE1p S\u01B0"
+    Text: "Ui da! C\xE1i g\xEC c\u1EA5n ch\xE2n tr\u1EABm th\u1EBF n\xE0y?! \u1ED0i
+      d\u1ED3i \xF4i, m\u1ED9t phi\u1EBFn \u0111\xE1 rune c\u1ED5 ph\xE1t s\xE1ng
+      l\u1EADp l\xF2e d\u01B0\u1EDBi \u0111\u1ED1ng r\xEAu!"
+    AnimationNote: "V\u1EA5p ch\xE2n t\xE9 d\xFAi d\u1EE5i, \xF4m ng\xF3n ch\xE2n
+      xu\xFDt xoa r\u1ED3i tr\u1ED1 m\u1EAFt kinh ng\u1EA1c ch\u1EC9 tay v\xE0o phi\u1EBFn
+      \u0111\xE1."
+    IsPlayer: 1
+  - ID: SC_06
+    Category: "S\u1EF1 ki\u1EC7n Nh\xE1nh"
+    Context: "2. Nh\xE1nh 1: Ph\xE1t hi\u1EC7n Phi\u1EBFn \u0111\xE1 c\u1ED5"
+    Speaker: "Th\xE1nh V\u1EADt"
+    Text: "\xDAi ch\xE0, m\xF9 m\u1EDD th\u1EBF m\xE0 v\u1EDB \u0111\u01B0\u1EE3c
+      kho b\xE1u c\u1ED5 \u0111\u1EA1i! Nh\u01B0ng khoan... d\xF2ng ch\u1EEF rune
+      \u0111\xF2i 25 l\xF5i n\u0103ng l\u01B0\u1EE3ng \u0111\u1EC3 k\xEDch ho\u1EA1t
+      k\xECa!"
+    AnimationNote: "Ph\xF3ng to thu nh\u1ECF h\xE0o quang t\xEDm huy\u1EC1n b\xED,
+      qu\xE9t lu\u1ED3ng s\xE1ng laser soi v\xE0o d\xF2ng c\u1ED5 ng\u1EEF kh\u1EAFc
+      tr\xEAn \u0111\xE1."
+    IsPlayer: 0
+  - ID: SC_07
+    Category: "S\u1EF1 ki\u1EC7n Nh\xE1nh"
+    Context: "2. Nh\xE1nh 1: Ph\xE1t hi\u1EC7n Phi\u1EBFn \u0111\xE1 c\u1ED5"
+    Speaker: "Ph\xE1p S\u01B0"
+    Text: "C\xE1i g\xEC?! \u0110\xE3 n\xFAp trong hang s\xE2u t\u0103m t\u1ED1i m\xE0
+      c\xF2n g\u1EB7p ma ph\xE1p t\u01B0 b\u1EA3n thu ph\xED c\u1EA7u \u0111\u01B0\u1EDDng
+      \xE0?! \u0110\xFAng l\xE0 c\u1EA1n l\u1EDDi!"
+    AnimationNote: "\xD4m \u0111\u1EA7u tr\u1EE3n tr\xF2n m\u1EAFt h\xE9t toang,
+      tay vung v\u1EA9y ch\u1EC9 v\xE0o khe nh\xE9t \u0111\xE1 rune b\u1EF1c t\u1EE9c."
+    IsPlayer: 1
+  - ID: SC_08
+    Category: "S\u1EF1 ki\u1EC7n Nh\xE1nh"
+    Context: "2. Nh\xE1nh 1: Ph\xE1t hi\u1EC7n Phi\u1EBFn \u0111\xE1 c\u1ED5"
+    Speaker: "Th\xE1nh V\u1EADt"
+    Text: "Th\u1EDDi bu\u1ED5i n\xE0y l\xE0m g\xEC c\xF3 b\u1EEFa tr\u01B0a mi\u1EC5n
+      ph\xED! C\xF3 25 l\xF5i th\xF4i m\xE0, n\u1EA1p n\u0103ng l\u01B0\u1EE3ng \u0111i
+      \u0111\u1EC3 k\xEDch ho\u1EA1t c\u01A1 quan c\u1ED5 ng\u1EEF!"
+    AnimationNote: "Nh\u1EA5p nh\xE1y \u0111\xE8n neon li\xEAn h\u1ED3i, gi\u01A1
+      icon t\xFAi ti\u1EC1n l\u1EA5p l\xE1nh m\u1EDDi g\u1ECDi nhi\u1EC7t t\xECnh."
+    IsPlayer: 0
+  - ID: SC_09
+    Category: "Ho\u1EA1t \u0111\u1ED9ng Nh\xE1nh"
+    Context: "Ho\u1EA1t \u0111\u1ED9ng 1.1: Gacha (V\xF2ng quay)"
+    Speaker: "Th\xE1nh V\u1EADt"
+    Text: "Tada! B\xE0n xoay ma thu\u1EADt 6 \xF4 hi\u1EC7n h\xECnh: 3 Buff 3 Debuff
+      \u0111an xen \u0111\u1ECBnh m\u1EC7nh! Quay m\u1ED9t v\xF2ng \u0111\u1ED5i
+      \u0111\u1EDDi \u0111i b\u1EA1n \xEAi!"
+    AnimationNote: "H\xF3a th\xE2n th\xE0nh kim quay v\xF2ng xoay ma thu\u1EADt neon
+      l\u1EA5p l\xE1nh, ti\u1EBFng nh\u1EA1c x\u1ED5 s\u1ED1 't\xE8 te te' x\u1EADp
+      x\xECnh."
+    IsPlayer: 0
+  - ID: SC_10
+    Category: "Ho\u1EA1t \u0111\u1ED9ng Nh\xE1nh"
+    Context: "Ho\u1EA1t \u0111\u1ED9ng 1.1: Gacha (V\xF2ng quay)"
+    Speaker: "Ph\xE1p S\u01B0"
+    Text: "Nh\xECn c\xE1i t\u1EC9 l\u1EC7 50/50 n\xE0y m\xE0 tim \u0111\u1EADp ch\xE2n
+      run! Xin ch\u01B0 v\u1ECB th\u1EA7n linh ph\xF9 h\u1ED9 \u0111\u1ED9 tr\xEC,
+      quay tr\xFAng \xF4 v\xE0ng ch\xF3i l\u1ECDi gi\xF9m con!"
+    AnimationNote: "Hai tay n\u1EAFm ch\u1EB7t c\u1EA7n g\u1EA1t c\u1ED5 ng\u1EEF
+      k\xE9o m\u1EA1nh h\u1EBFt s\u1EE9c, m\u1EAFt nh\u1EAFm t\u1ECBt l\u1EA9m b\u1EA9m
+      c\u1EA7u kh\u1EA5n."
+    IsPlayer: 1
+  - ID: SC_11
+    Category: "Ho\u1EA1t \u0111\u1ED9ng Nh\xE1nh"
+    Context: "Ho\u1EA1t \u0111\u1ED9ng 1.1: Gacha (V\xF2ng quay)"
+    Speaker: "Th\xE1nh V\u1EADt"
+    Text: "Keng keng keng! N\u1ED5 h\u0169 c\u1EF1c ph\u1EA9m! B\xE0n xoay d\u1EEBng
+      \u0111\xFAng \xF4 kim c\u01B0\u01A1ng: nh\u1EADn ngay hi\u1EC7u \u1EE9ng [N\u1ED9i
+      dung Buff]!"
+    AnimationNote: "B\u1EAFn ph\xE1o hoa ma thu\u1EADt t\u01B0ng b\u1EEBng, nh\u1EA1c
+      chu\xF4ng chi\u1EBFn th\u1EAFng vang d\u1ED9i, h\xE0o quang v\xE0ng kim bao
+      ph\u1EE7 Ph\xE1p S\u01B0."
+    IsPlayer: 0
+  - ID: SC_12
+    Category: "Ho\u1EA1t \u0111\u1ED9ng Nh\xE1nh"
+    Context: "Ho\u1EA1t \u0111\u1ED9ng 1.1: Gacha (V\xF2ng quay)"
+    Speaker: "Ph\xE1p S\u01B0"
+    Text: "\u1ED0i d\u1ED3i \xF4i uy t\xEDn lu\xF4n! \u0110\xE3 b\u1EA3o tay n\xE0y
+      v\xE0ng r\xF2ng m\xE0! C\xF3 qu\u1EA3 buff n\xE0y th\xEC qu\xE1i wave sau c\u1EE9
+      chu\u1EA9n b\u1ECB qu\u1EF3 r\u1EA1p d\u01B0\u1EDBi ch\xE2n tr\u1EABm!"
+    AnimationNote: "Nh\u1EA3y c\u1EABng l\xEAn h\xF2 reo sung s\u01B0\u1EDBng, hai
+      m\u1EAFt bi\u1EBFn th\xE0nh h\xECnh ng\xF4i sao l\u1EA5p l\xE1nh, chibi t\u1EA1o
+      d\xE1ng si\xEAu ng\u1EA7u."
+    IsPlayer: 1
+  - ID: SC_13
+    Category: "Ho\u1EA1t \u0111\u1ED9ng Nh\xE1nh"
+    Context: "Ho\u1EA1t \u0111\u1ED9ng 1.1: Gacha (V\xF2ng quay)"
+    Speaker: "Th\xE1nh V\u1EADt"
+    Text: "T\xE8n ten... M\u0169i t\xEAn l\u1EC7ch sang \xF4 t\u1EED th\u1EA7n r\u1ED3i!
+      Chia bu\u1ED3n c\xF9ng th\xED sinh, \xF4m tr\u1ECDn hi\u1EC7u \u1EE9ng th\u1ED1n:
+      [N\u1ED9i dung Debuff]!"
+    AnimationNote: "To\xE0n th\xE2n chuy\u1EC3n m\xE0u t\xEDm \u0111en \u1EA3m \u0111\u1EA1m,
+      r\u01A1i icon \u0111\u1EA7u l\xE2u x\u01B0\u01A1ng ch\xE9o, n\u1ED1t nh\u1EA1c
+      r\xE8 r\xE8 m\xE9o x\u1EB9o."
+    IsPlayer: 0
+  - ID: SC_14
+    Category: "Ho\u1EA1t \u0111\u1ED9ng Nh\xE1nh"
+    Context: "Ho\u1EA1t \u0111\u1ED9ng 1.1: Gacha (V\xF2ng quay)"
+    Speaker: "Ph\xE1p S\u01B0"
+    Text: "\u1EE6a alo?! Th\xE1nh V\u1EADt gian l\u1EADn c\xE0i b\u1EABy \u0111\xFAng
+      kh\xF4ng?! D\xEDnh qu\u1EA3 debuff n\xE0y th\xEC g\xE1nh c\xF2ng c\u1EA3 l\u01B0ng,
+      \u0111\xFAng l\xE0 ki\u1EBFp n\u1EA1n th\u1EE9 82!"
+    AnimationNote: "Ng\xE3 ng\u1EEDa ra s\xE0n hang \xF4m \u0111\u1EA7u than kh\xF3c,
+      m\u1EB7t m\xE0y t\xE1i m\xE9t, linh h\u1ED3n chibi bay l\u01A1 l\u1EEDng kh\u1ECFi
+      m\u1ED3m."
+    IsPlayer: 1
+  - ID: SC_15
+    Category: "Ho\u1EA1t \u0111\u1ED9ng Nh\xE1nh"
+    Context: "Ho\u1EA1t \u0111\u1ED9ng 1.2: Roll (L\u1EADt th\u1EBB / \u0110\u1ED5
+      x\xFAc x\u1EAFc)"
+    Speaker: "Th\xE1nh V\u1EADt"
+    Text: "Ch\xE0o m\u1EEBng \u0111\u1EBFn s\xF2ng b\xE0i c\u1ED5 ng\u1EEF! 3 th\u1EBB
+      b\xE0i ma ph\xE1p b\xED \u1EA9n \u0111ang \xFAp tr\xEAn b\xE0n, l\u1EA7n roll
+      \u0111\u1EA7u ti\xEAn ho\xE0n to\xE0n 'free' nh\xE9!"
+    AnimationNote: "Bi\u1EBFn ra 3 l\xE1 b\xE0i ma thu\u1EADt l\u01A1 l\u1EEDng xoay
+      v\xF2ng tr\xF2n, x\xF2e b\xE0i \u0111i\u1EC7u ngh\u1EC7 nh\u01B0 \u1EA3o thu\u1EADt
+      gia Las Vegas."
+    IsPlayer: 0
+  - ID: SC_16
+    Category: "Ho\u1EA1t \u0111\u1ED9ng Nh\xE1nh"
+    Context: "Ho\u1EA1t \u0111\u1ED9ng 1.2: Roll (L\u1EADt th\u1EBB / \u0110\u1ED5
+      x\xFAc x\u1EAFc)"
+    Speaker: "Ph\xE1p S\u01B0"
+    Text: "\u0110\u1EC3 tr\u1EABm th\u1EA9m \u0111\u1ECBnh nh\xE2n ph\u1EA9m xem
+      n\xE0o! N\u1EBFu b\xE0i ph\xE8n th\xEC b\u1ECF th\xEAm 5 l\xF5i \u0111\u1ED5i
+      l\u01B0\u1EE3t, quy\u1EBFt s\u0103n b\u1EB1ng \u0111\u01B0\u1EE3c buff Hi\u1EBFm!"
+    AnimationNote: "Xoa c\u1EB1m \u0111\u0103m chi\xEAu suy ngh\u0129, ng\xF3n tay
+      ch\u1EC9 tr\u1ECF qua l\u1EA1i gi\u1EEFa c\xE1c l\xE1 b\xE0i ma ph\xE1p r\u1EF1c
+      s\xE1ng."
+    IsPlayer: 1
+  - ID: SC_17
+    Category: "Ho\u1EA1t \u0111\u1ED9ng Nh\xE1nh"
+    Context: "Ho\u1EA1t \u0111\u1ED9ng 1.2: Roll (L\u1EADt th\u1EBB / \u0110\u1ED5
+      x\xFAc x\u1EAFc)"
+    Speaker: "Th\xE1nh V\u1EADt"
+    Text: "L\u1EADt b\xE0i th\u1EA7n th\xE1nh! Ra ngay th\u1EBB b\xE0i SSR l\u1EA5p
+      l\xE1nh h\xE0o quang: b\u1EA1n nh\u1EADn \u0111\u01B0\u1EE3c hi\u1EC7u \u1EE9ng
+      [N\u1ED9i dung Buff]!"
+    AnimationNote: "Th\u1EBB b\xE0i b\u1ED1c ch\xE1y \xE1nh s\xE1ng ho\xE0ng kim
+      r\u1EF1c r\u1EE1, Th\xE1nh V\u1EADt v\u1ED7 tay t\xE1n th\u01B0\u1EDFng reo
+      h\xF2 ph\u1EA5n kh\xEDch."
+    IsPlayer: 0
+  - ID: SC_18
+    Category: "Ho\u1EA1t \u0111\u1ED9ng Nh\xE1nh"
+    Context: "Ho\u1EA1t \u0111\u1ED9ng 1.2: Roll (L\u1EADt th\u1EBB / \u0110\u1ED5
+      x\xFAc x\u1EAFc)"
+    Speaker: "Ph\xE1p S\u01B0"
+    Text: "Haha \u0111\xFAng l\xE0 tay th\u01A1m c\xF3 s\u1ED1! Th\u1EBB x\u1ECBn
+      th\u1EBF n\xE0y kh\xF4ng g\xE1nh team th\xEC h\u01A1i ph\xED, wave sau qu\xE1i
+      ch\u1EC9 c\xF3 n\u01B0\u1EDBc kh\xF3c th\xE9t!"
+    AnimationNote: "Gi\u01A1 cao th\u1EBB b\xE0i khoe khoang, ng\u1EEDa m\u1EB7t
+      l\xEAn tr\u1EDDi c\u01B0\u1EDDi ha h\u1EA3 ki\u1EC3u \u0111\u1EAFc th\u1EAFng."
+    IsPlayer: 1
+  - ID: SC_19
+    Category: "Ho\u1EA1t \u0111\u1ED9ng Nh\xE1nh"
+    Context: "Ho\u1EA1t \u0111\u1ED9ng 1.2: Roll (L\u1EADt th\u1EBB / \u0110\u1ED5
+      x\xFAc x\u1EAFc)"
+    Speaker: "Th\xE1nh V\u1EADt"
+    Text: "\u1ED0i d\u1ED3i \xF4i b\xE0i r\xE1c d\xEDnh b\u1EABy r\u1ED3i! R\xFAt
+      nh\u1EA7m th\u1EBB Nguy\u1EC1n R\u1EE7a c\u1ED5 \u0111\u1EA1i, k\xEDch ho\u1EA1t
+      hi\u1EC7u \u1EE9ng: [N\u1ED9i dung Debuff]!"
+    AnimationNote: "Th\u1EBB b\xE0i x\xEC kh\xF3i \u0111en k\u1ECBt, bi\u1EBFn h\xECnh
+      th\xE0nh icon m\u1EB7t h\u1EC1 trollface toe to\xE9t c\u01B0\u1EDDi c\u1EE3t."
+    IsPlayer: 0
+  - ID: SC_20
+    Category: "Ho\u1EA1t \u0111\u1ED9ng Nh\xE1nh"
+    Context: "Ho\u1EA1t \u0111\u1ED9ng 1.2: Roll (L\u1EADt th\u1EBB / \u0110\u1ED5
+      x\xFAc x\u1EAFc)"
+    Speaker: "Ph\xE1p S\u01B0"
+    Text: "Tr\u1EDDi \u01A1i \u0111\u1EA5t h\u1EE1i! T\u01B0\u1EDFng b\u1EDB \u0111\u01B0\u1EE3c
+      buff hi\u1EBFm ai d\xE8 b\u1ED1c tr\xFAng c\u1EE5c n\u1EE3! L\u1EA1i c\xF2n
+      m\u1EA5t th\xEAm l\xF5i n\u0103ng l\u01B0\u1EE3ng n\u1EEFa, cay x\xE9 l\xF2ng!"
+    AnimationNote: "N\xE9m th\u1EBB b\xE0i xu\u1ED1ng \u0111\u1EA5t gi\u1EADm ch\xE2n
+      b\xECnh b\u1ECBch, hai m\xE1 ph\u1ED3ng l\xEAn t\u1EE9c t\u1ED1i ph\u1EE5ng
+      ph\u1ECBu."
+    IsPlayer: 1
+  - ID: SC_21
+    Category: "Ho\u1EA1t \u0111\u1ED9ng Nh\xE1nh"
+    Context: "Ho\u1EA1t \u0111\u1ED9ng 1.3: M\u1EDF r\u01B0\u01A1ng b\xED \u1EA9n"
+    Speaker: "Th\xE1nh V\u1EADt"
+    Text: "M\u1ED9t chi\u1EBFc r\u01B0\u01A1ng \u0111\xE1 phong \u1EA5n k\xE8m m\u1ED9t
+      m\u1EA3nh gi\u1EA5y t\xE2m s\u1EF1 b\xED \u1EA9n! B\xEAn trong c\xF3 hai phong
+      th\u01B0: 1 ph\xFAc l\xE0nh v\xE0 1 tai h\u1ECDa \u0111\u1EA5y!"
+    AnimationNote: "Chi\u1EBFu lu\u1ED3ng s\xE1ng v\xE0o chi\u1EBFc r\u01B0\u01A1ng
+      c\u1ED5 b\u1EB1ng \u0111\xE1 b\xE1m \u0111\u1EA7y r\xEAu phong, ch\u1EC9 v\xE0o
+      b\u1EE9c th\u01B0 ni\xEAm phong s\xE1p \u0111\u1ECF."
+    IsPlayer: 0
+  - ID: SC_22
+    Category: "Ho\u1EA1t \u0111\u1ED9ng Nh\xE1nh"
+    Context: "Ho\u1EA1t \u0111\u1ED9ng 1.3: M\u1EDF r\u01B0\u01A1ng b\xED \u1EA9n"
+    Speaker: "Ph\xE1p S\u01B0"
+    Text: "Th\u01B0 tay c\u1EE7a ti\u1EC1n nh\xE2n \xE0? \u0110\u1EC3 tr\u1EABm v\u1EADn
+      d\u1EE5ng IQ v\xF4 c\u1EF1c gi\u1EA3i m\xE3 c\xE2u \u0111\u1ED1 xem phong th\u01B0
+      n\xE0o gi\u1EA5u kho b\xE1u n\xE0o!"
+    AnimationNote: "C\u1EA7m m\u1EA3nh gi\u1EA5y \u0111\u1ECDc say s\u01B0a, tay
+      kia c\u1EA7m x\xE0 beng ma thu\u1EADt h\u0103m h\u1EDF c\u1EA1y n\u1EAFp r\u01B0\u01A1ng
+      k\xEAu c\u1ECDt k\u1EB9t."
+    IsPlayer: 1
+  - ID: SC_23
+    Category: "Ho\u1EA1t \u0111\u1ED9ng Nh\xE1nh"
+    Context: "Ho\u1EA1t \u0111\u1ED9ng 1.3: M\u1EDF r\u01B0\u01A1ng b\xED \u1EA9n"
+    Speaker: "Th\xE1nh V\u1EADt"
+    Text: "Ch\u1ECDn \u0111\xFAng phong th\u01B0 \u0111\u1ECBnh m\u1EC7nh r\u1ED3i!
+      Kho b\xE1u t\u1ECFa s\xE1ng r\u1EF1c r\u1EE1, trao t\u1EB7ng hi\u1EC7u \u1EE9ng
+      th\u1EA7n th\xE1nh: [N\u1ED9i dung Buff]!"
+    AnimationNote: "N\u1EAFp r\u01B0\u01A1ng b\u1EADt m\u1EDF tung t\xF3e \xE1nh
+      s\xE1ng v\xE0ng kim l\u1EA5p l\xE1nh, ch\xE2u b\xE1u v\xE0 ng\u1ECDc ma thu\u1EADt
+      tu\xF4n tr\xE0o r\u1ED9n r\xE3."
+    IsPlayer: 0
+  - ID: SC_24
+    Category: "Ho\u1EA1t \u0111\u1ED9ng Nh\xE1nh"
+    Context: "Ho\u1EA1t \u0111\u1ED9ng 1.3: M\u1EDF r\u01B0\u01A1ng b\xED \u1EA9n"
+    Speaker: "Ph\xE1p S\u01B0"
+    Text: "Th\u1EA5y ch\u01B0a, thi\xEAn t\xE0i suy lu\u1EADn kh\xF4ng bao gi\u1EDD
+      \u0111o\xE1n sai! Nh\u1EADn [N\u1ED9i dung Buff] th\u1EBF n\xE0y th\xEC \u0111\xFAng
+      l\xE0 ao tr\xECnh v\u0169 tr\u1EE5!"
+    AnimationNote: "\xD4m l\u1EA5y \u0111\u1ED1ng ng\u1ECDc s\xE1ng v\xE0o l\xF2ng
+      c\u1ECD m\xE1 sung s\u01B0\u1EDBng, chibi m\u1EAFt c\u01B0\u1EDDi h\xEDp m\xED
+      t\xEDt m\u1EAFt."
+    IsPlayer: 1
+  - ID: SC_25
+    Category: "Ho\u1EA1t \u0111\u1ED9ng Nh\xE1nh"
+    Context: "Ho\u1EA1t \u0111\u1ED9ng 1.3: M\u1EDF r\u01B0\u01A1ng b\xED \u1EA9n"
+    Speaker: "Th\xE1nh V\u1EADt"
+    Text: "\xC1i ch\xE0 ch\xE0! R\u01B0\u01A1ng h\xF3a qu\xE1i Mimic th\xE8 l\u01B0\u1EE1i
+      ngo\u1EA1m tr\xFAng tay r\u1ED3i! B\u1EABy \u0111\u1ED9c ph\xE1t n\u1ED5, d\xEDnh
+      ngay: [N\u1ED9i dung Debuff]!"
+    AnimationNote: "Chi\u1EBFc r\u01B0\u01A1ng m\u1ECDc r\u0103ng nanh nh\u1ECDn
+      ho\u1EAFt h\xE1 h\u1ECDng c\u1EAFn 'ngo\u1EA1m', phun ra l\xE0n kh\xF3i t\xEDm
+      \u0111\u1ED9c h\u1EA1i m\xF9 m\u1ECBt."
+    IsPlayer: 0
+  - ID: SC_26
+    Category: "Ho\u1EA1t \u0111\u1ED9ng Nh\xE1nh"
+    Context: "Ho\u1EA1t \u0111\u1ED9ng 1.3: M\u1EDF r\u01B0\u01A1ng b\xED \u1EA9n"
+    Speaker: "Ph\xE1p S\u01B0"
+    Text: "\xC1 \xE1 \xE1 c\u1EE9u tr\u1EABm! R\u01B0\u01A1ng \u0111\u1EC3u l\u1EEBa
+      \u0111\u1EA3o! V\u1EEBa b\u1ECB ngo\u1EA1m \xEA c\u1EA3 tay v\u1EEBa \u0103n
+      tr\u1ECDn b\u1EABy \u0111\u1ED9c, ki\u1EBFp n\u1EA1n n\xE0y sao n\xE9 ho\xE0i
+      kh\xF4ng tho\xE1t!"
+    AnimationNote: "Nh\u1EA3y loi choi m\u1ED9t ch\xE2n vung v\u1EA9y b\xE0n tay
+      b\u1ECB s\u01B0ng v\xF9 \u0111\u1ECF \u1EEDng, n\u01B0\u1EDBc m\u1EAFt l\u01B0ng
+      tr\xF2ng kh\xF3c r\xF2ng r\xE3."
+    IsPlayer: 1
+  - ID: SC_27
+    Category: "Ho\u1EA1t \u0111\u1ED9ng Nh\xE1nh"
+    Context: "Ho\u1EA1t \u0111\u1ED9ng 1.4: T\u1EBF \u0111\xE0n Ch\xFAc ph\xFAc &
+      Nguy\u1EC1n r\u1EE7a"
+    Speaker: "Th\xE1nh V\u1EADt"
+    Text: "H\u1EE1i ph\xE1p s\u01B0, b\u01B0\u1EDBc l\xEAn \u0111\xE0i t\u1EBF c\u1ED5
+      k\xEDnh \u0111i! N\u01A1i \u0111\xE2y l\u1EAFng nghe ti\u1EBFng v\u1ECDng c\u1ED5
+      x\u01B0a, ban ph\u01B0\u1EDBc ho\u1EB7c th\u1EED th\xE1ch linh h\u1ED3n!"
+    AnimationNote: "Bay l\xEAn kh\xF4ng trung, ph\xE1t h\xE0o quang linh thi\xEAng
+      trang tr\u1ECDng, t\u1EBF \u0111\xE0n \u0111\xE1 b\u1EAFt \u0111\u1EA7u ph\xE1t
+      s\xE1ng c\xE1c k\xFD t\u1EF1 rune c\u1ED5."
+    IsPlayer: 0
+  - ID: SC_28
+    Category: "Ho\u1EA1t \u0111\u1ED9ng Nh\xE1nh"
+    Context: "Ho\u1EA1t \u0111\u1ED9ng 1.4: T\u1EBF \u0111\xE0n Ch\xFAc ph\xFAc &
+      Nguy\u1EC1n r\u1EE7a"
+    Speaker: "Ph\xE1p S\u01B0"
+    Text: "B\xECnh th\u01B0\u1EDDng h\u01A1i ngh\u1ECBch t\xED th\xF4i ch\u1EE9 l\xFAc
+      n\xE0y tr\u1EABm c\u1EF1c k\u1EF3 nghi\xEAm t\xFAc! C\u1EA7u xin th\u1EA7n
+      linh ban ph\xE1t \xE1nh s\xE1ng d\u1EABn l\u1ED1i!"
+    AnimationNote: "Hai tay ch\u1EAFp tr\u01B0\u1EDBc ng\u1EF1c th\xE0nh t\xE2m c\xFAi
+      \u0111\u1EA7u, \xE1o cho\xE0ng kh\u1EBD lay \u0111\u1ED9ng trong lu\u1ED3ng
+      gi\xF3 ma thu\u1EADt thanh t\u1ECBnh."
+    IsPlayer: 1
+  - ID: SC_29
+    Category: "Ho\u1EA1t \u0111\u1ED9ng Nh\xE1nh"
+    Context: "Ho\u1EA1t \u0111\u1ED9ng 1.4: T\u1EBF \u0111\xE0n Ch\xFAc ph\xFAc &
+      Nguy\u1EC1n r\u1EE7a"
+    Speaker: "Th\xE1nh V\u1EADt"
+    Text: "Tr\u1EDDi xanh th\u1EA5u t\u1ECF l\xF2ng th\xE0nh! C\u1ED9t s\xE1ng thi\xEAn
+      gi\u1EDBi gi\xE1ng h\u1EA1, ban t\u1EB7ng L\u1EDDi Ch\xFAc Ph\xFAc v\u0129nh
+      c\u1EEDu: [N\u1ED9i dung Buff]!"
+    AnimationNote: "C\u1ED9t \xE1nh s\xE1ng tr\u1EAFng tinh khi\u1EBFt r\u1ECDi th\u1EB3ng
+      t\u1EEB tr\u1EA7n hang xu\u1ED1ng, nh\u1EEFng c\xE1nh hoa \xE1nh s\xE1ng l\u01A1
+      l\u1EEDng r\u01A1i nh\u1EB9 nh\xE0ng."
+    IsPlayer: 0
+  - ID: SC_30
+    Category: "Ho\u1EA1t \u0111\u1ED9ng Nh\xE1nh"
+    Context: "Ho\u1EA1t \u0111\u1ED9ng 1.4: T\u1EBF \u0111\xE0n Ch\xFAc ph\xFAc &
+      Nguy\u1EC1n r\u1EE7a"
+    Speaker: "Ph\xE1p S\u01B0"
+    Text: "C\u1EA3m t\u1EA1 \u0111\u1EA5ng t\u1ED1i cao! N\u0103ng l\u01B0\u1EE3ng
+      d\xE2ng tr\xE0o kh\u1EAFp kinh m\u1EA1ch, wave t\u1EDBi ta s\u1EBD thanh t\u1EA9y
+      s\u1EA1ch b\xF3ng l\u0169 qu\u1EF7 d\u1EEF!"
+    AnimationNote: "Dang r\u1ED9ng hai tay \u0111\xF3n nh\u1EADn h\xE0o quang, \xE1nh
+      m\u1EAFt ki\xEAn \u0111\u1ECBnh r\u1EA1ng ng\u1EDDi, th\u1EA7n th\xE1i uy nghi\xEAm
+      nh\u01B0 \u0111\u1EA5ng c\u1EE9u th\u1EBF."
+    IsPlayer: 1
+  - ID: SC_31
+    Category: "Ho\u1EA1t \u0111\u1ED9ng Nh\xE1nh"
+    Context: "Ho\u1EA1t \u0111\u1ED9ng 1.4: T\u1EBF \u0111\xE0n Ch\xFAc ph\xFAc &
+      Nguy\u1EC1n r\u1EE7a"
+    Speaker: "Th\xE1nh V\u1EADt"
+    Text: "Nguy r\u1ED3i! T\u1EBF \u0111\xE0n b\u1ECB v\u1EA5y b\u1EA9n b\u1EDFi
+      t\xE0 kh\xED c\u1ED5 x\u01B0a, L\u1EDDi Nguy\u1EC1n H\u1EAFc \xC1m \u0111\xE3
+      gi\xE1ng xu\u1ED1ng: [N\u1ED9i dung Debuff]!"
+    AnimationNote: "T\u1EBF \u0111\xE0n chuy\u1EC3n sang m\xE0u \u0111\u1ECF m\xE1u
+      r\u1EF1c l\u1EEDa, kh\xF3i \u0111en b\u1ED1c l\xEAn cu\u1ED3n cu\u1ED9n, s\u1EA5m
+      s\xE9t t\xEDm x\xE9 to\u1EA1c kh\xF4ng gian."
+    IsPlayer: 0
+  - ID: SC_32
+    Category: "Ho\u1EA1t \u0111\u1ED9ng Nh\xE1nh"
+    Context: "Ho\u1EA1t \u0111\u1ED9ng 1.4: T\u1EBF \u0111\xE0n Ch\xFAc ph\xFAc &
+      Nguy\u1EC1n r\u1EE7a"
+    Speaker: "Ph\xE1p S\u01B0"
+    Text: "Tr\u1EDDi ph\u1EA1t th\u1EADt r\u1ED3i sao?! Ng\u01B0\u1EDDi ta \u0111i
+      tu \u0111\u1EAFc \u0111\u1EA1o c\xF2n tr\u1EABm kh\u1EA5n v\xE1i l\u1EA1i r\u01B0\u1EDBc
+      h\u1ECDa v\xE0o th\xE2n! \u0110\u1EAFng l\xF2ng th\u1EF1c s\u1EF1!"
+    AnimationNote: "Qu\u1EF3 s\u1EE5p xu\u1ED1ng \u0111\u1EA5t, hai tay \xF4m tr\xE1n
+      run r\u1EA9y, sau l\u01B0ng hi\u1EC7n b\xF3ng ma h\u1EAFc \xE1m \u0111\xE8
+      n\u1EB7ng \u0111\xF4i vai."
+    IsPlayer: 1
+  - ID: SC_33
+    Category: "S\u1EF1 ki\u1EC7n Nh\xE1nh"
+    Context: "3. Nh\xE1nh 2: S\u1EF1 ki\u1EC7n C\xE1 c\u01B0\u1EE3c"
+    Speaker: "Th\xE1nh V\u1EADt"
+    Text: "\xCA b\u1EA1n hi\u1EC1n, ch\u01A1i an to\xE0n ch\xE1n l\u1EAFm! B\xEAn
+      kia c\xF3 s\u1EDBi \u0111\u1EA5u th\xFA ma thu\u1EADt, c\u01B0\u1EE3c t\u1ED1i
+      thi\u1EC3u 10 l\xF5i th\u1EED v\u1EADn may kh\xF4ng?"
+    AnimationNote: "Nh\xE1y m\u1EAFt tinh qu\xE1i, bay l\u01B0\u1EE3n v\xF2ng quanh,
+      h\xF3a th\xE2n th\xE0nh chi\u1EBFc c\xE2n ti\u1EC3u ly ma thu\u1EADt c\xE2n
+      \u0111o \u0111ong \u0111\u1EBFm."
+    IsPlayer: 0
+  - ID: SC_34
+    Category: "S\u1EF1 ki\u1EC7n Nh\xE1nh"
+    Context: "3. Nh\xE1nh 2: S\u1EF1 ki\u1EC7n C\xE1 c\u01B0\u1EE3c"
+    Speaker: "Ph\xE1p S\u01B0"
+    Text: "L\u1EA1i t\xEDnh d\u1EE5 tr\u1EABm v\xE0o con \u0111\u01B0\u1EDDng \u0111\u1ECF
+      \u0111en \xE0? C\u01A1 m\xE0 c\u01B0\u1EE3c th\u1EAFng \u0111\u01B0\u1EE3c
+      g\xEC ngon kh\xF4ng? N\xF3i nghe xem n\xE0o!"
+    AnimationNote: "Nheo m\u1EAFt nghi ng\u1EDD, tay xoa c\u1EB1m suy ngh\u0129,
+      hai tai chibi gi\u1EADt gi\u1EADt t\xF2 m\xF2 \u0111\u1EA7y ph\u1EA5n kh\xEDch."
+    IsPlayer: 1
+  - ID: SC_35
+    Category: "S\u1EF1 ki\u1EC7n Nh\xE1nh"
+    Context: "3. Nh\xE1nh 2: S\u1EF1 ki\u1EC7n C\xE1 c\u01B0\u1EE3c"
+    Speaker: "Th\xE1nh V\u1EADt"
+    Text: "C\u01B0\u1EE3c c\xE0ng nhi\u1EC1u l\xF5i t\u1EC9 l\u1EC7 rinh Buff Hi\u1EBFm
+      c\xE0ng cao! Th\u1EAFng th\xEC bay n\xF3c nh\xE0, c\xF2n thua th\xEC... nh\u1EADn
+      Debuff b\u1EF1a nha!"
+    AnimationNote: "B\xF9ng n\u1ED5 hai ng\u1ECDn l\u1EEDa xanh \u0111\u1ECF tr\xEAn
+      hai tay, nhe r\u0103ng c\u01B0\u1EDDi nham hi\u1EC3m k\xEDch th\xEDch m\xE1u
+      li\u1EC1u c\u1EE7a ng\u01B0\u1EDDi ch\u01A1i."
+    IsPlayer: 0
+  - ID: SC_36
+    Category: "S\u1EF1 ki\u1EC7n Nh\xE1nh"
+    Context: "3. Nh\xE1nh 2: S\u1EF1 ki\u1EC7n C\xE1 c\u01B0\u1EE3c"
+    Speaker: "Ph\xE1p S\u01B0"
+    Text: "Ng\u01B0\u1EDDi kh\xF4ng ch\u01A1i l\xE0 ng\u01B0\u1EDDi kh\xF4ng bao
+      gi\u1EDD th\u1EAFng! Ch\u1ED1t \u0111\u01A1n, \u0111\u1EB7t lu\xF4n 20 l\xF5i
+      v\xE0o c\u1EEDa r\u1ED3ng l\u1EEDa! T\u1ED5 ti\xEAn \u0111\u1ED9 con!"
+    AnimationNote: "M\u1EAFt b\u1ED1c h\u1ECFa quy\u1EBFt t\xE2m, \u0111\u1EADp m\u1EA1nh
+      n\u1EAFm \u0111\u1EA5m v\xE0o l\xF2ng b\xE0n tay, d\u1ED1c c\u1EA1n t\xFAi
+      l\xF5i n\u0103ng l\u01B0\u1EE3ng n\xE9m v\xE0o b\xE0n c\u01B0\u1EE3c."
+    IsPlayer: 1
+  - ID: SC_37
+    Category: "S\u1EF1 ki\u1EC7n Nh\xE1nh"
+    Context: "3. Nh\xE1nh 2: S\u1EF1 ki\u1EC7n C\xE1 c\u01B0\u1EE3c"
+    Speaker: "Th\xE1nh V\u1EADt"
+    Text: "H\xFA h\xE9t vang d\u1ED9i! C\u1EEDa r\u1ED3ng l\u1EEDa \u0111\u1EA1i
+      th\u1EAFng \xE1p \u0111\u1EA3o! B\u1EA1n tr\xFAng c\u01B0\u1EE3c c\u1EF1c \u0111\u1EADm,
+      h\xFAp tr\u1ECDn si\xEAu ph\u1EA9m: [N\u1ED9i dung Buff]!"
+    AnimationNote: "Nh\u1EA3y m\xFAa \u0103n m\u1EEBng \u0111i\xEAn cu\u1ED3ng, ph\xE1o
+      kim tuy\u1EBFn b\u1EAFn tung t\xF3e, icon t\xFAi ti\u1EC1n v\xE0ng r\u01A1i
+      l\u1ED9p \u0111\u1ED9p nh\u01B0 m\u01B0a."
+    IsPlayer: 0
+  - ID: SC_38
+    Category: "S\u1EF1 ki\u1EC7n Nh\xE1nh"
+    Context: "3. Nh\xE1nh 2: S\u1EF1 ki\u1EC7n C\xE1 c\u01B0\u1EE3c"
+    Speaker: "Ph\xE1p S\u01B0"
+    Text: "G\xE1y to l\xEAn anh em \u01A1i! Tay t\u1ED5 c\u1EDD b\u1EA1c l\xE0 \u0111\xE2y
+      ch\u1EE9 \u0111\xE2u! C\xF3 [N\u1ED9i dung Buff] th\xEC ch\u1EA5p c\u1EA3 h\u1ECD
+      nh\xE0 qu\xE1i wave sau lu\xF4n!"
+    AnimationNote: "Vung g\u1EADy ch\u1EC9 tay l\xEAn tr\u1EDDi m\xFAa may ng\u1EA1o
+      ngh\u1EC5, c\u01B0\u1EDDi ha h\u1EA3 rung c\u1EA3 hang \u0111\u1ED9ng, phong
+      th\xE1i b\u1EA5t b\u1EA1i."
+    IsPlayer: 1
+  - ID: SC_39
+    Category: "S\u1EF1 ki\u1EC7n Nh\xE1nh"
+    Context: "3. Nh\xE1nh 2: S\u1EF1 ki\u1EC7n C\xE1 c\u01B0\u1EE3c"
+    Speaker: "Th\xE1nh V\u1EADt"
+    Text: "Toang r\u1ED3i \xF4ng gi\xE1o \u01A1i! C\u1EEDa r\u1ED3ng l\u1EEDa b\u1ECB
+      l\u1EADt k\xE8o ph\xFAt 89! M\u1EA5t s\u1EA1ch l\xF5i c\u01B0\u1EE3c l\u1EA1i
+      c\xF2n g\xE1nh th\xEAm: [N\u1ED9i dung Debuff]!"
+    AnimationNote: "H\xF3a th\xE0nh m\xE0u \u0111en tr\u1EAFng \u1EA3m \u0111\u1EA1m,
+      gi\u01A1 bi\u1EC3n b\xE1o 'Thua Tr\u1EAFng', ph\xE1t ti\u1EBFng c\xF2i xe c\u1EA5p
+      c\u1EE9u '\xE8n en \xE8n en'."
+    IsPlayer: 0
+  - ID: SC_40
+    Category: "S\u1EF1 ki\u1EC7n Nh\xE1nh"
+    Context: "3. Nh\xE1nh 2: S\u1EF1 ki\u1EC7n C\xE1 c\u01B0\u1EE3c"
+    Speaker: "Ph\xE1p S\u01B0"
+    Text: "\u1EE6a sao k\u1EF3 z\u1EE3?! \u0110\xFAng l\xE0 'c\xF2n th\u1EDF l\xE0
+      c\xF2n g\u1EE1' m\xE0 g\u1EE1 h\u1ED3i th\u1EA5y h\u1EBFt th\u1EDF lu\xF4n!
+      Ra \u0111\xEA \u1EDF th\u1EADt r\u1ED3i b\xE0 con \u01A1i!"
+    AnimationNote: "Ng\xE3 qu\u1EF5 \u0111\u1EADp \u0111\u1EA7u xu\u1ED1ng \u0111\u1EA5t,
+      hai ch\xE2n \u0111\u1EA1p lo\u1EA1n x\u1EA1 \u0103n v\u1EA1, linh h\u1ED3n
+      chibi h\xF3a m\xE2y bay th\u1EB3ng l\xEAn tr\u1EA7n hang."
+    IsPlayer: 1
+  - ID: SC_41
+    Category: "M\u1EDF \u0111\u1EA7u Trong Wave"
+    Context: "4. Banner Wave Chi\u1EBFn \u0110\u1EA5u: \u0110\u1ED9i h\xECnh Qu\xE1i
+      Th\u01B0\u1EDDng"
+    Speaker: "Th\xE1nh V\u1EADt"
+    Text: "C\u1EA3nh b\xE1o qu\xE1i v\u1EADt! \u0110\u1ED9i h\xECnh 5 qu\xE1i chia
+      2 h\xE0ng \u0111ang \xE1n ng\u1EEF! H\xE0ng tr\u01B0\u1EDBc che ch\u1EAFn cho
+      h\xE0ng sau, ph\u1EA3i d\u1EE9t \u0111i\u1EC3m h\xE0ng tr\u01B0\u1EDBc m\u1EDBi
+      \u0111\xE1nh \u0111\u01B0\u1EE3c h\xE0ng sau \u0111\u1EA5y!"
+    AnimationNote: "Lia camera sang ph\u1EA3i \u0111\u1EB7t t\xE2m gi\u1EEFa s\xE2n;
+      qu\xE9t vi\u1EC1n \u0111\u1ECF 2 qu\xE1i h\xE0ng tr\u01B0\u1EDBc c\u1EA3nh
+      b\xE1o r\xE0o c\u1EA3n."
+    IsPlayer: 0
+  - ID: SC_42
+    Category: "M\u1EDF \u0111\u1EA7u Trong Wave"
+    Context: "4. Banner Wave Chi\u1EBFn \u0110\u1EA5u: \u0110\u1ED9i h\xECnh Qu\xE1i
+      Th\u01B0\u1EDDng"
+    Speaker: "Ph\xE1p S\u01B0"
+    Text: "R\xF5 nh\u01B0 ban ng\xE0y! Match \u0111\xE1 ch\u01B0\u1EDFng ngay l\u1EADp
+      t\u1EE9c, t\u1ED1n 5 mana m\u1ED7i ph\xE1t. H\u1EBFt mana tr\u1EABm b\u1EA5m
+      Skip \u0111\u1ED5i l\u01B0\u1EE3t li\u1EC1n, chu\u1EA9n b\u1ECB ngh\xEAnh chi\u1EBFn!"
+    AnimationNote: "Th\u1EE7 th\u1EBF tr\u01B0\u1EE3ng ph\xE9p, m\u1EAFt b\u1ED1c
+      l\u1EEDa quy\u1EBFt t\xE2m; Banner 'B\u1EAFt \u0111\u1EA7u' s\xE1ng r\u1EF1c,
+      b\xE0n Match Stone tr\u01B0\u1EE3t l\xEAn."
+    IsPlayer: 1
+  - ID: SC_43
+    Category: "M\u1EDF \u0111\u1EA7u Trong Wave"
+    Context: "5. Banner Wave Chi\u1EBFn \u0110\u1EA5u: Ch\u1EA1m tr\xE1n Boss Wave"
+    Speaker: "Th\xE1nh V\u1EADt"
+    Text: "\xC1i ch\xE0 ch\xE0! Boss Wave xu\u1EA5t hi\u1EC7n t\u1ECFa aura t\xEDm
+      r\u1EF1c r\u1EE1! Coi ch\u1EEBng n\xF3 d\xF9ng k\u1EF9 n\u0103ng s\xE1t th\u01B0\u01A1ng
+      l\u1EDBn v\xE0 c\xF3 h\u1ED7 tr\u1EE3 h\u1ED3i sinh qu\xE1i c\xF9ng h\u1EC7
+      ph\xEDa sau!"
+    AnimationNote: "Camera lia c\u1EADn c\u1EA3nh Boss Wave; hi\u1EC7u \u1EE9ng s\u1EA5m
+      s\xE9t ch\u1EDBp nh\xE1y \u0111e d\u1ECDa, c\xF2i b\xE1o \u0111\u1ED9ng kh\u1EA9n
+      c\u1EA5p."
+    IsPlayer: 0
+  - ID: SC_44
+    Category: "M\u1EDF \u0111\u1EA7u Trong Wave"
+    Context: "5. Banner Wave Chi\u1EBFn \u0110\u1EA5u: Ch\u1EA1m tr\xE1n Boss Wave"
+    Speaker: "Ph\xE1p S\u01B0"
+    Text: "C\u0103ng \u0111\u1EA5y nh\u01B0ng tr\u1EABm th\xEDch! T\u1EADp trung
+      h\u1ECFa l\u1EF1c h\u1EA1 g\u1EE5c h\xE0ng \u0111\u1EE1 \u0111\xF2n r\u1ED3i
+      d\u1ED3n combo ti\u1EC5n Boss v\u1EC1 v\u01B0\u1EDDn! B\u1EADt banner B\u1EAFt
+      \u0111\u1EA7u chi\u1EBFn n\xE0o!"
+    AnimationNote: "Vung g\u1EADy ma ph\xE1p v\u1EBD \u1EA5n ch\xFA uy l\u1EF1c;
+      chibi nghi\u1EBFn r\u0103ng t\u1EF1 tin; Banner 'B\u1EAFt \u0111\u1EA7u' b\xF9ng
+      ch\xE1y s\u1EB5n s\xE0ng v\xE0o tr\u1EADn."
+    IsPlayer: 1
+  - ID: SC_45
+    Category: "M\u1EDF \u0111\u1EA7u Trong Wave"
+    Context: "6. Banner Wave Chi\u1EBFn \u0110\u1EA5u: Ch\u1EA1m tr\xE1n Final Boss
+      (Tr\xF9m Cu\u1ED1i)"
+    Speaker: "Th\xE1nh V\u1EADt"
+    Text: "B\xC1O \u0110\u1ED8NG C\u1EA4P MAX! Tr\xF9m cu\u1ED1i Final Boss ng\u1EF1
+      tr\u1ECB chi\u1EBFn tr\u01B0\u1EDDng! L\u1EF1c chi\u1EBFn \xE1p \u0111\u1EA3o,
+      k\u1EF9 n\u0103ng t\u1ED1i th\u01B0\u1EE3ng h\u1EE7y di\u1EC7t to\xE0n s\xE0n
+      \u0111\u1EA5u!"
+    AnimationNote: "M\xE0n h\xECnh rung chuy\u1EC3n d\u1EEF d\u1ED9i, m\xE2y \u0111en
+      cu\u1ED9n tr\xE0o s\u1EA5m s\xE9t \u0111\u1ECF r\u1EF1c; Th\xE1nh V\u1EADt
+      d\u1EF1ng khi\xEAn b\u1EA3o h\u1ED9 run r\u1EA9y."
+    IsPlayer: 0
+  - ID: SC_46
+    Category: "M\u1EDF \u0111\u1EA7u Trong Wave"
+    Context: "6. Banner Wave Chi\u1EBFn \u0110\u1EA5u: Ch\u1EA1m tr\xE1n Final Boss
+      (Tr\xF9m Cu\u1ED1i)"
+    Speaker: "Ph\xE1p S\u01B0"
+    Text: "Tr\u1EADn chi\u1EBFn sinh t\u1EED l\xE0 \u0111\xE2y! Kh\xF4ng c\xF2n \u0111\u01B0\u1EDDng
+      lui n\u1EEFa, bung h\u1EBFt mana match \u0111\xE1 tuy\u1EC7t k\u1EF9 t\u1ED1i
+      th\u01B0\u1EE3ng! Quy\u1EBFt chi\u1EBFn t\u1EDBi c\xF9ng!"
+    AnimationNote: "To\xE0n th\xE2n b\u1ED1c ch\xE1y linh l\u1EF1c r\u1EF1c r\u1EE1;
+      ti\u1EBFng nh\u1EA1c chi\u1EBFn \u0111\u1EA5u ho\xE0nh tr\xE1ng vang d\u1ED9i;
+      Banner 'B\u1EAFt \u0111\u1EA7u' k\xEDch ho\u1EA1t v\xE0o tr\u1EADn."
+    IsPlayer: 1

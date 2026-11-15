@@ -190,6 +190,14 @@ public class SkillActive : MonoBehaviour
                 break;
         }
 
+        // Hiển thị tên Tuyệt Kỹ Chủ Động rực rỡ trên đầu người chơi
+        if (DamageTextManager.Instance != null && !string.IsNullOrEmpty(skillName))
+        {
+            Color elemColor = ElementalHelper.GetColor(element);
+            Vector3 textPos = player != null ? player.transform.position + Vector3.up * 2.6f : Vector3.up * 2.6f;
+            DamageTextManager.Instance.SpawnCustomText($"★ [{skillName}] ★", elemColor, textPos, 1.5f);
+        }
+
         // Báo cho Player tung animation tấn công
         if (player != null)
         {

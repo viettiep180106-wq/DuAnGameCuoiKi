@@ -162,6 +162,12 @@ public class MainSceneUIController : MonoBehaviour
             // Bắt đầu Wave 1 từ màn hình Lobby ban đầu
             GameManager.instance.StartNewWave(1);
         }
+        else if (GameManager.instance != null && GameManager.instance.CurrentState == GamePlayState.InterWaveReward)
+        {
+            // Chuyển sang wave tiếp theo sau khi thắng wave trước và nhấn [BẮT ĐẦU]
+            int nextStep = GameManager.instance.CurrentStep + 1;
+            GameManager.instance.StartNewWave(nextStep);
+        }
         else
         {
             // Trượt bàn cờ 6x6 lên vị trí chiến đấu và kích hoạt trận đấu Turn-based

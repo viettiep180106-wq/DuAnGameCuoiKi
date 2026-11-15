@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6a5fa8202e35df469e78669bf9efe4d, type: 3}
+  m_Name: Enemy_ChoSanDiaNguc
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDataSO
+  enemyType: 10
+  enemyName: "Ch\xF3 S\u0103n \u0110\u1ECBa Ng\u1EE5c"
+  element: 3
+  category: 0
+  role: 0
+  defaultRow: 1
+  maxHP: 160
+  atk: 50
+  def: 50
+  critRate: 0.15
+  critDmg: 1.5
+  speed: 0.55
+  attackCd: 2
+  reflect: 0
+  scale: 0.9
+  isBoss: 0
+  combatType: 0
+  attackRange: 0.85
+  activeSkillName: "C\u1EAFn X\xE9 R\u1EF1c L\u1EEDa"
+  skillMultiplier: 1.6
+  skillCdRound: 2
+  activeSkillDesc: "Nh\u1EA3y t\u1EDBi c\u1EAFn x\xE9 g\xE2y 160% ATK s\xE1t th\u01B0\u01A1ng
+    (38 ST)"
+  passiveSkillDesc: "T\u0103ng 10% T\u1EC9 l\u1EC7 ch\xED m\u1EA1ng khi m\u1EE5c
+    ti\xEAu c\xF3 HP > 50%"
+  normalAttackDesc: "C\xE0o c\u1EAFn c\u01A1 b\u1EA3n g\xE2y 100% ATK (24 ST)"
+  enemyPrefab: {fileID: 0}

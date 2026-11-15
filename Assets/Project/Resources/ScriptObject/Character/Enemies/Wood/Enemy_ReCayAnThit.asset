@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6a5fa8202e35df469e78669bf9efe4d, type: 3}
+  m_Name: Enemy_ReCayAnThit
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDataSO
+  enemyType: 6
+  enemyName: "R\u1EC5 C\xE2y \u0102n Th\u1ECBt"
+  element: 1
+  category: 1
+  role: 2
+  defaultRow: 0
+  maxHP: 1000
+  atk: 10
+  def: 100
+  critRate: 0.05
+  critDmg: 1.2
+  speed: 0.2
+  attackCd: 2
+  reflect: 0
+  scale: 1.2
+  isBoss: 1
+  combatType: 0
+  attackRange: 0.9
+  activeSkillName: "R\u1EC5 M\u1EB9 T\xE1i Sinh"
+  skillMultiplier: 1.3
+  skillCdRound: 3
+  activeSkillDesc: "H\u1ED3i sinh 1 \u0111\u1ED3ng minh v\u1EEBa t\u1EED tr\u1EADn
+    v\u1EDBi 30% Max HP; n\u1EBFu kh\xF4ng c\xF3 qu\xE1i ch\u1EBFt th\xEC h\u1ED3i
+    15% HP cho to\xE0n \u0111\u1ED9i"
+  passiveSkillDesc: "[H\xFAt M\xE1u Ma Thu\u1EADt] M\u1ED7i \u0111\xF2n \u0111\xE1nh
+    h\u1ED3i m\xE1u cho b\u1EA3n th\xE2n b\u1EB1ng 10% s\xE1t th\u01B0\u01A1ng g\xE2y
+    ra"
+  normalAttackDesc: "Qu\u1EA5t r\u1EC5 gai g\xF3c g\xE2y 100% ATK (60 ST)"
+  enemyPrefab: {fileID: 0}

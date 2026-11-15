@@ -172,25 +172,33 @@ public class EnemyController : MonoBehaviour
             }
         }
 
-        EnemyConfig config = EnemyStatsDatabase.GetScaledConfig(enemyType, currentLevel, diff);
-        enemy.InitializeStats(
-            enemyType,
-            config.Element,
-            config.HP,
-            config.ATK,
-            config.DEF,
-            config.Speed,
-            config.Reflect,
-            config.Scale,
-            config.AttackCd,
-            config.CombatType,
-            config.AttackRange,
-            config.Role,
-            config.SkillMultiplier,
-            config.SkillCdRound,
-            config.CritRate,
-            config.CritDmg
-        );
+        EnemyDataSO soData = EnemyDataSO.Get(enemyType);
+        if (soData != null)
+        {
+            enemy.InitializeFromSO(soData, currentLevel, diff);
+        }
+        else
+        {
+            EnemyConfig config = EnemyStatsDatabase.GetScaledConfig(enemyType, currentLevel, diff);
+            enemy.InitializeStats(
+                enemyType,
+                config.Element,
+                config.HP,
+                config.ATK,
+                config.DEF,
+                config.Speed,
+                config.Reflect,
+                config.Scale,
+                config.AttackCd,
+                config.CombatType,
+                config.AttackRange,
+                config.Role,
+                config.SkillMultiplier,
+                config.SkillCdRound,
+                config.CritRate,
+                config.CritDmg
+            );
+        }
 
         RegisterEnemy(enemy);
         enemy.row = assignedRow;

@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6a5fa8202e35df469e78669bf9efe4d, type: 3}
+  m_Name: Enemy_TinhLinhHoiMau
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDataSO
+  enemyType: 5
+  enemyName: "Tinh Linh H\u1ED3i M\xE1u"
+  element: 1
+  category: 0
+  role: 2
+  defaultRow: 0
+  maxHP: 320
+  atk: 20
+  def: 70
+  critRate: 0.05
+  critDmg: 1.2
+  speed: 0.25
+  attackCd: 2
+  reflect: 0
+  scale: 0.75
+  isBoss: 0
+  combatType: 1
+  attackRange: 3.5
+  activeSkillName: "M\u01B0a Ph\u01B0\u1EDBc L\xE0nh"
+  skillMultiplier: 1.15
+  skillCdRound: 2
+  activeSkillDesc: "Ni\u1EC7m ch\xFA h\u1ED3i ph\u1EE5c 15% Max HP cho to\xE0n b\u1ED9
+    \u0111\u1ED3ng minh c\xF2n s\u1ED1ng tr\xEAn s\xE2n"
+  passiveSkillDesc: "[H\u01B0\u01A1ng Th\u1EA3o M\u1ED9c] T\u0103ng 10% hi\u1EC7u
+    qu\u1EA3 h\u1ED3i m\xE1u c\u1EE7a b\u1EA3n th\xE2n"
+  normalAttackDesc: "Phun ph\u1EA5n hoa g\xE2y 100% ATK (10 ST)"
+  enemyPrefab: {fileID: 0}

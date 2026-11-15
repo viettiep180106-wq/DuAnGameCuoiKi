@@ -3,18 +3,34 @@ using TMPro;
 
 public class DamageTextManager : MonoBehaviour
 {
-    public static DamageTextManager Instance { get; private set; }
+    private static DamageTextManager _instance;
+    public static DamageTextManager Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = FindFirstObjectByType<DamageTextManager>();
+                if (_instance == null)
+                {
+                    GameObject go = new GameObject("DamageTextManager", typeof(DamageTextManager));
+                    _instance = go.GetComponent<DamageTextManager>();
+                }
+            }
+            return _instance;
+        }
+    }
 
     [SerializeField] private GameObject damageTextPrefab;
     private GameObject runtimeFallbackPrefab;
 
     private void Awake()
     {
-        if (Instance == null)
+        if (_instance == null)
         {
-            Instance = this;
+            _instance = this;
         }
-        else
+        else if (_instance != this)
         {
             Destroy(gameObject);
             return;
@@ -27,14 +43,22 @@ public class DamageTextManager : MonoBehaviour
     {
         if (damageTextPrefab != null) return;
 
-        // Tạo runtime prefab mẫu nếu người dùng chưa kịp kéo prefab trong Unity Inspector
+        // Tạo runtime prefab mẫu với font size và cấu hình hiển thị chuẩn xác
         runtimeFallbackPrefab = new GameObject("DamageTextItem_Runtime");
         runtimeFallbackPrefab.AddComponent<DamageTextItem>();
         var tmp = runtimeFallbackPrefab.AddComponent<TextMeshPro>();
-        tmp.fontSize = 5;
+        tmp.fontSize = 20;
         tmp.alignment = TextAlignmentOptions.Center;
         tmp.fontStyle = FontStyles.Bold;
-        tmp.sortingOrder = 50;
+        tmp.outlineWidth = 0.25f;
+        tmp.outlineColor = Color.black;
+        
+        var mr = runtimeFallbackPrefab.GetComponent<MeshRenderer>();
+        if (mr != null)
+        {
+            mr.sortingLayerName = "Default";
+            mr.sortingOrder = 50;
+        }
 
         runtimeFallbackPrefab.SetActive(false);
         damageTextPrefab = runtimeFallbackPrefab;
@@ -44,23 +68,32 @@ public class DamageTextManager : MonoBehaviour
     {
         if (damageTextPrefab == null) CreateFallbackPrefabIfNeeded();
 
-        GameObject obj = ObjectPoolingManager.Instance.Spawn(damageTextPrefab, worldPos, Quaternion.identity);
-        DamageTextItem item = obj.GetComponent<DamageTextItem>();
-        if (item != null)
+        // Đảm bảo Z luôn ở 985f (nổi bật trước nhân vật ở Z=990, an toàn trong camera farClipPlane)
+        Vector3 safePos = new Vector3(worldPos.x, worldPos.y, 985f);
+        GameObject obj = ObjectPoolingManager.Instance.Spawn(damageTextPrefab, safePos, Quaternion.identity);
+        if (obj != null)
         {
-            item.Show(damage, isCrit, element, worldPos);
+            DamageTextItem item = obj.GetComponent<DamageTextItem>();
+            if (item != null)
+            {
+                item.Show(damage, isCrit, element, safePos);
+            }
         }
     }
 
-    public void SpawnCustomText(string message, Color color, Vector3 worldPos, float scaleMultiplier = 1.2f)
+    public void SpawnCustomText(string message, Color color, Vector3 worldPos, float scaleMultiplier = 1.35f)
     {
         if (damageTextPrefab == null) CreateFallbackPrefabIfNeeded();
 
-        GameObject obj = ObjectPoolingManager.Instance.Spawn(damageTextPrefab, worldPos, Quaternion.identity);
-        DamageTextItem item = obj.GetComponent<DamageTextItem>();
-        if (item != null)
+        Vector3 safePos = new Vector3(worldPos.x, worldPos.y, 985f);
+        GameObject obj = ObjectPoolingManager.Instance.Spawn(damageTextPrefab, safePos, Quaternion.identity);
+        if (obj != null)
         {
-            item.ShowCustom(message, color, worldPos, scaleMultiplier);
+            DamageTextItem item = obj.GetComponent<DamageTextItem>();
+            if (item != null)
+            {
+                item.ShowCustom(message, color, safePos, scaleMultiplier);
+            }
         }
     }
 }

@@ -260,28 +260,38 @@ public class GameManager : MonoBehaviour
                 LevelManager.instance.OnStepEnd?.Invoke(step);
             }
 
-            if (step >= maxSteps)
+            void OnVictoryDialogueCompleted()
             {
-                // Vượt qua toàn bộ 10 Wave của Level 1 -> CHIẾN THẮNG!
-                WinGame(true);
+                if (step >= maxSteps)
+                {
+                    // Vượt qua toàn bộ Wave của màn chơi -> CHIẾN THẮNG MÀN CHƠI!
+                    WinGame(true);
+                }
+                else
+                {
+                    // Vượt qua Wave 1..9 -> Thưởng Lõi Năng Lượng & dừng lại chờ người chơi nhấn [BẮT ĐẦU]
+                    if (Player.Instance != null)
+                    {
+                        Player.Instance.AddEnergy(10);
+                    }
+
+                    SetState(GamePlayState.InterWaveReward);
+
+                    // Hiển thị nút CTA [BẮT ĐẦU] để người chơi chủ động bấm sang wave tiếp theo
+                    if (MainSceneUIController.Instance != null)
+                    {
+                        MainSceneUIController.Instance.ShowStartCombatButton();
+                    }
+                }
+            }
+
+            if (DialogueManager.Instance != null)
+            {
+                DialogueManager.Instance.PlayVictoryNarrative(step, OnVictoryDialogueCompleted);
             }
             else
             {
-                // Vượt qua Wave 1..9 -> Thưởng Lõi Năng Lượng & mở Wave tiếp theo
-                if (Player.Instance != null)
-                {
-                    Player.Instance.AddEnergy(10);
-                }
-
-                SetState(GamePlayState.InterWaveReward);
-
-                DOVirtual.DelayedCall(0.5f, () =>
-                {
-                    if (CurrentState != GamePlayState.GameOverWin && CurrentState != GamePlayState.GameOverLose)
-                    {
-                        StartNewWave(step + 1);
-                    }
-                });
+                OnVictoryDialogueCompleted();
             }
         }
 

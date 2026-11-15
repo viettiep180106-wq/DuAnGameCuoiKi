@@ -20,7 +20,9 @@ public class SkillWind : SkillPassive
 
     public override void Active()
     {
-        base.Active();
+        // Hủy toàn bộ timer cũ để lá chắn không tự động biến mất
+        transform.DOKill();
+        DOTween.Kill(gameObject.GetInstanceID());
 
         Player player = Player.Instance != null ? Player.Instance : FindFirstObjectByType<Player>();
         if (player == null)
@@ -31,7 +33,7 @@ public class SkillWind : SkillPassive
 
         // Vị trí hiệu ứng bao quanh Player
         transform.position = player.transform.position;
-        transform.localScale = Vector3.one * 0.5f;
+        transform.localScale = Vector3.one * 3.0f;
 
         int tier = Mathf.Max(1, (int)(skillValue / 3f));
         player.MetalShieldTier = Mathf.Max(player.MetalShieldTier, tier);
@@ -44,24 +46,17 @@ public class SkillWind : SkillPassive
         };
 
         float shieldAmount = player.MaxHealth * shieldPercent;
-        player.AddShield(shieldAmount);
 
         if (tier >= 3)
         {
             player.HasImmunityCrowdControl = true;
         }
 
-        // Hiển thị Pop-up số khiên hoàng kim rực rỡ trên đầu Player
-        if (DamageTextManager.Instance != null)
-        {
-            DamageTextManager.Instance.SpawnCustomText($"+{Mathf.RoundToInt(shieldAmount)} SHIELD", new Color(1f, 0.88f, 0.15f), player.transform.position + Vector3.up * 1.8f, 1.4f);
-        }
-
         // Sinh hạt hiệu ứng ma thuật Kim Cang
         EnemyBase.SpawnSkillVFX(player.transform.position, ElementType.Metal);
 
-        // Hiệu ứng Visual Khiên Kim Cang lấp lánh quanh người chơi
-        visualScale = 5.2f;
+        // Hiệu ứng Visual Khiên Kim Cang lấp lánh bao trọn người chơi (kích thước ~3.2 units)
+        visualScale = 3.2f;
         transform.localScale = Vector3.one * 1.5f;
         transform.DOScale(visualScale, 0.45f).SetEase(Ease.OutBack);
         var sr = GetComponent<SpriteRenderer>();
@@ -69,13 +64,11 @@ public class SkillWind : SkillPassive
         {
             sr.sortingLayerName = "Default";
             sr.sortingOrder = 30;
-            sr.color = new Color(1f, 0.92f, 0.35f, 0.90f);
-            sr.DOFade(0f, 0.6f).SetDelay(0.5f).OnComplete(DespawnSelf);
+            sr.color = new Color(1f, 0.92f, 0.35f, 0.75f); // Khiên mờ hoàng kim bảo vệ
         }
-        else
-        {
-            DOVirtual.DelayedCall(1.1f, DespawnSelf);
-        }
+
+        // Bàn giao Visual cho Player quản lý: duy trì bảo vệ và hiển thị text HP khiên, chỉ biến mất khi khiên về 0
+        player.AddShield(shieldAmount, gameObject);
     }
 
     private void DespawnSelf()

@@ -36,7 +36,7 @@ public class EnemyProjectile : MonoBehaviour, IPoolable
     public void OnSpawn()
     {
         _hasHit = false;
-        transform.localScale = Vector3.one * 2.8f;
+        transform.localScale = Vector3.one * 7.5f;
         if (_visualRenderer != null)
         {
             _visualRenderer.sortingLayerName = "Default";
@@ -46,7 +46,9 @@ public class EnemyProjectile : MonoBehaviour, IPoolable
         {
             _trailRenderer.Clear();
             _trailRenderer.enabled = true;
-            _trailRenderer.widthMultiplier = 1.2f;
+            _trailRenderer.widthMultiplier = 1.5f;
+            _trailRenderer.sortingLayerName = "Default";
+            _trailRenderer.sortingOrder = 31;
         }
     }
 

@@ -18,6 +18,7 @@ public class DamageTextItem : MonoBehaviour, IPoolable
 
     public void OnDespawn()
     {
+        CancelInvoke(nameof(DespawnSelf));
         transform.DOKill();
         if (textComponent != null) textComponent.DOKill();
     }
@@ -27,47 +28,65 @@ public class DamageTextItem : MonoBehaviour, IPoolable
         if (textComponent == null) textComponent = GetComponentInChildren<TMP_Text>();
         if (textComponent == null) return;
 
-        transform.position = worldPos + new Vector3(Random.Range(-0.3f, 0.3f), 0.5f, 0);
+        transform.position = new Vector3(worldPos.x + Random.Range(-0.35f, 0.35f), worldPos.y + 0.8f, 985f);
 
         int dmgInt = Mathf.RoundToInt(damage);
         if (isCrit)
         {
-            textComponent.text = $"CRIT! {dmgInt}";
-            textComponent.color = new Color(1f, 0.85f, 0.1f); // Vàng rực
+            textComponent.SetText("CRIT! -{0}", dmgInt);
+            textComponent.color = new Color(1f, 0.88f, 0.15f); // Vàng rực chí mạng
             transform.localScale = Vector3.one * 1.5f;
         }
         else
         {
-            textComponent.text = $"{dmgInt}";
+            textComponent.SetText("-{0}", dmgInt);
             textComponent.color = ElementalHelper.GetColor(element);
-            transform.localScale = Vector3.one;
+            transform.localScale = Vector3.one * 1.2f;
         }
 
         // Animation: Nảy lên và mờ dần
-        transform.DOMoveY(transform.position.y + 1.2f, 0.7f).SetEase(Ease.OutCubic);
+        transform.DOKill();
+        textComponent.DOKill();
         textComponent.alpha = 1f;
-        textComponent.DOFade(0f, 0.7f).SetEase(Ease.InQuad).OnComplete(() =>
-        {
-            ObjectPoolingManager.Instance.Despawn(gameObject);
-        });
+        transform.DOMoveY(transform.position.y + 1.8f, 0.85f).SetEase(Ease.OutCubic);
+        textComponent.DOFade(0f, 0.85f).SetDelay(0.25f).SetEase(Ease.InQuad).OnComplete(DespawnSelf);
+
+        CancelInvoke(nameof(DespawnSelf));
+        Invoke(nameof(DespawnSelf), 1.25f);
     }
 
-    public void ShowCustom(string message, Color color, Vector3 worldPos, float scaleMultiplier = 1.2f)
+    public void ShowCustom(string message, Color color, Vector3 worldPos, float scaleMultiplier = 1.35f)
     {
         if (textComponent == null) textComponent = GetComponentInChildren<TMP_Text>();
         if (textComponent == null) return;
 
-        transform.position = worldPos + new Vector3(0f, 1.2f, 0f);
+        transform.position = new Vector3(worldPos.x, worldPos.y + 1.6f, 985f);
         textComponent.text = message;
         textComponent.color = color;
         transform.localScale = Vector3.one * scaleMultiplier;
 
-        transform.DOMoveY(transform.position.y + 1.4f, 0.9f).SetEase(Ease.OutCubic);
+        transform.DOKill();
+        textComponent.DOKill();
         textComponent.alpha = 1f;
-        textComponent.DOFade(0f, 0.9f).SetDelay(0.2f).SetEase(Ease.InQuad).OnComplete(() =>
+        transform.DOMoveY(transform.position.y + 1.6f, 1.0f).SetEase(Ease.OutCubic);
+        textComponent.DOFade(0f, 1.0f).SetDelay(0.35f).SetEase(Ease.InQuad).OnComplete(DespawnSelf);
+
+        CancelInvoke(nameof(DespawnSelf));
+        Invoke(nameof(DespawnSelf), 1.45f);
+    }
+
+    private void DespawnSelf()
+    {
+        CancelInvoke(nameof(DespawnSelf));
+        transform.DOKill();
+        if (textComponent != null) textComponent.DOKill();
+        if (gameObject.activeInHierarchy)
         {
-            ObjectPoolingManager.Instance.Despawn(gameObject);
-        });
+            if (ObjectPoolingManager.Instance != null)
+                ObjectPoolingManager.Instance.Despawn(gameObject);
+            else
+                Destroy(gameObject);
+        }
     }
 }
 

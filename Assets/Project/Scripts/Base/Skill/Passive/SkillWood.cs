@@ -48,8 +48,8 @@ public class SkillWood : SkillPassive
         // Sinh hạt hiệu ứng ma thuật Mộc Diệp
         EnemyBase.SpawnSkillVFX(player.transform.position, ElementType.Wood);
 
-        // Hiệu ứng Visual Mộc Quang xanh lá nở rộ quanh Player
-        visualScale = 5.0f;
+        // Hiệu ứng Visual Mộc Quang xanh lá nở rộ quanh Player (bao trọn cơ thể Player)
+        visualScale = 3.2f;
         transform.localScale = Vector3.one * 1.5f;
         transform.DOScale(visualScale, 0.45f).SetEase(Ease.OutBack);
         var sr = GetComponent<SpriteRenderer>();

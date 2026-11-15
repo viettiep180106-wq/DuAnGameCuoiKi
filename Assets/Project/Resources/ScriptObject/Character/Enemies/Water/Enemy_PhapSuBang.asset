@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6a5fa8202e35df469e78669bf9efe4d, type: 3}
+  m_Name: Enemy_PhapSuBang
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDataSO
+  enemyType: 26
+  enemyName: "Ph\xE1p S\u01B0 B\u0103ng"
+  element: 2
+  category: 0
+  role: 3
+  defaultRow: 1
+  maxHP: 240
+  atk: 40
+  def: 60
+  critRate: 0.1
+  critDmg: 1.4
+  speed: 0.3
+  attackCd: 2
+  reflect: 0
+  scale: 0.85
+  isBoss: 0
+  combatType: 1
+  attackRange: 3.8
+  activeSkillName: "M\u0169i B\u0103ng H\xE0n Gi\xE1"
+  skillMultiplier: 0.7
+  skillCdRound: 2
+  activeSkillDesc: "B\u1EAFn m\u0169i t\xEAn b\u0103ng g\xE2y 70% ATK s\xE1t th\u01B0\u01A1ng
+    (20 ST) + \u0110\xF3ng b\u0103ng 2 vi\xEAn ng\u1ECDc ng\u1EABu nhi\xEAn tr\xEAn
+    b\xE0n Match-3 trong 2 Round"
+  passiveSkillDesc: "T\u0103ng 10% s\xE1t th\u01B0\u01A1ng khi m\u1EE5c ti\xEAu d\xEDnh
+    hi\u1EC7u \u1EE9ng B\u0103ng"
+  normalAttackDesc: "B\u1EAFn v\u1EE5n b\u0103ng l\u1EA1nh gi\xE1 g\xE2y 100% ATK
+    (28 ST)"
+  enemyPrefab: {fileID: 0}

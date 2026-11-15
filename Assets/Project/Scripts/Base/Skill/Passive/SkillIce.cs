@@ -23,6 +23,13 @@ public class SkillIce : SkillPassive
     public override void Active()
     {
         base.Active();
+        var sr = GetComponent<SpriteRenderer>();
+        if (sr != null)
+        {
+            sr.color = new Color(0.2f, 0.8f, 1f, 0.4f);
+            sr.transform.localScale = Vector3.one * 1.5f;
+            sr.DOFade(0f, 0.45f);
+        }
         StartCoroutine(FireIceRainRoutine());
     }
 
@@ -89,15 +96,69 @@ public class SkillIce : SkillPassive
         DespawnSelf();
     }
 
+    private static GameObject _iceBoltPrefab;
+
     private void StrikeIceBolt(EnemyBase enemy, Vector3 pos, float dmgRatio, float slowChance, float freezeChance)
     {
         if (enemy == null || enemy.CurrentHP <= 0) return;
 
-        var (rawDmg, isCrit) = CalculateDamage(dmgRatio);
-        enemy.TakeDamage(rawDmg, isCrit, GetElementType());
-        EnemyBase.SpawnSkillVFX(pos, ElementType.Water);
+        if (_iceBoltPrefab == null)
+        {
+            _iceBoltPrefab = Resources.Load<GameObject>("Prefab/Base/Skill/Passive/IceBolt");
+        }
 
-        // Hiệu ứng khống chế theo Tier GDD
+        // Điểm thả từ trên trời cao (10.5 units) lao sấm sét xuống quái
+        Vector3 startSkyPos = pos + Vector3.up * 10.5f;
+
+        GameObject bolt = null;
+        if (ObjectPoolingManager.Instance != null && _iceBoltPrefab != null)
+        {
+            bolt = ObjectPoolingManager.Instance.Spawn(_iceBoltPrefab, startSkyPos, Quaternion.identity);
+        }
+        else if (_iceBoltPrefab != null)
+        {
+            bolt = Instantiate(_iceBoltPrefab, startSkyPos, Quaternion.identity);
+        }
+
+        float fallDuration = 0.10f;
+        if (bolt != null)
+        {
+            var tr = bolt.GetComponent<TrailRenderer>();
+            if (tr != null) tr.Clear();
+
+            bolt.transform.DOMove(pos, fallDuration).SetEase(Ease.InQuad).OnComplete(() =>
+            {
+                if (ObjectPoolingManager.Instance != null)
+                {
+                    ObjectPoolingManager.Instance.Despawn(bolt);
+                }
+                else
+                {
+                    Destroy(bolt);
+                }
+
+                if (enemy != null && enemy.CurrentHP > 0)
+                {
+                    var (rawDmg, isCrit) = CalculateDamage(dmgRatio);
+                    enemy.TakeDamage(rawDmg, isCrit, GetElementType());
+                    EnemyBase.SpawnSkillVFX(pos, ElementType.Water);
+                    Camera.main?.transform.DOShakePosition(0.10f, 0.22f, 10, 90f, false, true);
+                    ApplyIceCrowdControl(enemy, slowChance, freezeChance);
+                }
+            });
+        }
+        else
+        {
+            var (rawDmg, isCrit) = CalculateDamage(dmgRatio);
+            enemy.TakeDamage(rawDmg, isCrit, GetElementType());
+            EnemyBase.SpawnSkillVFX(pos, ElementType.Water);
+            Camera.main?.transform.DOShakePosition(0.10f, 0.22f, 10, 90f, false, true);
+            ApplyIceCrowdControl(enemy, slowChance, freezeChance);
+        }
+    }
+
+    private void ApplyIceCrowdControl(EnemyBase enemy, float slowChance, float freezeChance)
+    {
         if (freezeChance > 0f && Random.value < freezeChance)
         {
             EffectPayLoad freezeEffect = new EffectPayLoad

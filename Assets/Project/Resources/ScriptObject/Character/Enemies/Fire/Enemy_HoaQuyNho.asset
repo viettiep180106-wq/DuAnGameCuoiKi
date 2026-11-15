@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6a5fa8202e35df469e78669bf9efe4d, type: 3}
+  m_Name: Enemy_HoaQuyNho
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDataSO
+  enemyType: 11
+  enemyName: "H\u1ECFa Qu\u1EF7 Nh\u1ECF"
+  element: 3
+  category: 0
+  role: 0
+  defaultRow: 1
+  maxHP: 160
+  atk: 50
+  def: 50
+  critRate: 0.15
+  critDmg: 1.5
+  speed: 0.25
+  attackCd: 2
+  reflect: 0
+  scale: 0.7
+  isBoss: 0
+  combatType: 0
+  attackRange: 0.85
+  activeSkillName: "C\u1EA7u L\u1EEDa H\u1EAFc \xC1m"
+  skillMultiplier: 1.8
+  skillCdRound: 2
+  activeSkillDesc: "B\u1EAFn c\u1EA7u l\u1EEDa t\u1EA7m xa g\xE2y 180% ATK s\xE1t
+    th\u01B0\u01A1ng (54 ST)"
+  passiveSkillDesc: "T\u0103ng 15% ATK nh\u01B0ng gi\u1EA3m 20% DEF b\u1EA3n th\xE2n"
+  normalAttackDesc: "B\u1EAFn tia nhi\u1EC7t g\xE2y 100% ATK (30 ST)"
+  enemyPrefab: {fileID: 0}

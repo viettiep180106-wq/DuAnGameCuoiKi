@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6a5fa8202e35df469e78669bf9efe4d, type: 3}
+  m_Name: Enemy_QuyRung
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDataSO
+  enemyType: 2
+  enemyName: "Qu\u1EF7 R\u1EEBng"
+  element: 1
+  category: 0
+  role: 2
+  defaultRow: 0
+  maxHP: 320
+  atk: 20
+  def: 70
+  critRate: 0.05
+  critDmg: 1.2
+  speed: 0.35
+  attackCd: 2
+  reflect: 0
+  scale: 0.85
+  isBoss: 0
+  combatType: 0
+  attackRange: 0.85
+  activeSkillName: "Ti\u1EBFng G\u1EA7m T\u1EF1 Nhi\xEAn"
+  skillMultiplier: 1.25
+  skillCdRound: 2
+  activeSkillDesc: "H\xF4 vang t\u0103ng 25% ATK cho to\xE0n b\u1ED9 qu\xE1i \u0111\u1ED3ng
+    minh trong 2 Round"
+  passiveSkillDesc: "T\u0103ng 10% t\u1ED1c \u0111\u1ED9 h\xE0nh \u0111\u1ED9ng cho
+    b\u1EA3n th\xE2n qu\xE1i"
+  normalAttackDesc: "C\xE0o m\xF3ng g\u1ED7 g\xE2y 100% ATK (20 ST)"
+  enemyPrefab: {fileID: 0}

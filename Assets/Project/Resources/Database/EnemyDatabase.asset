@@ -1,0 +1,870 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18bb3683c3a490b48b655f8477e7d8ea, type: 3}
+  m_Name: EnemyDatabase
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDatabaseSO
+  enemies:
+  - type: 9
+    name: "Tinh Linh L\u1EEDa"
+    element: 3
+    role: 0
+    defaultRow: 1
+    hp: 160
+    atk: 50
+    def: 50
+    critRate: 0.1
+    critDmg: 1.5
+    activeSkillName: "Tia L\u1EEDa \u0110\u1ECF"
+    skillMultiplier: 1.5
+    skillCdRound: 2
+    activeSkillDesc: "B\u1EAFn tia l\u1EEDa g\xE2y 150% ATK s\xE1t th\u01B0\u01A1ng"
+    passiveSkillDesc: "\u0110\xF2n \u0111\xE1nh t\u0103ng th\xEAm 5% s\xE1t th\u01B0\u01A1ng
+      khi m\u1EE5c ti\xEAu thu\u1ED9c h\u1EC7 M\u1ED9c"
+    speed: 0.4
+    attackCd: 2
+    reflect: 0
+    scale: 0.85
+    isBoss: 0
+    combatType: 1
+    attackRange: 3.8
+  - type: 10
+    name: "Ch\xF3 S\u0103n \u0110\u1ECBa Ng\u1EE5c"
+    element: 3
+    role: 0
+    defaultRow: 1
+    hp: 160
+    atk: 50
+    def: 50
+    critRate: 0.15
+    critDmg: 1.5
+    activeSkillName: "C\u1EAFn X\xE9 R\u1EF1c L\u1EEDa"
+    skillMultiplier: 1.6
+    skillCdRound: 2
+    activeSkillDesc: "Nh\u1EA3y t\u1EDBi c\u1EAFn x\xE9 g\xE2y 160% ATK s\xE1t th\u01B0\u01A1ng"
+    passiveSkillDesc: "T\u0103ng 10% T\u1EC9 l\u1EC7 ch\xED m\u1EA1ng khi m\u1EE5c
+      ti\xEAu c\xF3 HP > 50%"
+    speed: 0.55
+    attackCd: 2
+    reflect: 0
+    scale: 0.9
+    isBoss: 0
+    combatType: 0
+    attackRange: 0.85
+  - type: 11
+    name: "H\u1ECFa Qu\u1EF7 Nh\u1ECF"
+    element: 3
+    role: 0
+    defaultRow: 1
+    hp: 160
+    atk: 50
+    def: 50
+    critRate: 0.15
+    critDmg: 1.5
+    activeSkillName: "C\u1EA7u L\u1EEDa H\u1EAFc \xC1m"
+    skillMultiplier: 1.8
+    skillCdRound: 2
+    activeSkillDesc: "B\u1EAFn c\u1EA7u l\u1EEDa t\u1EA7m xa g\xE2y 180% ATK s\xE1t
+      th\u01B0\u01A1ng"
+    passiveSkillDesc: "T\u0103ng 15% ATK nh\u01B0ng gi\u1EA3m 20% DEF b\u1EA3n th\xE2n"
+    speed: 0.25
+    attackCd: 2
+    reflect: 0
+    scale: 0.7
+    isBoss: 0
+    combatType: 0
+    attackRange: 0.85
+  - type: 12
+    name: "Ph\xF9 Th\u1EE7y L\u1EEDa"
+    element: 3
+    role: 0
+    defaultRow: 1
+    hp: 160
+    atk: 50
+    def: 50
+    critRate: 0.2
+    critDmg: 1.5
+    activeSkillName: "C\u1ED9t L\u1EEDa Thi\xEAu R\u1EE5i"
+    skillMultiplier: 2
+    skillCdRound: 3
+    activeSkillDesc: "Tri\u1EC7u h\u1ED3i c\u1ED9t l\u1EEDa thi\xEAu \u0111\u1ED1t
+      g\xE2y 200% ATK s\xE1t th\u01B0\u01A1ng"
+    passiveSkillDesc: "S\xE1t th\u01B0\u01A1ng k\u1EF9 n\u0103ng t\u0103ng th\xEAm
+      10% n\u1EBFu m\u1EE5c ti\xEAu \u0111ang d\xEDnh hi\u1EC7u \u1EE9ng b\u1EA5t
+      l\u1EE3i"
+    speed: 0.15
+    attackCd: 2
+    reflect: 0
+    scale: 0.85
+    isBoss: 0
+    combatType: 1
+    attackRange: 3.8
+  - type: 13
+    name: "Chi\u1EBFn Binh Dung Nham"
+    element: 3
+    role: 0
+    defaultRow: 1
+    hp: 600
+    atk: 100
+    def: 60
+    critRate: 0.15
+    critDmg: 1.5
+    activeSkillName: "B\u1ED5 B\xFAa Dung Nham"
+    skillMultiplier: 2.2
+    skillCdRound: 2
+    activeSkillDesc: "N\u1EC7n b\xFAa l\u1EEDa g\xE2y 220% ATK s\xE1t th\u01B0\u01A1ng
+      + Thi\xEAu \u0111\u1ED1t r\xFAt 2% Max HP/Round trong 2 Round"
+    passiveSkillDesc: "Gi\u1EA3m 15% s\xE1t th\u01B0\u01A1ng nh\u1EADn v\xE0o t\u1EEB
+      c\xE1c \u0111\xF2n \u0111\xE1nh th\u01B0\u1EDDng"
+    speed: 0.25
+    attackCd: 2
+    reflect: 0
+    scale: 1.3
+    isBoss: 1
+    combatType: 0
+    attackRange: 1.2
+  - type: 14
+    name: "H\u1ECFa Long Nh\u1ECF"
+    element: 3
+    role: 0
+    defaultRow: 1
+    hp: 600
+    atk: 100
+    def: 60
+    critRate: 0.2
+    critDmg: 1.8
+    activeSkillName: "H\u01A1i Th\u1EDF R\u1ED3ng L\u1EEDa"
+    skillMultiplier: 2.5
+    skillCdRound: 3
+    activeSkillDesc: "Phun l\u1EEDa t\u1EA7m xa g\xE2y 250% ATK s\xE1t th\u01B0\u01A1ng
+      + N\u1ED5 di\u1EC7n r\u1ED9ng g\xE2y th\xEAm 5% s\xE1t th\u01B0\u01A1ng"
+    passiveSkillDesc: "T\u0103ng 10% ATK cho to\xE0n b\u1ED9 qu\xE1i \u0111\u1ED3ng
+      minh h\u1EC7 H\u1ECFa"
+    speed: 0.4
+    attackCd: 3
+    reflect: 0
+    scale: 1.4
+    isBoss: 1
+    combatType: 1
+    attackRange: 4
+  - type: 15
+    name: "H\u1ECFa Th\u1EA7n Di\u1EC7t Vong"
+    element: 3
+    role: 0
+    defaultRow: 1
+    hp: 5000
+    atk: 240
+    def: 60
+    critRate: 0.25
+    critDmg: 2
+    activeSkillName: "M\u01B0a Sao B\u0103ng T\u1ED1i Th\u01B0\u1EE3ng"
+    skillMultiplier: 3
+    skillCdRound: 3
+    activeSkillDesc: "Tri\u1EC7u h\u1ED3i m\u01B0a thi\xEAn th\u1EA1ch g\xE2y 300%
+      ATK s\xE1t th\u01B0\u01A1ng to\xE0n s\xE0n + Thi\xEAu \u0111\u1ED1t r\xFAt
+      3% HP/Round trong 3 Round"
+    passiveSkillDesc: "\u0110\xF2n \u0111\xE1nh th\u01B0\u1EDDng v\xE0 k\u1EF9 n\u0103ng
+      t\u1EF1 \u0111\u1ED9ng ph\xE1 h\u1EE7y 50% DEF c\u1EE7a Player su\u1ED1t tr\u1EADn
+      \u0111\u1EA5u"
+    speed: 0.25
+    attackCd: 2
+    reflect: 0
+    scale: 1.8
+    isBoss: 1
+    combatType: 1
+    attackRange: 4
+  - type: 30
+    name: "Golem Th\xE9p"
+    element: 0
+    role: 1
+    defaultRow: 0
+    hp: 400
+    atk: 30
+    def: 80
+    critRate: 0.05
+    critDmg: 1.2
+    activeSkillName: "Ph\xE1o \u0110\xE0i Kim Lo\u1EA1i"
+    skillMultiplier: 1
+    skillCdRound: 3
+    activeSkillDesc: "K\xEDch ho\u1EA1t gi\xE1p th\xE9p: Gi\u1EA3m 40% s\xE1t th\u01B0\u01A1ng
+      nh\u1EADn v\xE0o trong 2 Round"
+    passiveSkillDesc: "Mi\u1EC5n nhi\u1EC5m ho\xE0n to\xE0n v\u1EDBi hi\u1EC7u \u1EE9ng
+      Cho\xE1ng"
+    speed: 0.15
+    attackCd: 2
+    reflect: 0
+    scale: 1.1
+    isBoss: 0
+    combatType: 0
+    attackRange: 0.85
+  - type: 31
+    name: "S\xE1t Th\u1EE7 B\xF3ng T\u1ED1i"
+    element: 0
+    role: 0
+    defaultRow: 1
+    hp: 160
+    atk: 50
+    def: 50
+    critRate: 0.25
+    critDmg: 1.8
+    activeSkillName: "\xC1m S\xE1t B\u1EA5t Ng\u1EDD"
+    skillMultiplier: 1.8
+    skillCdRound: 2
+    activeSkillDesc: "\u0110\u1ED9t k\xEDch ch\xE9m nhanh g\xE2y 180% ATK s\xE1t
+      th\u01B0\u01A1ng, b\u1ECF qua 20% DEF m\u1EE5c ti\xEAu"
+    passiveSkillDesc: "T\u0103ng 15% T\u1EC9 l\u1EC7 ch\xED m\u1EA1ng khi t\u1EA5n
+      c\xF4ng Player"
+    speed: 0.4
+    attackCd: 2
+    reflect: 0
+    scale: 0.85
+    isBoss: 0
+    combatType: 0
+    attackRange: 0.85
+  - type: 32
+    name: "K\u1EF5 S\u0129 S\u1EAFt"
+    element: 0
+    role: 1
+    defaultRow: 1
+    hp: 400
+    atk: 30
+    def: 80
+    critRate: 0.05
+    critDmg: 1.2
+    activeSkillName: "L\xE1 Ch\u1EAFn M\xE1u \u1EA2o"
+    skillMultiplier: 1
+    skillCdRound: 3
+    activeSkillDesc: "T\u1EA1o l\xE1 ch\u1EAFn m\xE1u \u1EA3o (Shield) b\u1EB1ng
+      20% Max HP b\u1EA3n th\xE2n h\u1EA5p th\u1EE5 s\xE1t th\u01B0\u01A1ng trong
+      2 Round"
+    passiveSkillDesc: "T\u0103ng 10% DEF cho qu\xE1i \u0111\u1ED3ng minh \u0111\u1EE9ng
+      c\u1EA1nh \u1EDF H\xE0ng tr\u01B0\u1EDBc"
+    speed: 0.25
+    attackCd: 2
+    reflect: 0
+    scale: 1
+    isBoss: 0
+    combatType: 0
+    attackRange: 0.85
+  - type: 33
+    name: "Cung Th\u1EE7 Xuy\xEAn Gi\xE1p"
+    element: 0
+    role: 0
+    defaultRow: 1
+    hp: 160
+    atk: 50
+    def: 50
+    critRate: 0.15
+    critDmg: 1.5
+    activeSkillName: "M\u0169i T\xEAn Xuy\xEAn Th\u1EA5u"
+    skillMultiplier: 1.7
+    skillCdRound: 2
+    activeSkillDesc: "B\u1EAFn t\xEAn n\u0103ng l\u01B0\u1EE3ng t\u1EA7m xa g\xE2y
+      170% ATK s\xE1t th\u01B0\u01A1ng, b\u1ECF qua 30% gi\xE1p c\u1EE7a Player"
+    passiveSkillDesc: "T\u0103ng 10% t\u1EA7m b\u1EAFn v\xE0 \u0111\u1ED9 ch\xEDnh
+      x\xE1c \u0111\xF2n \u0111\xE1nh xa"
+    speed: 0.15
+    attackCd: 2
+    reflect: 0
+    scale: 0.85
+    isBoss: 0
+    combatType: 1
+    attackRange: 3.8
+  - type: 34
+    name: "C\u1ED7 M\xE1y Xay Th\u1ECBt"
+    element: 0
+    role: 1
+    defaultRow: 0
+    hp: 1200
+    atk: 40
+    def: 120
+    critRate: 0.3
+    critDmg: 2
+    activeSkillName: "Gi\xE1p Gai Ph\u1EA3n Ph\xE1o"
+    skillMultiplier: 1
+    skillCdRound: 3
+    activeSkillDesc: "K\xEDch ho\u1EA1t khi\xEAn ph\u1EA3n \u0111\xF2n trong 2 Round:
+      Gi\u1EA3m 30% s\xE1t th\u01B0\u01A1ng nh\u1EADn v\xE0o v\xE0 ph\u1EA3n l\u1EA1i
+      25% cho Player"
+    passiveSkillDesc: "\u0110\xF2n \u0111\xE1nh v\xE0 k\u1EF9 n\u0103ng t\u1EF1 \u0111\u1ED9ng
+      xuy\xEAn 50% DEF c\u1EE7a Player"
+    speed: 0.15
+    attackCd: 2
+    reflect: 0
+    scale: 1.4
+    isBoss: 1
+    combatType: 0
+    attackRange: 1.2
+  - type: 35
+    name: "B\u1EADc Th\u1EA7y S\xE1t Th\u1EE7"
+    element: 0
+    role: 0
+    defaultRow: 1
+    hp: 600
+    atk: 100
+    def: 60
+    critRate: 0.4
+    critDmg: 2
+    activeSkillName: "Tr\u1EA3m Huy\u1EBFt T\u1EED Th\u1EA7n"
+    skillMultiplier: 2.5
+    skillCdRound: 2
+    activeSkillDesc: "Ch\xE9m li\xEAn ho\xE0n g\xE2y 250% ATK s\xE1t th\u01B0\u01A1ng
+      + Ch\u1EA3y M\xE1u r\xFAt 2% Max HP/Round trong 3 Round"
+    passiveSkillDesc: "Khi HP xu\u1ED1ng d\u01B0\u1EDBi 30%, t\u0103ng 30% T\u1EC9
+      l\u1EC7 ch\xED m\u1EA1ng"
+    speed: 0.55
+    attackCd: 2
+    reflect: 0
+    scale: 1.2
+    isBoss: 1
+    combatType: 0
+    attackRange: 0.85
+  - type: 36
+    name: "C\u1ED7 M\xE1y V\u0129nh C\u1EEDu"
+    element: 0
+    role: 0
+    defaultRow: 1
+    hp: 5500
+    atk: 280
+    def: 100
+    critRate: 0.35
+    critDmg: 2.5
+    activeSkillName: "Ph\xE1o Laser Xuy\xEAn Th\u1EA5u T\u1ED1i Th\u01B0\u1EE3ng"
+    skillMultiplier: 3
+    skillCdRound: 3
+    activeSkillDesc: "B\u1EAFn laser h\u1EE7y di\u1EC7t g\xE2y 300% ATK s\xE1t th\u01B0\u01A1ng
+      di\u1EC7n r\u1ED9ng, b\u1ECF qua 100% khi\xEAn v\xE0 th\u1EE7 c\u1EE7a Player"
+    passiveSkillDesc: "T\u1EF1 t\u1EA1o l\xE1 ch\u1EAFn m\xE1u \u1EA3o b\u1EB1ng
+      15% Max HP \u0111\u1EA7u tr\u1EADn; b\u1ECF qua to\xE0n b\u1ED9 khi\xEAn th\u1EE7
+      c\u1EE7a Player"
+    speed: 0.15
+    attackCd: 2
+    reflect: 0
+    scale: 1.8
+    isBoss: 1
+    combatType: 0
+    attackRange: 1.5
+  - type: 2
+    name: "Qu\u1EF7 R\u1EEBng"
+    element: 1
+    role: 2
+    defaultRow: 0
+    hp: 320
+    atk: 20
+    def: 70
+    critRate: 0.05
+    critDmg: 1.2
+    activeSkillName: "Ti\u1EBFng G\u1EA7m T\u1EF1 Nhi\xEAn"
+    skillMultiplier: 1
+    skillCdRound: 2
+    activeSkillDesc: "H\xF4 vang t\u0103ng 25% ATK cho to\xE0n b\u1ED9 qu\xE1i \u0111\u1ED3ng
+      minh trong 2 Round"
+    passiveSkillDesc: "T\u0103ng 10% t\u1ED1c \u0111\u1ED9 h\xE0nh \u0111\u1ED9ng
+      cho b\u1EA3n th\xE2n qu\xE1i"
+    speed: 0.25
+    attackCd: 2
+    reflect: 0
+    scale: 0.9
+    isBoss: 0
+    combatType: 0
+    attackRange: 0.85
+  - type: 3
+    name: "B\u1ECD R\xE1c"
+    element: 1
+    role: 1
+    defaultRow: 0
+    hp: 400
+    atk: 30
+    def: 80
+    critRate: 0.1
+    critDmg: 1.2
+    activeSkillName: "V\u1ECF B\u1ECDc Gai Nh\u1ECDn"
+    skillMultiplier: 1
+    skillCdRound: 2
+    activeSkillDesc: "T\u1EF1 t\u1EA1o l\u1EDBp l\xE1 ch\u1EAFn m\xE1u \u1EA3o h\u1EA5p
+      th\u1EE5 s\xE1t th\u01B0\u01A1ng b\u1EB1ng 40% Max HP b\u1EA3n th\xE2n trong
+      2 Round"
+    passiveSkillDesc: "Khi t\u1EED tr\u1EADn, h\u1ED3i ph\u1EE5c 5% Max HP cho 1
+      \u0111\u1ED3ng minh ng\u1EABu nhi\xEAn"
+    speed: 0.7
+    attackCd: 2
+    reflect: 0
+    scale: 0.6
+    isBoss: 0
+    combatType: 0
+    attackRange: 0.85
+  - type: 4
+    name: "Cung Th\u1EE7 \xC1m"
+    element: 1
+    role: 0
+    defaultRow: 1
+    hp: 160
+    atk: 50
+    def: 50
+    critRate: 0.1
+    critDmg: 1.3
+    activeSkillName: "M\u01B0a T\xEAn \u0110\u1ED9c M\u1ED9c"
+    skillMultiplier: 1.6
+    skillCdRound: 2
+    activeSkillDesc: "B\u1EAFn t\xEAn \u0111\u1ED9c t\u1EA7m xa g\xE2y 160% ATK s\xE1t
+      th\u01B0\u01A1ng l\xEAn Player"
+    passiveSkillDesc: "\u0110\xF2n \u0111\xE1nh c\xF3 15% t\u1EC9 l\u1EC7 g\xE2y
+      hi\u1EC7u \u1EE9ng \u0111\u1ED9c nh\u1EB9 r\xFAt 1% HP"
+    speed: 0.15
+    attackCd: 2
+    reflect: 0
+    scale: 0.85
+    isBoss: 0
+    combatType: 1
+    attackRange: 3.8
+  - type: 5
+    name: "Tinh Linh H\u1ED3i M\xE1u"
+    element: 1
+    role: 2
+    defaultRow: 0
+    hp: 320
+    atk: 20
+    def: 70
+    critRate: 0.05
+    critDmg: 1.2
+    activeSkillName: "M\u01B0a Ph\u01B0\u1EDBc L\xE0nh"
+    skillMultiplier: 1
+    skillCdRound: 2
+    activeSkillDesc: "Ni\u1EC7m ch\xFA h\u1ED3i ph\u1EE5c 15% Max HP cho to\xE0n
+      b\u1ED9 \u0111\u1ED3ng minh c\xF2n s\u1ED1ng tr\xEAn s\xE2n"
+    passiveSkillDesc: "T\u0103ng 10% hi\u1EC7u qu\u1EA3 h\u1ED3i m\xE1u c\u1EE7a
+      b\u1EA3n th\xE2n"
+    speed: 0.15
+    attackCd: 4
+    reflect: 0
+    scale: 0.85
+    isBoss: 0
+    combatType: 1
+    attackRange: 3.8
+  - type: 6
+    name: "R\u1EC5 C\xE2y \u0102n Th\u1ECBt"
+    element: 1
+    role: 2
+    defaultRow: 0
+    hp: 1000
+    atk: 10
+    def: 100
+    critRate: 0.05
+    critDmg: 1.2
+    activeSkillName: "R\u1EC5 M\u1EB9 T\xE1i Sinh"
+    skillMultiplier: 1
+    skillCdRound: 3
+    activeSkillDesc: "H\u1ED3i sinh 1 \u0111\u1ED3ng minh v\u1EEBa t\u1EED tr\u1EADn
+      v\u1EDBi 30% Max HP; n\u1EBFu kh\xF4ng c\xF3 qu\xE1i ch\u1EBFt th\xEC h\u1ED3i
+      15% HP cho to\xE0n \u0111\u1ED9i"
+    passiveSkillDesc: "M\u1ED7i \u0111\xF2n \u0111\xE1nh h\u1ED3i m\xE1u cho b\u1EA3n
+      th\xE2n b\u1EB1ng 10% s\xE1t th\u01B0\u01A1ng g\xE2y ra"
+    speed: 0.4
+    attackCd: 2
+    reflect: 0
+    scale: 1.4
+    isBoss: 1
+    combatType: 0
+    attackRange: 1.2
+  - type: 7
+    name: "Ph\xE1p S\u01B0 B\xF9a Ch\xFA"
+    element: 1
+    role: 2
+    defaultRow: 0
+    hp: 1000
+    atk: 10
+    def: 100
+    critRate: 0.1
+    critDmg: 1.5
+    activeSkillName: "B\xF9a Ch\xFA Ph\u1EE5c Sinh & C\u01B0\u01A1ng Gi\xE1p"
+    skillMultiplier: 1
+    skillCdRound: 3
+    activeSkillDesc: "H\u1ED3i sinh 1 \u0111\u1ED3ng minh t\u1EED tr\u1EADn v\u1EDBi
+      40% HP + Buff t\u0103ng 30% DEF cho c\u1EA3 \u0111\u1ED9i trong 2 Round"
+    passiveSkillDesc: "\u0110\xF2n \u0111\xE1nh th\u01B0\u1EDDng g\xE2y hi\u1EC7u
+      \u1EE9ng DoT r\xFAt 2% Max HP Player/Round trong 2 Round"
+    speed: 0.25
+    attackCd: 2
+    reflect: 0
+    scale: 1.3
+    isBoss: 1
+    combatType: 1
+    attackRange: 3.8
+  - type: 8
+    name: "C\u1ED5 Th\u1EE5 Ng\xE0n N\u0103m"
+    element: 1
+    role: 2
+    defaultRow: 0
+    hp: 8000
+    atk: 80
+    def: 80
+    critRate: 0.1
+    critDmg: 1.5
+    activeSkillName: "R\u1EC5 C\xE2y Ph\u1EE5c Sinh T\u1ED1i Th\u01B0\u1EE3ng"
+    skillMultiplier: 1
+    skillCdRound: 4
+    activeSkillDesc: "H\u1ED3i sinh to\xE0n b\u1ED9 \u0111\u1ED3ng minh t\u1EED tr\u1EADn
+      v\u1EDBi 50% HP + H\u1ED3i 20% HP c\u1EA3 \u0111\u1ED9i + T\u1EA1o l\xE1 ch\u1EAFn
+      b\u1EB1ng 10% Max HP Boss cho c\u1EA3 \u0111\u1ED9i"
+    passiveSkillDesc: "C\u1EE9 sau 3 Round t\u1EF1 \u0111\u1ED9ng tri\u1EC7u h\u1ED3i
+      2 B\u1ECD R\xE1c (H\xE0ng tr\u01B0\u1EDBc) \u0111\u1EC3 c\u1EA3n \u0111\xF2n
+      b\u1EA3o v\u1EC7 b\u1EA3n th\xE2n"
+    speed: 0.15
+    attackCd: 2
+    reflect: 0
+    scale: 1.8
+    isBoss: 1
+    combatType: 0
+    attackRange: 1.5
+  - type: 16
+    name: "Slime B\xF9n"
+    element: 4
+    role: 1
+    defaultRow: 0
+    hp: 400
+    atk: 30
+    def: 80
+    critRate: 0.05
+    critDmg: 1.2
+    activeSkillName: "B\u1ECDc B\xF9n Gi\u1EA3m S\xE1t Th\u01B0\u01A1ng"
+    skillMultiplier: 1
+    skillCdRound: 2
+    activeSkillDesc: "T\u1EA1o l\u1EDBp m\xE0ng b\xF9n b\u1EA3o v\u1EC7: Gi\u1EA3m
+      35% m\u1ECDi s\xE1t th\u01B0\u01A1ng nh\u1EADn v\xE0o trong 2 Round"
+    passiveSkillDesc: "T\u0103ng 10% DEF khi m\xE1u xu\u1ED1ng d\u01B0\u1EDBi 50%"
+    speed: 0.15
+    attackCd: 2
+    reflect: 0
+    scale: 0.9
+    isBoss: 0
+    combatType: 0
+    attackRange: 0.85
+  - type: 17
+    name: "L\xEDnh \u0110\u1EA5t"
+    element: 4
+    role: 1
+    defaultRow: 0
+    hp: 400
+    atk: 30
+    def: 80
+    critRate: 0.05
+    critDmg: 1.2
+    activeSkillName: "L\xE1 Ch\u1EAFn \u0110\u1EA5t \u0110\xE1"
+    skillMultiplier: 1
+    skillCdRound: 3
+    activeSkillDesc: "T\u1EA1o l\xE1 ch\u1EAFn m\xE1u \u1EA3o (Shield) b\u1EB1ng
+      25% Max HP b\u1EA3n th\xE2n trong 2 Round"
+    passiveSkillDesc: "Qu\xE1i \u0111\u1ED3ng minh \u0111\u1EE9ng sau L\xEDnh \u0110\u1EA5t
+      nh\u1EADn th\xEAm 15% DEF"
+    speed: 0.25
+    attackCd: 2
+    reflect: 0
+    scale: 0.95
+    isBoss: 0
+    combatType: 0
+    attackRange: 0.85
+  - type: 18
+    name: "Ph\xE1p S\u01B0 Phong \u1EA4n"
+    element: 4
+    role: 3
+    defaultRow: 1
+    hp: 240
+    atk: 40
+    def: 60
+    critRate: 0.05
+    critDmg: 1.2
+    activeSkillName: "Phong \u1EA4n Ng\u1ECDc \u0110\xE1"
+    skillMultiplier: 0.6
+    skillCdRound: 2
+    activeSkillDesc: "G\xE2y 60% ATK s\xE1t th\u01B0\u01A1ng nh\u1EB9 + Kh\xF3a 2
+      vi\xEAn \u0111\xE1 ng\u1EABu nhi\xEAn tr\xEAn b\xE0n Match-3 c\u1EE7a Player
+      trong 1 Round"
+    passiveSkillDesc: "T\u0103ng 10% kh\xE1ng s\xE1t th\u01B0\u01A1ng ph\xE9p thu\u1EADt"
+    speed: 0.15
+    attackCd: 2
+    reflect: 0
+    scale: 0.85
+    isBoss: 0
+    combatType: 1
+    attackRange: 3.8
+  - type: 19
+    name: "B\u1ECD C\u1EA1p \u0110\xE1"
+    element: 4
+    role: 1
+    defaultRow: 0
+    hp: 400
+    atk: 30
+    def: 80
+    critRate: 0.1
+    critDmg: 1.3
+    activeSkillName: "Gi\xE1p Gai \u0110\u1ED9c Th\u1EA1ch"
+    skillMultiplier: 1
+    skillCdRound: 3
+    activeSkillDesc: "K\xEDch ho\u1EA1t gi\xE1p gai ph\u1EA3n \u0111\xF2n trong 2
+      Round: Ph\u1EA3n l\u1EA1i 20% s\xE1t th\u01B0\u01A1ng nh\u1EADn v\xE0o cho
+      Player"
+    passiveSkillDesc: "Gi\u1EA3m 10% s\xE1t th\u01B0\u01A1ng nh\u1EADn v\xE0o t\u1EEB
+      c\xE1c k\u1EF9 n\u0103ng nguy\xEAn t\u1ED1"
+    speed: 0.25
+    attackCd: 2
+    reflect: 0
+    scale: 0.95
+    isBoss: 0
+    combatType: 0
+    attackRange: 0.85
+  - type: 20
+    name: "H\u1EA1t Nh\xE2m Th\u1EA1ch"
+    element: 4
+    role: 1
+    defaultRow: 0
+    hp: 1200
+    atk: 40
+    def: 120
+    critRate: 0.05
+    critDmg: 1.2
+    activeSkillName: "L\xE1 Ch\u1EAFn Dung Nham B\xF9ng N\u1ED5"
+    skillMultiplier: 1
+    skillCdRound: 3
+    activeSkillDesc: "T\u1EA1o l\xE1 ch\u1EAFn m\xE1u \u1EA3o b\u1EB1ng 20% Max HP;
+      khi khi\xEAn v\u1EE1 ph\u1EA3n l\u1EA1i 150% gi\xE1 tr\u1ECB khi\xEAn th\xE0nh
+      s\xE1t th\u01B0\u01A1ng cho Player"
+    passiveSkillDesc: "Lu\xF4n ph\u1EA3n l\u1EA1i 10% s\xE1t th\u01B0\u01A1ng nh\u1EADn
+      v\xE0o t\u1EEB Player"
+    speed: 0.15
+    attackCd: 3
+    reflect: 0.1
+    scale: 1.5
+    isBoss: 1
+    combatType: 0
+    attackRange: 1.3
+  - type: 21
+    name: "Ph\xF9 Th\u1EE7y Kh\xF3a Ng\u1ECDc"
+    element: 4
+    role: 3
+    defaultRow: 1
+    hp: 800
+    atk: 70
+    def: 80
+    critRate: 0.1
+    critDmg: 1.3
+    activeSkillName: "\u0110\u1EA1i Phong \u1EA4n Tr\u1EADn \u0110\u1ECBa"
+    skillMultiplier: 0.7
+    skillCdRound: 3
+    activeSkillDesc: "G\xE2y 70% ATK s\xE1t th\u01B0\u01A1ng + Kh\xF3a 4 vi\xEAn
+      ng\u1ECDc tr\xEAn b\xE0n Match-3 trong 2 Round + Gi\u1EA3m 20% ATK Player trong
+      2 Round"
+    passiveSkillDesc: "Gi\u1EA3m 10% t\u1ED1c \u0111\u1ED9 t\xEDch l\u0169y Energy
+      c\u1EE7a Player"
+    speed: 0.25
+    attackCd: 3
+    reflect: 0
+    scale: 1.3
+    isBoss: 1
+    combatType: 1
+    attackRange: 3.8
+  - type: 22
+    name: "Boss \u0110\u1EA5t Nung"
+    element: 4
+    role: 1
+    defaultRow: 0
+    hp: 9000
+    atk: 90
+    def: 100
+    critRate: 0.1
+    critDmg: 1.5
+    activeSkillName: "\u0110\u1EA1i \u0110\u1ECBa Ch\u1EA5n H\u1EE7y Di\u1EC7t"
+    skillMultiplier: 2
+    skillCdRound: 4
+    activeSkillDesc: "T\u1EA1o c\u01A1n \u0111\u1ECBa ch\u1EA5n g\xE2y 200% ATK s\xE1t
+      th\u01B0\u01A1ng + L\xE0m Cho\xE1ng Player 1 Round + Kh\xF3a 5 \xF4 ng\u1ECDc
+      tr\xEAn b\xE0n Match-3"
+    passiveSkillDesc: "\u0110\u1EA7u m\u1ED7i Round t\u1EF1 t\u1EA1o l\xE1 ch\u1EAFn
+      m\xE1u \u1EA3o b\u1EB1ng 10% Max HP Boss; ph\u1EA3n l\u1EA1i 10% s\xE1t th\u01B0\u01A1ng
+      nh\u1EADn v\xE0o"
+    speed: 0.15
+    attackCd: 2
+    reflect: 0
+    scale: 1.8
+    isBoss: 1
+    combatType: 0
+    attackRange: 1.5
+  - type: 23
+    name: "Slime N\u01B0\u1EDBc"
+    element: 2
+    role: 3
+    defaultRow: 0
+    hp: 240
+    atk: 40
+    def: 60
+    critRate: 0.05
+    critDmg: 1.2
+    activeSkillName: "Tia N\u01B0\u1EDBc L\xE0m Ch\u1EADm"
+    skillMultiplier: 0.6
+    skillCdRound: 2
+    activeSkillDesc: "G\xE2y 60% ATK s\xE1t th\u01B0\u01A1ng + T\u0103ng chi ph\xED
+      cast skill c\u1EE7a Player th\xEAm 2 Energy (t\u1EEB 5 l\xEAn 7) trong 1 Round"
+    passiveSkillDesc: "T\u0103ng 10% n\xE9 tr\xE1nh \u0111\xF2n \u0111\xE1nh th\u01B0\u1EDDng"
+    speed: 0.4
+    attackCd: 2
+    reflect: 0
+    scale: 0.85
+    isBoss: 0
+    combatType: 0
+    attackRange: 0.85
+  - type: 24
+    name: "Th\u1EE7y Qu\xE1i Nh\u1ECF"
+    element: 2
+    role: 0
+    defaultRow: 0
+    hp: 160
+    atk: 50
+    def: 50
+    critRate: 0.1
+    critDmg: 1.4
+    activeSkillName: "C\u1EAFn Xo\xE1y Th\u1EE7y Tri\u1EC1u"
+    skillMultiplier: 1.6
+    skillCdRound: 2
+    activeSkillDesc: "Lao t\u1EDBi c\u1EAFn xo\xE1y m\u1EA1nh m\u1EBD g\xE2y 160%
+      ATK s\xE1t th\u01B0\u01A1ng"
+    passiveSkillDesc: "Gi\u1EA3m 10% s\xE1t th\u01B0\u01A1ng v\u1EADt l\xFD nh\u1EADn
+      v\xE0o"
+    speed: 0.25
+    attackCd: 2
+    reflect: 0
+    scale: 0.9
+    isBoss: 0
+    combatType: 0
+    attackRange: 0.85
+  - type: 25
+    name: "K\u1EBB Tr\u1ED9m K\u1EF9 N\u0103ng"
+    element: 2
+    role: 3
+    defaultRow: 1
+    hp: 240
+    atk: 40
+    def: 60
+    critRate: 0.1
+    critDmg: 1.3
+    activeSkillName: "C\u01B0\u1EDBp \u0110o\u1EA1t N\u1ED9i N\u0103ng"
+    skillMultiplier: 0.5
+    skillCdRound: 3
+    activeSkillDesc: "G\xE2y 50% ATK s\xE1t th\u01B0\u01A1ng + H\xFAt 5 Energy c\u1EE7a
+      Player chuy\u1EC3n h\xF3a th\xE0nh m\xE1u h\u1ED3i ph\u1EE5c cho b\u1EA3n th\xE2n"
+    passiveSkillDesc: "C\xF3 15% t\u1EC9 l\u1EC7 n\xE9 tr\xE1nh ho\xE0n to\xE0n \u0111\xF2n
+      \u0111\xE1nh c\u1EE7a Player"
+    speed: 0.55
+    attackCd: 5
+    reflect: 0
+    scale: 0.85
+    isBoss: 0
+    combatType: 0
+    attackRange: 0.85
+  - type: 26
+    name: "Ph\xE1p S\u01B0 B\u0103ng"
+    element: 2
+    role: 3
+    defaultRow: 1
+    hp: 240
+    atk: 40
+    def: 60
+    critRate: 0.1
+    critDmg: 1.4
+    activeSkillName: "M\u0169i B\u0103ng H\xE0n Gi\xE1"
+    skillMultiplier: 0.7
+    skillCdRound: 2
+    activeSkillDesc: "B\u1EAFn m\u0169i t\xEAn b\u0103ng g\xE2y 70% ATK s\xE1t th\u01B0\u01A1ng
+      + \u0110\xF3ng b\u0103ng 2 vi\xEAn ng\u1ECDc ng\u1EABu nhi\xEAn tr\xEAn b\xE0n
+      Match-3 trong 2 Round"
+    passiveSkillDesc: "T\u0103ng 10% s\xE1t th\u01B0\u01A1ng khi m\u1EE5c ti\xEAu
+      d\xEDnh hi\u1EC7u \u1EE9ng B\u0103ng"
+    speed: 0.15
+    attackCd: 2
+    reflect: 0
+    scale: 0.85
+    isBoss: 0
+    combatType: 1
+    attackRange: 3.8
+  - type: 27
+    name: "Qu\xE1i V\u1EADt \u0110\u1EA7m L\u1EA7y"
+    element: 2
+    role: 3
+    defaultRow: 1
+    hp: 800
+    atk: 70
+    def: 80
+    critRate: 0.15
+    critDmg: 1.5
+    activeSkillName: "\u0110\u1EA7m L\u1EA7y \u0102n M\xF2n"
+    skillMultiplier: 0.8
+    skillCdRound: 3
+    activeSkillDesc: "Phun b\xF9n l\u1EA7y di\u1EC7n r\u1ED9ng g\xE2y 80% ATK s\xE1t
+      th\u01B0\u01A1ng + Gi\u1EA3m 30% DEF Player trong 2 Round + Gi\u1EA3m 10 Energy
+      kh\u1EDFi \u0111\u1EA7u c\u1EE7a Player"
+    passiveSkillDesc: "Khi HP d\u01B0\u1EDBi 50%, t\u1EF1 h\u1ED3i ph\u1EE5c 5% Max
+      HP m\u1ED7i Round"
+    speed: 0.25
+    attackCd: 3
+    reflect: 0
+    scale: 1.3
+    isBoss: 1
+    combatType: 0
+    attackRange: 1.2
+  - type: 28
+    name: "Tinh Linh B\u0103ng Gi\xE1"
+    element: 2
+    role: 3
+    defaultRow: 1
+    hp: 800
+    atk: 70
+    def: 80
+    critRate: 0.2
+    critDmg: 1.8
+    activeSkillName: "\u0110\xF3ng B\u0103ng H\xE0ng Ng\u0169"
+    skillMultiplier: 0.8
+    skillCdRound: 3
+    activeSkillDesc: "Ni\u1EC7m ph\xE9p b\u0103ng c\u1EF1c h\xE0n g\xE2y 80% ATK
+      s\xE1t th\u01B0\u01A1ng + \u0110\xF3ng b\u0103ng to\xE0n b\u1ED9 h\xE0ng \u0111\xE1
+      d\u01B0\u1EDBi c\xF9ng c\u1EE7a b\xE0n Match-3 trong 2 Round"
+    passiveSkillDesc: "Gi\u1EA3m 15% s\xE1t th\u01B0\u01A1ng nh\u1EADn v\xE0o t\u1EEB
+      c\xE1c k\u1EF9 n\u0103ng h\u1EC7 H\u1ECFa"
+    speed: 0.4
+    attackCd: 3
+    reflect: 0
+    scale: 1.3
+    isBoss: 1
+    combatType: 1
+    attackRange: 3.8
+  - type: 29
+    name: "Th\u1EE7y Th\u1EA7n Sa Ng\xE3"
+    element: 2
+    role: 3
+    defaultRow: 1
+    hp: 6000
+    atk: 100
+    def: 50
+    critRate: 0.25
+    critDmg: 1.8
+    activeSkillName: "S\xF3ng Th\u1EA7n Di\u1EC7t Tuy\u1EC7t T\u1ED1i Th\u01B0\u1EE3ng"
+    skillMultiplier: 2.2
+    skillCdRound: 3
+    activeSkillDesc: "T\u1EA1o s\xF3ng th\u1EA7n qu\xE9t s\u1EA1ch s\xE0n \u0111\u1EA5u
+      g\xE2y 220% ATK s\xE1t th\u01B0\u01A1ng + Cho\xE1ng Player 1 Round + Tri\u1EC7t
+      ti\xEAu to\xE0n b\u1ED9 Energy v\u1EC1 0"
+    passiveSkillDesc: "\u0110\xF2n \u0111\xE1nh th\u01B0\u1EDDng t\u1EF1 \u0111\u1ED9ng
+      \u0111\xE1nh c\u1EAFp 5 Energy c\u1EE7a Player. Gi\u1EA3m 20% s\xE1t th\u01B0\u01A1ng
+      nh\u1EADn v\xE0o khi c\xF2n qu\xE1i h\u1EC7 Th\u1EE7y"
+    speed: 0.25
+    attackCd: 2
+    reflect: 0
+    scale: 1.8
+    isBoss: 1
+    combatType: 1
+    attackRange: 4

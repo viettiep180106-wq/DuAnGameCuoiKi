@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6a5fa8202e35df469e78669bf9efe4d, type: 3}
+  m_Name: Enemy_SatThuBongToi
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDataSO
+  enemyType: 31
+  enemyName: "S\xE1t Th\u1EE7 B\xF3ng T\u1ED1i"
+  element: 0
+  category: 0
+  role: 0
+  defaultRow: 1
+  maxHP: 160
+  atk: 50
+  def: 50
+  critRate: 0.25
+  critDmg: 1.8
+  speed: 0.6
+  attackCd: 2
+  reflect: 0
+  scale: 0.8
+  isBoss: 0
+  combatType: 0
+  attackRange: 0.85
+  activeSkillName: "\xC1m S\xE1t B\u1EA5t Ng\u1EDD"
+  skillMultiplier: 1.8
+  skillCdRound: 2
+  activeSkillDesc: "\u0110\u1ED9t k\xEDch ch\xE9m nhanh g\xE2y 180% ATK s\xE1t th\u01B0\u01A1ng
+    (54 ST), b\u1ECF qua 20% DEF c\u1EE7a m\u1EE5c ti\xEAu"
+  passiveSkillDesc: "T\u0103ng 15% T\u1EC9 l\u1EC7 ch\xED m\u1EA1ng khi t\u1EA5n
+    c\xF4ng Player"
+  normalAttackDesc: "Ch\xE9m song ki\u1EBFm g\xE2y 100% ATK (30 ST)"
+  enemyPrefab: {fileID: 0}

@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6a5fa8202e35df469e78669bf9efe4d, type: 3}
+  m_Name: Enemy_CoThuNganNam
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDataSO
+  enemyType: 8
+  enemyName: "C\u1ED5 Th\u1EE5 Ng\xE0n N\u0103m"
+  element: 1
+  category: 2
+  role: 2
+  defaultRow: 0
+  maxHP: 8000
+  atk: 80
+  def: 80
+  critRate: 0.1
+  critDmg: 1.5
+  speed: 0.1
+  attackCd: 2
+  reflect: 0
+  scale: 2
+  isBoss: 1
+  combatType: 0
+  attackRange: 1.2
+  activeSkillName: "R\u1EC5 C\xE2y Ph\u1EE5c Sinh T\u1ED1i Th\u01B0\u1EE3ng"
+  skillMultiplier: 1.5
+  skillCdRound: 4
+  activeSkillDesc: "H\u1ED3i sinh to\xE0n b\u1ED9 \u0111\u1ED3ng minh t\u1EED tr\u1EADn
+    v\u1EDBi 50% HP + H\u1ED3i 20% HP c\u1EA3 \u0111\u1ED9i + T\u1EA1o l\xE1 ch\u1EAFn
+    b\u1EB1ng 10% Max HP Boss cho c\u1EA3 \u0111\u1ED9i"
+  passiveSkillDesc: "[M\u1EA7m S\u1ED1ng V\u0129nh C\u1EEDu] C\u1EE9 sau 3 Round
+    t\u1EF1 \u0111\u1ED9ng tri\u1EC7u h\u1ED3i 2 B\u1ECD R\xE1c (H\xE0ng tr\u01B0\u1EDBc)
+    \u0111\u1EC3 c\u1EA3n \u0111\xF2n b\u1EA3o v\u1EC7 b\u1EA3n th\xE2n"
+  normalAttackDesc: "R\u1EC5 ng\u1EA7m \u0111\xE2m n\xE1t g\xE2y 100% ATK (80 ST)"
+  enemyPrefab: {fileID: 0}

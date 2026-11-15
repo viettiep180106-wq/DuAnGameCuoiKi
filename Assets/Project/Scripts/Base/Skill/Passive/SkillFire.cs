@@ -11,8 +11,8 @@ using DG.Tweening;
 public class SkillFire : SkillPassive
 {
     [Header("Fire Bomb Settings")]
-    public float splashRadius = 1.6f;
-    public float flightSpeed = 10f;
+    public float splashRadius = 2.6f;
+    public float flightSpeed = 24f;
 
     public SkillFire()
     {
@@ -22,13 +22,19 @@ public class SkillFire : SkillPassive
     public override void Active()
     {
         base.Active();
-        transform.localScale = Vector3.one * 3.5f;
+        transform.localScale = Vector3.one * 5.8f;
+        var tr = GetComponent<TrailRenderer>();
+        if (tr != null)
+        {
+            tr.Clear();
+            tr.enabled = true;
+        }
         var sr = GetComponentInChildren<SpriteRenderer>();
         if (sr != null)
         {
             sr.sortingLayerName = "Default";
             sr.sortingOrder = 32;
-            sr.color = new Color(1f, 0.35f, 0.1f, 1f);
+            sr.color = new Color(1f, 0.4f, 0.1f, 1f);
         }
 
         var ec = EnemyController.instance != null ? EnemyController.instance : FindFirstObjectByType<EnemyController>();
@@ -38,7 +44,8 @@ public class SkillFire : SkillPassive
         {
             target = targetEnemy.transform;
             float dist = Vector3.Distance(transform.position, target.position);
-            float duration = Mathf.Max(0.2f, dist / flightSpeed);
+            // Tốc độ bay nhanh gấp đôi, dứt khoát
+            float duration = Mathf.Clamp(dist / flightSpeed, 0.08f, 0.22f);
 
             transform.DOMove(target.position, duration)
                 .SetEase(Ease.InQuad)
@@ -46,8 +53,8 @@ public class SkillFire : SkillPassive
         }
         else
         {
-            // Không có quái: Bay thẳng về phía trước (sang phải) rồi tự hủy
-            transform.DOMove(transform.position + Vector3.right * 8f, 0.6f)
+            // Không có quái: Bay nhanh về phía trước rồi tự hủy
+            transform.DOMove(transform.position + Vector3.right * 8f, 0.25f)
                 .SetEase(Ease.Linear)
                 .OnComplete(DespawnSelf);
         }

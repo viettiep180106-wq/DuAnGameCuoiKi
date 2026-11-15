@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6a5fa8202e35df469e78669bf9efe4d, type: 3}
+  m_Name: Enemy_PhuThuyKhoaNgoc
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDataSO
+  enemyType: 21
+  enemyName: "Ph\xF9 Th\u1EE7y Kh\xF3a Ng\u1ECDc"
+  element: 4
+  category: 1
+  role: 3
+  defaultRow: 1
+  maxHP: 800
+  atk: 70
+  def: 80
+  critRate: 0.1
+  critDmg: 1.3
+  speed: 0.25
+  attackCd: 2
+  reflect: 0
+  scale: 1.15
+  isBoss: 1
+  combatType: 1
+  attackRange: 4
+  activeSkillName: "\u0110\u1EA1i Phong \u1EA4n Tr\u1EADn \u0110\u1ECBa"
+  skillMultiplier: 0.7
+  skillCdRound: 2
+  activeSkillDesc: "G\xE2y 70% ATK s\xE1t th\u01B0\u01A1ng (56 ST) + Kh\xF3a 4 vi\xEAn
+    ng\u1ECDc tr\xEAn b\xE0n Match-3 trong 2 Round + Gi\u1EA3m 20% ATK Player trong
+    2 Round"
+  passiveSkillDesc: "[\xC1p Ch\u1EBF Ma Ph\xE1p] Gi\u1EA3m 10% t\u1ED1c \u0111\u1ED9
+    t\xEDch l\u0169y Energy c\u1EE7a Player"
+  normalAttackDesc: "B\u1EAFn qu\u1EA3 c\u1EA7u \u0111\u1ECBa ch\u1EA5n g\xE2y 100%
+    ATK (80 ST)"
+  enemyPrefab: {fileID: 0}

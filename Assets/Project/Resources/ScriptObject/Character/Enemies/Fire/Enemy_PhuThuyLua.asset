@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6a5fa8202e35df469e78669bf9efe4d, type: 3}
+  m_Name: Enemy_PhuThuyLua
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDataSO
+  enemyType: 12
+  enemyName: "Ph\xF9 Th\u1EE7y L\u1EEDa"
+  element: 3
+  category: 0
+  role: 0
+  defaultRow: 1
+  maxHP: 160
+  atk: 50
+  def: 50
+  critRate: 0.2
+  critDmg: 1.5
+  speed: 0.3
+  attackCd: 2
+  reflect: 0
+  scale: 0.85
+  isBoss: 0
+  combatType: 1
+  attackRange: 3.8
+  activeSkillName: "C\u1ED9t L\u1EEDa Thi\xEAu R\u1EE5i"
+  skillMultiplier: 2
+  skillCdRound: 3
+  activeSkillDesc: "Tri\u1EC7u h\u1ED3i c\u1ED9t l\u1EEDa thi\xEAu \u0111\u1ED1t
+    g\xE2y 200% ATK s\xE1t th\u01B0\u01A1ng (72 ST)"
+  passiveSkillDesc: "S\xE1t th\u01B0\u01A1ng k\u1EF9 n\u0103ng t\u0103ng th\xEAm
+    10% n\u1EBFu m\u1EE5c ti\xEAu \u0111ang d\xEDnh hi\u1EC7u \u1EE9ng b\u1EA5t l\u1EE3i"
+  normalAttackDesc: "B\u1EAFn c\u1EA7u ma ph\xE1p g\xE2y 100% ATK (36 ST)"
+  enemyPrefab: {fileID: 0}

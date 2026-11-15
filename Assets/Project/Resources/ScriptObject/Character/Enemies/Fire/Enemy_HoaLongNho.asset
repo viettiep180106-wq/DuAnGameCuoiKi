@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6a5fa8202e35df469e78669bf9efe4d, type: 3}
+  m_Name: Enemy_HoaLongNho
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDataSO
+  enemyType: 14
+  enemyName: "H\u1ECFa Long Nh\u1ECF"
+  element: 3
+  category: 1
+  role: 0
+  defaultRow: 1
+  maxHP: 600
+  atk: 100
+  def: 60
+  critRate: 0.2
+  critDmg: 1.8
+  speed: 0.35
+  attackCd: 2
+  reflect: 0
+  scale: 1.3
+  isBoss: 1
+  combatType: 1
+  attackRange: 4
+  activeSkillName: "H\u01A1i Th\u1EDF R\u1ED3ng L\u1EEDa"
+  skillMultiplier: 2.5
+  skillCdRound: 3
+  activeSkillDesc: "Phun l\u1EEDa t\u1EA7m xa g\xE2y 250% ATK s\xE1t th\u01B0\u01A1ng
+    (300 ST) + N\u1ED5 di\u1EC7n r\u1ED9ng g\xE2y th\xEAm 5% s\xE1t th\u01B0\u01A1ng
+    h\u1ECFa"
+  passiveSkillDesc: "T\u0103ng 10% ATK cho to\xE0n b\u1ED9 qu\xE1i \u0111\u1ED3ng
+    minh h\u1EC7 H\u1ECFa"
+  normalAttackDesc: "Kh\u1EA1c l\u1EEDa c\u01A1 b\u1EA3n g\xE2y 100% ATK (120 ST)"
+  enemyPrefab: {fileID: 0}

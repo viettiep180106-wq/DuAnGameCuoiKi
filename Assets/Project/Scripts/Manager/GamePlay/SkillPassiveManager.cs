@@ -36,6 +36,47 @@ public class SkillPassiveManager : MonoBehaviour
     // Zero-GC match counter cache
     private readonly Dictionary<TypeStone, int> _cachedMatchCounts = new Dictionary<TypeStone, int>();
     private readonly Queue<SkillContainer> _skillQueue = new Queue<SkillContainer>();
+    private readonly List<TypeStone> _matchOrderBuffer = new List<TypeStone>(8);
+
+    private GameManager _cachedGameManager;
+    private EnemyController _cachedEnemyController;
+    private ActiveSkillPassive _cachedActiveSkillPassive;
+
+    private GameManager CachedGameManager
+    {
+        get
+        {
+            if (_cachedGameManager == null)
+            {
+                _cachedGameManager = GameManager.instance != null ? GameManager.instance : FindFirstObjectByType<GameManager>();
+            }
+            return _cachedGameManager;
+        }
+    }
+
+    private EnemyController CachedEnemyController
+    {
+        get
+        {
+            if (_cachedEnemyController == null)
+            {
+                _cachedEnemyController = EnemyController.instance != null ? EnemyController.instance : FindFirstObjectByType<EnemyController>();
+            }
+            return _cachedEnemyController;
+        }
+    }
+
+    private ActiveSkillPassive CachedActiveSkillPassive
+    {
+        get
+        {
+            if (_cachedActiveSkillPassive == null)
+            {
+                _cachedActiveSkillPassive = ActiveSkillPassive.instance != null ? ActiveSkillPassive.instance : FindFirstObjectByType<ActiveSkillPassive>();
+            }
+            return _cachedActiveSkillPassive;
+        }
+    }
 
     // Hàng đợi tích lũy skill match khi quái chưa vào tầm đánh
     public struct QueuedMatchAttack
@@ -108,18 +149,18 @@ public class SkillPassiveManager : MonoBehaviour
     private void ProcessQueuedAttacks()
     {
         if (_pendingMatchAttacks.Count == 0) return;
-        var gm = GameManager.instance != null ? GameManager.instance : FindFirstObjectByType<GameManager>();
+        var gm = CachedGameManager;
         if (gm != null && !gm.IsWaveCombatActive) return;
         if (Time.time < _nextAttackFireTime) return;
 
         Player activePlayer = GetActivePlayer();
         Vector3 playerPos = activePlayer != null ? activePlayer.transform.position : transform.position;
 
-        var asp = ActiveSkillPassive.instance != null ? ActiveSkillPassive.instance : FindFirstObjectByType<ActiveSkillPassive>();
+        var asp = CachedActiveSkillPassive;
         float atkRange = asp != null ? asp.atkRange : 4.2f;
 
         // Chỉ xả đòn tấn công khi có quái nằm trong tầm đánh
-        var ec = EnemyController.instance != null ? EnemyController.instance : FindFirstObjectByType<EnemyController>();
+        var ec = CachedEnemyController;
         bool hasEnemyInRange = ec != null && ec.HasEnemyInAttackRange(playerPos, atkRange);
         if (!hasEnemyInRange)
         {
@@ -145,7 +186,7 @@ public class SkillPassiveManager : MonoBehaviour
         if (CombatTurnManager.Instance != null && !CombatTurnManager.Instance.IsPlayerTurn) return;
 
         _cachedMatchCounts.Clear();
-        List<TypeStone> matchOrder = new List<TypeStone>();
+        _matchOrderBuffer.Clear();
 
         foreach (Vector2Int coord in listMatch)
         {
@@ -163,7 +204,7 @@ public class SkillPassiveManager : MonoBehaviour
                     else
                     {
                         _cachedMatchCounts[type] = 1;
-                        matchOrder.Add(type);
+                        _matchOrderBuffer.Add(type);
                     }
                 }
             }
@@ -172,9 +213,9 @@ public class SkillPassiveManager : MonoBehaviour
         // Tấn công tức thì (Instant Attack) theo chuẩn GDD:
         // - Bỏ hoàn toàn Action Queue delay
         // - Tiêu hao đúng 5 Energy / 1 skill
-        for (int i = 0; i < matchOrder.Count; i++)
+        for (int i = 0; i < _matchOrderBuffer.Count; i++)
         {
-            TypeStone type = matchOrder[i];
+            TypeStone type = _matchOrderBuffer[i];
             int count = _cachedMatchCounts[type];
 
             ExecuteSingleAttack(type, count);
@@ -210,6 +251,13 @@ public class SkillPassiveManager : MonoBehaviour
             SkillPassiveDataSO equippedSkill = loadout != null ? loadout.GetEquippedPassive(stoneType) : null;
             if (equippedSkill == null || equippedSkill.SkillPrefab == null) return;
 
+            // Hiển thị Tên Chiêu Thức Player nổi bật phía trên đầu
+            if (DamageTextManager.Instance != null && !string.IsNullOrEmpty(equippedSkill.SkillName) && activePlayer != null)
+            {
+                Color elemColor = ElementalHelper.GetColor(equippedSkill.Element);
+                DamageTextManager.Instance.SpawnCustomText($"[{equippedSkill.SkillName}]", elemColor, activePlayer.transform.position + Vector3.up * 2.5f, 1.4f);
+            }
+
             Vector3 spawnPos = activePlayer != null 
                 ? activePlayer.transform.position 
                 : transform.position;
@@ -235,7 +283,6 @@ public class SkillPassiveManager : MonoBehaviour
                 if (skill != null)
                 {
                     skill.transform.position = spawnPos;
-                    skill.transform.localScale = new Vector3(3.5f, 3.5f, 3.5f);
                     skill.Initialize(matchCount);
                     skill.Active();
                 }

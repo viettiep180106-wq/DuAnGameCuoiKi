@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6a5fa8202e35df469e78669bf9efe4d, type: 3}
+  m_Name: Enemy_QuaiVatDamLay
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDataSO
+  enemyType: 27
+  enemyName: "Qu\xE1i V\u1EADt \u0110\u1EA7m L\u1EA7y"
+  element: 2
+  category: 1
+  role: 3
+  defaultRow: 1
+  maxHP: 800
+  atk: 70
+  def: 80
+  critRate: 0.15
+  critDmg: 1.5
+  speed: 0.3
+  attackCd: 2
+  reflect: 0
+  scale: 1.3
+  isBoss: 1
+  combatType: 1
+  attackRange: 4
+  activeSkillName: "\u0110\u1EA7m L\u1EA7y \u0102n M\xF2n"
+  skillMultiplier: 0.8
+  skillCdRound: 3
+  activeSkillDesc: "Phun b\xF9n l\u1EA7y di\u1EC7n r\u1ED9ng g\xE2y 80% ATK s\xE1t
+    th\u01B0\u01A1ng (64 ST) + Gi\u1EA3m 30% DEF Player trong 2 Round + Gi\u1EA3m
+    10 Energy kh\u1EDFi \u0111\u1EA7u c\u1EE7a Player"
+  passiveSkillDesc: "[B\xF9n S\u1ED1ng Dai D\u1EB3ng] Khi HP d\u01B0\u1EDBi 50%,
+    t\u1EF1 h\u1ED3i ph\u1EE5c 5% Max HP m\u1ED7i Round"
+  normalAttackDesc: "Qu\u1EADt x\xFAc tu \u0111\u1EA7m l\u1EA7y g\xE2y 100% ATK (80
+    ST)"
+  enemyPrefab: {fileID: 0}

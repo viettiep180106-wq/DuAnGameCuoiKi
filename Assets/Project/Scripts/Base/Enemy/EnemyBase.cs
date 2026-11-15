@@ -18,6 +18,9 @@ public enum EnemyRow
 [RequireComponent(typeof(EnemyAnimationController), typeof(BoxCollider2D))]
 public class EnemyBase : BaseCharacter
 {
+    [Header("----ScriptableObject Data Reference----")]
+    public EnemyDataSO enemyData;
+
     public EnemyType type;
     public bool isBoss = false;
     public float reflectPercent = 0f;
@@ -465,6 +468,44 @@ public class EnemyBase : BaseCharacter
         // Nâng base scale lên 9.5f để quái (PPU = 200, scale 0.85) có chiều cao thế giới đạt ~5.0 units ngang bằng Player (5.15 units)
         transform.localScale = Vector3.one * (9.5f * scale);
         UpdateHPUI(1f);
+    }
+
+    /// <summary>
+    /// Khởi tạo quái trực tiếp từ ScriptableObject EnemyDataSO theo chuẩn GDD
+    /// </summary>
+    public void InitializeFromSO(EnemyDataSO so, int level = 1, StepDifficulty difficulty = StepDifficulty.Normal)
+    {
+        if (so == null) return;
+        enemyData = so;
+
+        float mult = EnemyStatsDatabase.GetDifficultyMultiplier(difficulty);
+        float n = Mathf.Max(0f, (level - 1) / 15.0f);
+        float scaleFactor = Mathf.Pow(mult, n);
+
+        float scaledHp = Mathf.Round(so.maxHP * scaleFactor);
+        float scaledAtk = Mathf.Round(so.atk * scaleFactor);
+        float scaledDef = Mathf.Round(so.def * scaleFactor);
+
+        InitializeStats(
+            so.enemyType,
+            so.element,
+            scaledHp,
+            scaledAtk,
+            scaledDef,
+            so.speed,
+            so.reflect,
+            so.scale,
+            so.attackCd,
+            so.combatType,
+            so.attackRange,
+            so.role,
+            so.skillMultiplier,
+            so.skillCdRound,
+            so.critRate,
+            so.critDmg
+        );
+
+        isBoss = so.isBoss || (so.category != EnemyCategory.Normal);
     }
 
     public void ReviveWithHP(float hp)

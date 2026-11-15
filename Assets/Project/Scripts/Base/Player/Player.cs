@@ -5,7 +5,7 @@ using DG.Tweening;
 [RequireComponent(typeof(PlayerAnimationController), typeof(BoxCollider2D))]
 public class Player : BaseCharacter
 {
-    public static Player Instance { get; private set; }
+    public static Player Instance { get; set; }
     public static void SetInstanceForTest(Player p) => Instance = p;
 
     [Header("----Player Stats (Level 1 GDD)----")]
@@ -60,10 +60,86 @@ public class Player : BaseCharacter
     public event Action<float> OnShieldChanged;
     public event Action<int> OnEnergyCoresChanged;
 
-    public void AddShield(float amount)
+    [Header("Shield Visual HUD")]
+    private GameObject _activeShieldVisualObj;
+    private TMPro.TextMeshPro _shieldHpText;
+
+    private void EnsureShieldHUD()
+    {
+        if (_shieldHpText == null)
+        {
+            Transform existing = transform.Find("ShieldHpHUD");
+            if (existing != null)
+            {
+                _shieldHpText = existing.GetComponent<TMPro.TextMeshPro>();
+            }
+            else
+            {
+                GameObject hudObj = new GameObject("ShieldHpHUD");
+                hudObj.transform.SetParent(transform, false);
+                hudObj.transform.localPosition = new Vector3(0f, 1.45f, -0.2f);
+                _shieldHpText = hudObj.AddComponent<TMPro.TextMeshPro>();
+                _shieldHpText.fontSize = 2.4f;
+                _shieldHpText.alignment = TMPro.TextAlignmentOptions.Center;
+                _shieldHpText.fontStyle = TMPro.FontStyles.Bold;
+                _shieldHpText.outlineWidth = 0.25f;
+                _shieldHpText.outlineColor = Color.black;
+                _shieldHpText.color = new Color(1f, 0.88f, 0.15f); // Hoàng kim
+                var mr = hudObj.GetComponent<MeshRenderer>();
+                if (mr != null)
+                {
+                    mr.sortingLayerName = "Default";
+                    mr.sortingOrder = 45;
+                }
+            }
+        }
+    }
+
+    public void UpdateShieldVisualAndText(GameObject shieldVisual = null)
+    {
+        EnsureShieldHUD();
+        if (shieldVisual != null)
+        {
+            _activeShieldVisualObj = shieldVisual;
+        }
+
+        if (CurrentShield > 0)
+        {
+            if (_shieldHpText != null)
+            {
+                _shieldHpText.gameObject.SetActive(true);
+                _shieldHpText.text = $"[KHIÊN: {Mathf.RoundToInt(CurrentShield)}]";
+            }
+            if (_activeShieldVisualObj != null)
+            {
+                _activeShieldVisualObj.SetActive(true);
+            }
+        }
+        else
+        {
+            if (_shieldHpText != null)
+            {
+                _shieldHpText.gameObject.SetActive(false);
+            }
+            if (_activeShieldVisualObj != null && _activeShieldVisualObj.activeSelf)
+            {
+                // Khiên vỡ vụn
+                EnemyBase.SpawnSkillVFX(transform.position, ElementType.Metal);
+                _activeShieldVisualObj.SetActive(false);
+            }
+        }
+    }
+
+    public void AddShield(float amount, GameObject visualObj = null)
     {
         CurrentShield = Mathf.Max(CurrentShield, amount);
+        UpdateShieldVisualAndText(visualObj);
         OnShieldChanged?.Invoke(CurrentShield);
+    }
+
+    public void AddShield(float amount)
+    {
+        AddShield(amount, null);
     }
 
     public void TickRoundMetalShield()
@@ -106,6 +182,12 @@ public class Player : BaseCharacter
 
         HP = Mathf.Min(HP + amount, MaxHP);
         UpdateHPUI(MaxHP > 0 ? HP / MaxHP : 1f);
+
+        // Hiển thị Pop-up số máu hồi phục màu xanh lá rực rỡ
+        if (DamageTextManager.Instance != null && amount > 0)
+        {
+            DamageTextManager.Instance.SpawnCustomText($"+{Mathf.RoundToInt(amount)} HP", new Color(0.2f, 1f, 0.35f), transform.position + Vector3.up * 1.8f, 1.4f);
+        }
     }
 
     private PlayerAnimationController animController;
@@ -244,17 +326,15 @@ public class Player : BaseCharacter
         // 1. Khiên Kim Cang (Shield) hấp thụ sát thương trước HP
         if (CurrentShield > 0)
         {
-            if (CurrentShield >= finalDamage)
+            float absorbed = Mathf.Min(CurrentShield, finalDamage);
+            CurrentShield -= absorbed;
+            finalDamage -= absorbed;
+            UpdateShieldVisualAndText();
+            OnShieldChanged?.Invoke(CurrentShield);
+
+            if (DamageTextManager.Instance != null && absorbed > 0)
             {
-                CurrentShield -= finalDamage;
-                OnShieldChanged?.Invoke(CurrentShield);
-                finalDamage = 0f;
-            }
-            else
-            {
-                finalDamage -= CurrentShield;
-                CurrentShield = 0f;
-                OnShieldChanged?.Invoke(0f);
+                DamageTextManager.Instance.SpawnCustomText($"-{Mathf.RoundToInt(absorbed)} [KHIÊN]", new Color(1f, 0.88f, 0.2f), transform.position + Vector3.up * 1.5f, 1.3f);
             }
         }
 
@@ -272,6 +352,12 @@ public class Player : BaseCharacter
                 return;
             }
             UpdateHPUI(MaxHP > 0 ? HP / MaxHP : 1f);
+
+            // Pop-up số damage nhận vào của Player
+            if (DamageTextManager.Instance != null)
+            {
+                DamageTextManager.Instance.SpawnDamage(finalDamage, isCrit, attackerElement, transform.position + Vector3.up * 0.8f);
+            }
         }
 
         // 3. Mộc Giáp Hồi Sinh: Mỗi khi nhận sát thương, tự động hồi lại % HP tối đa

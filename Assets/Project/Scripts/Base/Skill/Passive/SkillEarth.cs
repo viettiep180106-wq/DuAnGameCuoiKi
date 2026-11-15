@@ -12,7 +12,7 @@ using DG.Tweening;
 public class SkillEarth : SkillPassive
 {
     [Header("Earth Cleave Settings")]
-    public float slamHeight = 3.5f;
+    public float slamHeight = 11.5f; // Điểm thả cao gấp hơn 3 lần từ trên trời rơi xuống
     public float impactRadius = 1.35f;
 
     public SkillEarth()
@@ -74,13 +74,14 @@ public class SkillEarth : SkillPassive
         centerPos /= cleaveTargets.Count;
 
         // Tảng thiên thạch / khối địa chấn to lớn giáng xuống từ trên trời vào tâm hàng
-        transform.localScale = Vector3.one * 3.8f;
+        transform.localScale = Vector3.one * 1.55f;
         var sr = GetComponentInChildren<SpriteRenderer>();
         if (sr != null)
         {
+            sr.drawMode = SpriteDrawMode.Simple;
             sr.sortingLayerName = "Default";
             sr.sortingOrder = 35;
-            sr.color = new Color(0.85f, 0.55f, 0.25f, 1f); // Nâu cam đất rực sáng
+            sr.color = Color.white; // Giữ nguyên màu sắc chi tiết của khối nham thạch
         }
 
         transform.position = centerPos + Vector3.up * slamHeight;

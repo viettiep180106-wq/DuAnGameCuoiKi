@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6a5fa8202e35df469e78669bf9efe4d, type: 3}
+  m_Name: Enemy_CungThuAm
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDataSO
+  enemyType: 4
+  enemyName: "Cung Th\u1EE7 \xC1m"
+  element: 1
+  category: 0
+  role: 0
+  defaultRow: 1
+  maxHP: 160
+  atk: 50
+  def: 50
+  critRate: 0.1
+  critDmg: 1.3
+  speed: 0.3
+  attackCd: 2
+  reflect: 0
+  scale: 0.85
+  isBoss: 0
+  combatType: 1
+  attackRange: 4
+  activeSkillName: "M\u01B0a T\xEAn \u0110\u1ED9c M\u1ED9c"
+  skillMultiplier: 1.6
+  skillCdRound: 2
+  activeSkillDesc: "B\u1EAFn t\xEAn \u0111\u1ED9c t\u1EA7m xa g\xE2y 160% ATK s\xE1t
+    th\u01B0\u01A1ng (48 ST) l\xEAn Player"
+  passiveSkillDesc: "\u0110\xF2n \u0111\xE1nh c\xF3 15% t\u1EC9 l\u1EC7 g\xE2y hi\u1EC7u
+    \u1EE9ng \u0111\u1ED9c nh\u1EB9 r\xFAt 1% HP"
+  normalAttackDesc: "B\u1EAFn t\xEAn g\u1ED7 m\u1EE5c g\xE2y 100% ATK (30 ST)"
+  enemyPrefab: {fileID: 0}

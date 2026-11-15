@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6a5fa8202e35df469e78669bf9efe4d, type: 3}
+  m_Name: Enemy_GolemThep
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDataSO
+  enemyType: 30
+  enemyName: "Golem Th\xE9p"
+  element: 0
+  category: 0
+  role: 1
+  defaultRow: 0
+  maxHP: 400
+  atk: 30
+  def: 80
+  critRate: 0.05
+  critDmg: 1.2
+  speed: 0.15
+  attackCd: 2
+  reflect: 0
+  scale: 1
+  isBoss: 0
+  combatType: 0
+  attackRange: 0.85
+  activeSkillName: "Ph\xE1o \u0110\xE0i Kim Lo\u1EA1i"
+  skillMultiplier: 1.2
+  skillCdRound: 3
+  activeSkillDesc: "K\xEDch ho\u1EA1t gi\xE1p th\xE9p: T\u1EA1o khi\xEAn gi\u1EA3m
+    40% s\xE1t th\u01B0\u01A1ng nh\u1EADn v\xE0o trong 2 Round"
+  passiveSkillDesc: "Mi\u1EC5n nhi\u1EC5m ho\xE0n to\xE0n v\u1EDBi hi\u1EC7u \u1EE9ng
+    Cho\xE1ng"
+  normalAttackDesc: "\u0110\u1EA5m th\xE9p n\u1EB7ng n\u1EC1 g\xE2y 100% ATK (24
+    ST)"
+  enemyPrefab: {fileID: 0}

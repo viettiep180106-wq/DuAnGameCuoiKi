@@ -401,7 +401,33 @@ public class DialogueManager : MonoBehaviour
 
     public void PlayVictoryNarrative(Action onComplete)
     {
-        StartDialogueQueue(DialogueDatabase.GetCombatVictoryLines(), onComplete);
+        int step = GameManager.instance != null ? GameManager.instance.CurrentStep : 1;
+        PlayVictoryNarrative(step, onComplete);
+    }
+
+    public void PlayVictoryNarrative(int currentStep, Action onComplete)
+    {
+        bool isBoss = false;
+        bool isFinalBoss = false;
+        if (GameManager.instance != null)
+        {
+            isBoss = currentStep == GameManager.instance.TotalSteps;
+            isFinalBoss = isBoss && currentStep >= 10;
+        }
+        if (LevelManager.instance != null)
+        {
+            var stepData = LevelManager.instance.GetStepData(currentStep);
+            if (stepData != null && stepData.GetDifficulty() >= StepDifficulty.Hard)
+            {
+                isBoss = true;
+            }
+        }
+
+        Player player = Player.Instance != null ? Player.Instance : FindFirstObjectByType<Player>();
+        float hpRatio = player != null && player.MaxHealth > 0 ? player.CurrentHP / player.MaxHealth : 1f;
+
+        List<DialogueLine> lines = DialogueDatabase.GetCombatVictoryLines(isBoss, isFinalBoss, hpRatio);
+        StartDialogueQueue(lines, onComplete);
     }
 
     public void PlayDefeatNarrative(Action onComplete)

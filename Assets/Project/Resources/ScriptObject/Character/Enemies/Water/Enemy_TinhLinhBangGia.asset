@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6a5fa8202e35df469e78669bf9efe4d, type: 3}
+  m_Name: Enemy_TinhLinhBangGia
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDataSO
+  enemyType: 28
+  enemyName: "Tinh Linh B\u0103ng Gi\xE1"
+  element: 2
+  category: 1
+  role: 3
+  defaultRow: 1
+  maxHP: 800
+  atk: 70
+  def: 80
+  critRate: 0.2
+  critDmg: 1.8
+  speed: 0.35
+  attackCd: 2
+  reflect: 0
+  scale: 1.2
+  isBoss: 1
+  combatType: 1
+  attackRange: 4
+  activeSkillName: "\u0110\xF3ng B\u0103ng H\xE0ng Ng\u0169"
+  skillMultiplier: 0.8
+  skillCdRound: 3
+  activeSkillDesc: "Ni\u1EC7m ph\xE9p b\u0103ng c\u1EF1c h\xE0n g\xE2y 80% ATK s\xE1t
+    th\u01B0\u01A1ng (72 ST) + \u0110\xF3ng b\u0103ng to\xE0n b\u1ED9 h\xE0ng \u0111\xE1
+    d\u01B0\u1EDBi c\xF9ng c\u1EE7a b\xE0n Match-3 trong 2 Round"
+  passiveSkillDesc: "Gi\u1EA3m 15% s\xE1t th\u01B0\u01A1ng nh\u1EADn v\xE0o t\u1EEB
+    c\xE1c k\u1EF9 n\u0103ng h\u1EC7 H\u1ECFa"
+  normalAttackDesc: "Ph\xF3ng l\u1ED1c b\u0103ng gi\xE1 t\u1EA7m xa g\xE2y 100% ATK
+    (90 ST)"
+  enemyPrefab: {fileID: 0}

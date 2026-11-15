@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6a5fa8202e35df469e78669bf9efe4d, type: 3}
+  m_Name: Enemy_KeTromKyNang
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDataSO
+  enemyType: 25
+  enemyName: "K\u1EBB Tr\u1ED9m K\u1EF9 N\u0103ng"
+  element: 2
+  category: 0
+  role: 3
+  defaultRow: 1
+  maxHP: 240
+  atk: 40
+  def: 60
+  critRate: 0.1
+  critDmg: 1.3
+  speed: 0.45
+  attackCd: 2
+  reflect: 0
+  scale: 0.8
+  isBoss: 0
+  combatType: 1
+  attackRange: 3.8
+  activeSkillName: "C\u01B0\u1EDBp \u0110o\u1EA1t N\u1ED9i N\u0103ng"
+  skillMultiplier: 0.5
+  skillCdRound: 3
+  activeSkillDesc: "G\xE2y 50% ATK s\xE1t th\u01B0\u01A1ng (5 ST) + H\xFAt 5 Energy
+    c\u1EE7a Player chuy\u1EC3n h\xF3a th\xE0nh m\xE1u h\u1ED3i ph\u1EE5c cho b\u1EA3n
+    th\xE2n"
+  passiveSkillDesc: "[Th\xE2n Ph\xE1p \u1EA2o \u1EA2nh] C\xF3 15% t\u1EC9 l\u1EC7
+    n\xE9 tr\xE1nh ho\xE0n to\xE0n \u0111\xF2n \u0111\xE1nh c\u1EE7a Player"
+  normalAttackDesc: "Phi dao n\u01B0\u1EDBc g\xE2y 100% ATK (10 ST)"
+  enemyPrefab: {fileID: 0}

@@ -329,8 +329,24 @@ public static class EnemyStatsDatabase
         }}
     };
 
+    public static IReadOnlyDictionary<EnemyType, EnemyConfig> HardcodedConfigs => Configs;
+
     public static EnemyConfig GetConfig(EnemyType type)
     {
+        // 1. Ưu tiên tải từ ScriptableObject asset riêng lẻ của từng quái (GDD Individual SO)
+        EnemyDataSO individualSO = EnemyDataSO.Get(type);
+        if (individualSO != null)
+        {
+            return individualSO.ToEnemyConfig();
+        }
+
+        // 2. Ưu tiên tải từ Database SO
+        if (EnemyDatabaseSO.Instance != null && EnemyDatabaseSO.Instance.TryGetConfig(type, out var soConfig))
+        {
+            return soConfig;
+        }
+
+        // 3. Fallback về từ điển C# tĩnh nếu asset chưa được tạo
         if (Configs.TryGetValue(type, out var config)) return config;
 
         return new EnemyConfig
@@ -391,6 +407,11 @@ public static class EnemyStatsDatabase
 
     public static List<EnemyType> GetEnemiesByElement(ElementType element)
     {
+        if (EnemyDatabaseSO.Instance != null && EnemyDatabaseSO.Instance.Enemies.Count > 0)
+        {
+            return EnemyDatabaseSO.Instance.GetEnemiesByElement(element);
+        }
+
         List<EnemyType> list = new List<EnemyType>();
         foreach (var kvp in Configs)
         {
@@ -404,6 +425,11 @@ public static class EnemyStatsDatabase
 
     public static ElementType GetEnemyElement(EnemyType type)
     {
+        if (EnemyDatabaseSO.Instance != null && EnemyDatabaseSO.Instance.TryGetConfig(type, out var soConfig))
+        {
+            return soConfig.Element;
+        }
+
         if (Configs.TryGetValue(type, out var config))
         {
             return config.Element;

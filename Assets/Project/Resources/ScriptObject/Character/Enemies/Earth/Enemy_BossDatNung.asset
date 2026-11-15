@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6a5fa8202e35df469e78669bf9efe4d, type: 3}
+  m_Name: Enemy_BossDatNung
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDataSO
+  enemyType: 22
+  enemyName: "Boss \u0110\u1EA5t Nung"
+  element: 4
+  category: 2
+  role: 1
+  defaultRow: 0
+  maxHP: 9000
+  atk: 90
+  def: 100
+  critRate: 0.1
+  critDmg: 1.5
+  speed: 0.15
+  attackCd: 2
+  reflect: 0.1
+  scale: 1.9
+  isBoss: 1
+  combatType: 0
+  attackRange: 1.2
+  activeSkillName: "\u0110\u1EA1i \u0110\u1ECBa Ch\u1EA5n H\u1EE7y Di\u1EC7t"
+  skillMultiplier: 2
+  skillCdRound: 4
+  activeSkillDesc: "T\u1EA1o c\u01A1n \u0111\u1ECBa ch\u1EA5n g\xE2y 200% ATK s\xE1t
+    th\u01B0\u01A1ng (180 ST) + L\xE0m Cho\xE1ng Player 1 Round + Kh\xF3a 5 \xF4
+    ng\u1ECDc tr\xEAn b\xE0n Match-3"
+  passiveSkillDesc: "[Gi\xE1p Th\u1EA7n C\u01B0\u01A1ng Th\u1EA1ch] \u0110\u1EA7u
+    m\u1ED7i Round t\u1EF1 t\u1EA1o l\xE1 ch\u1EAFn m\xE1u \u1EA3o b\u1EB1ng 10%
+    Max HP Boss (900 Shield); ph\u1EA3n l\u1EA1i 10% s\xE1t th\u01B0\u01A1ng nh\u1EADn
+    v\xE0o"
+  normalAttackDesc: "N\u1EC7n c\u1ED9t \u0111\xE1 th\u1EA7n th\xE1nh g\xE2y 100%
+    ATK (90 ST)"
+  enemyPrefab: {fileID: 0}

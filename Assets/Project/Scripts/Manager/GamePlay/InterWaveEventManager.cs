@@ -21,7 +21,9 @@ public class InterWaveEventManager : MonoBehaviour
             }
             return _instance;
         }
+        set => _instance = value;
     }
+    public static void SetInstanceForTest(InterWaveEventManager instance) => _instance = instance;
 
     public event Action<StepEventType, BuffDebuffType, bool> OnEventResolved; // (eventType, resultBuff, isBuff)
     public static event Action<BuffDebuffType, bool> OnBuffDebuffApplied;

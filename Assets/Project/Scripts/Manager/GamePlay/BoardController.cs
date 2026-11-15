@@ -31,6 +31,11 @@ public class BoardController : MonoBehaviour
     private Vector2 sizeSlot;
     private bool isRevert = false;
 
+    // Zero-GC Reusable Buffers
+    private readonly List<TypeStone> _targetCandidatesBuffer = new List<TypeStone>(8);
+    private readonly List<TypeStone> _remainCandidatesBuffer = new List<TypeStone>(8);
+    private readonly List<StoneBase> _unlockedStonesBuffer = new List<StoneBase>(36);
+
     private readonly TypeStone[] defaultElements = new TypeStone[] 
     { 
         TypeStone.Fire, 
@@ -447,25 +452,25 @@ public class BoardController : MonoBehaviour
         }
 
         // Tách danh sách ứng viên thành nhóm mục tiêu (targets) và nhóm còn lại (remains)
-        List<TypeStone> targetCandidates = new List<TypeStone>();
-        List<TypeStone> remainCandidates = new List<TypeStone>();
+        _targetCandidatesBuffer.Clear();
+        _remainCandidatesBuffer.Clear();
 
         for (int i = 0; i < candidates.Count; i++)
         {
             TypeStone c = candidates[i];
-            if (targets.Contains(c)) targetCandidates.Add(c);
-            else remainCandidates.Add(c);
+            if (targets.Contains(c)) _targetCandidatesBuffer.Add(c);
+            else _remainCandidatesBuffer.Add(c);
         }
 
         // Áp dụng tỷ lệ rơi ưu tiên theo GDD (Mục tiêu 60% - Còn lại 40%)
-        if (targetCandidates.Count > 0 && remainCandidates.Count > 0)
+        if (_targetCandidatesBuffer.Count > 0 && _remainCandidatesBuffer.Count > 0)
         {
             bool pickTarget = UnityEngine.Random.value < 0.60f;
             if (pickTarget)
             {
-                return targetCandidates[UnityEngine.Random.Range(0, targetCandidates.Count)];
+                return _targetCandidatesBuffer[UnityEngine.Random.Range(0, _targetCandidatesBuffer.Count)];
             }
-            return remainCandidates[UnityEngine.Random.Range(0, remainCandidates.Count)];
+            return _remainCandidatesBuffer[UnityEngine.Random.Range(0, _remainCandidatesBuffer.Count)];
         }
 
         return candidates[UnityEngine.Random.Range(0, candidates.Count)];
@@ -477,7 +482,7 @@ public class BoardController : MonoBehaviour
     public void LockRandomStones(int count, int rounds = 1)
     {
         if (grid == null) return;
-        List<StoneBase> unlockedStones = new List<StoneBase>();
+        _unlockedStonesBuffer.Clear();
         for (int x = 0; x < cols; x++)
         {
             if (x >= grid.Count) continue;
@@ -487,17 +492,17 @@ public class BoardController : MonoBehaviour
                 if (grid[x][y] != null && grid[x][y].GetStone() != null)
                 {
                     StoneBase s = grid[x][y].GetStone();
-                    if (!s.isLocked) unlockedStones.Add(s);
+                    if (!s.isLocked) _unlockedStonesBuffer.Add(s);
                 }
             }
         }
 
-        for (int i = 0; i < count && unlockedStones.Count > 0; i++)
+        for (int i = 0; i < count && _unlockedStonesBuffer.Count > 0; i++)
         {
-            int randIdx = UnityEngine.Random.Range(0, unlockedStones.Count);
-            StoneBase chosen = unlockedStones[randIdx];
+            int randIdx = UnityEngine.Random.Range(0, _unlockedStonesBuffer.Count);
+            StoneBase chosen = _unlockedStonesBuffer[randIdx];
             chosen.LockStone(rounds);
-            unlockedStones.RemoveAt(randIdx);
+            _unlockedStonesBuffer.RemoveAt(randIdx);
         }
     }
 

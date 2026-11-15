@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6a5fa8202e35df469e78669bf9efe4d, type: 3}
+  m_Name: Enemy_BoCapDa
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDataSO
+  enemyType: 19
+  enemyName: "B\u1ECD C\u1EA1p \u0110\xE1"
+  element: 4
+  category: 0
+  role: 1
+  defaultRow: 0
+  maxHP: 400
+  atk: 30
+  def: 80
+  critRate: 0.1
+  critDmg: 1.3
+  speed: 0.35
+  attackCd: 2
+  reflect: 0.2
+  scale: 0.85
+  isBoss: 0
+  combatType: 0
+  attackRange: 0.85
+  activeSkillName: "Gi\xE1p Gai \u0110\u1ED9c Th\u1EA1ch"
+  skillMultiplier: 1.2
+  skillCdRound: 3
+  activeSkillDesc: "K\xEDch ho\u1EA1t gi\xE1p gai ph\u1EA3n \u0111\xF2n trong 2 Round:
+    Ph\u1EA3n l\u1EA1i 20% s\xE1t th\u01B0\u01A1ng nh\u1EADn v\xE0o cho Player"
+  passiveSkillDesc: "Gi\u1EA3m 10% s\xE1t th\u01B0\u01A1ng nh\u1EADn v\xE0o t\u1EEB
+    c\xE1c k\u1EF9 n\u0103ng nguy\xEAn t\u1ED1"
+  normalAttackDesc: "Ch\xEDch \u0111u\xF4i \u0111\xE1 nh\u1ECDn g\xE2y 100% ATK (28
+    ST)"
+  enemyPrefab: {fileID: 0}

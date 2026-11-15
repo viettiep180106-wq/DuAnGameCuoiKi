@@ -52,6 +52,13 @@ public class CombatTurnManager : MonoBehaviour
     public event Action OnRoundEnded;
 
     private Coroutine _enemyTurnCoroutine;
+    private Player _cachedPlayer;
+    private EnemyController _cachedEnemyController;
+    private SkipTurnButtonUI _cachedSkipButton;
+
+    private Player CachedPlayer => Player.Instance != null ? Player.Instance : (_cachedPlayer != null ? _cachedPlayer : (_cachedPlayer = FindFirstObjectByType<Player>()));
+    private EnemyController CachedEnemyController => EnemyController.instance != null ? EnemyController.instance : (_cachedEnemyController != null ? _cachedEnemyController : (_cachedEnemyController = FindFirstObjectByType<EnemyController>()));
+    private SkipTurnButtonUI CachedSkipButton => _cachedSkipButton != null ? _cachedSkipButton : (_cachedSkipButton = FindFirstObjectByType<SkipTurnButtonUI>());
 
     private void Awake()
     {
@@ -105,7 +112,7 @@ public class CombatTurnManager : MonoBehaviour
     {
         int cost = GetNextMatchEnergyCost();
         if (cost == 0) return true;
-        Player player = Player.Instance != null ? Player.Instance : FindFirstObjectByType<Player>();
+        Player player = CachedPlayer;
         return player == null || player.EnergyCores >= cost;
     }
 
@@ -124,7 +131,7 @@ public class CombatTurnManager : MonoBehaviour
             return true;
         }
 
-        Player player = Player.Instance != null ? Player.Instance : FindFirstObjectByType<Player>();
+        Player player = CachedPlayer;
         if (player != null)
         {
             if (player.TrySpendEnergy(cost))
@@ -168,7 +175,7 @@ public class CombatTurnManager : MonoBehaviour
 
     public void HighlightSkipTurnButton(bool highlight)
     {
-        var skipBtn = FindFirstObjectByType<SkipTurnButtonUI>();
+        var skipBtn = CachedSkipButton;
         if (skipBtn != null)
         {
             if (highlight) skipBtn.StartPulsing();
@@ -181,7 +188,9 @@ public class CombatTurnManager : MonoBehaviour
     /// </summary>
     public bool TryConsumeSkillEnergy()
     {
-        return TryConsumeMatchEnergy();
+        Player player = CachedPlayer;
+        if (player == null || player.EnergyCores < BASE_MATCH_COST) return false;
+        return player.TrySpendEnergy(BASE_MATCH_COST);
     }
 
     /// <summary>
@@ -224,7 +233,7 @@ public class CombatTurnManager : MonoBehaviour
     /// </summary>
     private IEnumerator EnemyTurnRoutine()
     {
-        var ec = EnemyController.instance != null ? EnemyController.instance : FindFirstObjectByType<EnemyController>();
+        var ec = CachedEnemyController;
         if (ec != null)
         {
             // Lấy danh sách quái còn sống được sắp xếp theo đúng thứ tự hàng và tốc độ
@@ -247,7 +256,7 @@ public class CombatTurnManager : MonoBehaviour
                     yield return new WaitForSeconds(0.25f);
 
                     // Nếu Player đã tử trận trong lượt này thì dừng trận
-                    Player player = Player.Instance != null ? Player.Instance : FindFirstObjectByType<Player>();
+                    Player player = CachedPlayer;
                     if (player != null && player.CurrentHP <= 0)
                     {
                         SetState(CombatTurnState.BattleLost);
@@ -274,7 +283,7 @@ public class CombatTurnManager : MonoBehaviour
         OnRoundEnded?.Invoke();
 
         // 1. Giảm Cooldown 1 Round cho toàn bộ kỹ năng của quái
-        var ec = EnemyController.instance != null ? EnemyController.instance : FindFirstObjectByType<EnemyController>();
+        var ec = CachedEnemyController;
         if (ec != null)
         {
             ec.TickRoundCooldowns();
@@ -287,7 +296,7 @@ public class CombatTurnManager : MonoBehaviour
             return;
         }
 
-        Player player = Player.Instance != null ? Player.Instance : FindFirstObjectByType<Player>();
+        Player player = CachedPlayer;
         if (player != null && player.CurrentHP <= 0)
         {
             EndBattle(false);

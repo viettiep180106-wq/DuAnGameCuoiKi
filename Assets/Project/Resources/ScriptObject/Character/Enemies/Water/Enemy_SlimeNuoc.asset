@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6a5fa8202e35df469e78669bf9efe4d, type: 3}
+  m_Name: Enemy_SlimeNuoc
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDataSO
+  enemyType: 23
+  enemyName: "Slime N\u01B0\u1EDBc"
+  element: 2
+  category: 0
+  role: 3
+  defaultRow: 0
+  maxHP: 240
+  atk: 40
+  def: 60
+  critRate: 0.05
+  critDmg: 1.2
+  speed: 0.3
+  attackCd: 2
+  reflect: 0
+  scale: 0.8
+  isBoss: 0
+  combatType: 0
+  attackRange: 0.85
+  activeSkillName: "Tia N\u01B0\u1EDBc L\xE0m Ch\u1EADm"
+  skillMultiplier: 0.6
+  skillCdRound: 2
+  activeSkillDesc: "G\xE2y 60% ATK s\xE1t th\u01B0\u01A1ng (10 ST) + T\u0103ng chi
+    ph\xED cast skill c\u1EE7a Player th\xEAm 2 Energy (t\u1EEB 5 l\xEAn 7) trong
+    1 Round"
+  passiveSkillDesc: "T\u0103ng 10% n\xE9 tr\xE1nh \u0111\xF2n \u0111\xE1nh th\u01B0\u1EDDng"
+  normalAttackDesc: "\u0110\u1EADp b\u1ECDt n\u01B0\u1EDBc c\u01A1 b\u1EA3n g\xE2y
+    100% ATK (16 ST)"
+  enemyPrefab: {fileID: 0}

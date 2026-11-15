@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6a5fa8202e35df469e78669bf9efe4d, type: 3}
+  m_Name: Enemy_ChienBinhDungNham
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDataSO
+  enemyType: 13
+  enemyName: "Chi\u1EBFn Binh Dung Nham"
+  element: 3
+  category: 1
+  role: 0
+  defaultRow: 1
+  maxHP: 600
+  atk: 100
+  def: 60
+  critRate: 0.15
+  critDmg: 1.5
+  speed: 0.45
+  attackCd: 2
+  reflect: 0
+  scale: 1.2
+  isBoss: 1
+  combatType: 0
+  attackRange: 0.95
+  activeSkillName: "B\u1ED5 B\xFAa Dung Nham"
+  skillMultiplier: 2.2
+  skillCdRound: 2
+  activeSkillDesc: "N\u1EC7n b\xFAa l\u1EEDa g\xE2y 220% ATK s\xE1t th\u01B0\u01A1ng
+    (220 ST) + Thi\xEAu \u0111\u1ED1t r\xFAt 2% Max HP Player/Round trong 2 Round"
+  passiveSkillDesc: "Gi\u1EA3m 15% s\xE1t th\u01B0\u01A1ng nh\u1EADn v\xE0o t\u1EEB
+    c\xE1c \u0111\xF2n \u0111\xE1nh th\u01B0\u1EDDng"
+  normalAttackDesc: "B\u1ED5 b\xFAa r\u1EF1c l\u1EEDa g\xE2y 100% ATK (100 ST)"
+  enemyPrefab: {fileID: 0}

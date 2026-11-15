@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6a5fa8202e35df469e78669bf9efe4d, type: 3}
+  m_Name: Enemy_LinhDat
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDataSO
+  enemyType: 17
+  enemyName: "L\xEDnh \u0110\u1EA5t"
+  element: 4
+  category: 0
+  role: 1
+  defaultRow: 0
+  maxHP: 400
+  atk: 30
+  def: 80
+  critRate: 0.05
+  critDmg: 1.2
+  speed: 0.3
+  attackCd: 2
+  reflect: 0
+  scale: 0.9
+  isBoss: 0
+  combatType: 0
+  attackRange: 0.85
+  activeSkillName: "L\xE1 Ch\u1EAFn \u0110\u1EA5t \u0110\xE1"
+  skillMultiplier: 1.25
+  skillCdRound: 3
+  activeSkillDesc: "T\u1EA1o l\xE1 ch\u1EAFn m\xE1u \u1EA3o (Shield) b\u1EB1ng 25%
+    Max HP b\u1EA3n th\xE2n (45 Shield) trong 2 Round"
+  passiveSkillDesc: "Qu\xE1i \u0111\u1ED3ng minh \u0111\u1EE9ng sau L\xEDnh \u0110\u1EA5t
+    nh\u1EADn th\xEAm 15% DEF"
+  normalAttackDesc: "Ch\xE9m gi\xE1o \u0111\u1EA5t nung g\xE2y 100% ATK (18 ST)"
+  enemyPrefab: {fileID: 0}

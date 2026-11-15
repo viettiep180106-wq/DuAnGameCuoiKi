@@ -89,6 +89,31 @@ public static class DialogueDatabase
         new DialogueEntry("SC_44", "Mở đầu Trong Wave", "5. Banner Wave Chiến Đấu: Chạm trán Boss Wave", "Pháp Sư", "Căng đấy nhưng trẫm thích! Tập trung hỏa lực hạ gục hàng đỡ đòn rồi dồn combo tiễn Boss về vườn! Bật banner Bắt đầu chiến nào!", "Vung gậy ma pháp vẽ ấn chú uy lực; chibi nghiến răng tự tin; Banner 'Bắt đầu' bùng cháy sẵn sàng vào trận.", true),
         new DialogueEntry("SC_45", "Mở đầu Trong Wave", "6. Banner Wave Chiến Đấu: Chạm trán Final Boss (Trùm Cuối)", "Thánh Vật", "BÁO ĐỘNG CẤP MAX! Trùm cuối Final Boss ngự trị chiến trường! Lực chiến áp đảo, kỹ năng tối thượng hủy diệt toàn sàn đấu!", "Màn hình rung chuyển dữ dội, mây đen cuộn trào sấm sét đỏ rực; Thánh Vật dựng khiên bảo hộ run rẩy.", false),
         new DialogueEntry("SC_46", "Mở đầu Trong Wave", "6. Banner Wave Chiến Đấu: Chạm trán Final Boss (Trùm Cuối)", "Pháp Sư", "Trận chiến sinh tử là đây! Không còn đường lui nữa, bung hết mana match đá tuyệt kỹ tối thượng! Quyết chiến tới cùng!", "Toàn thân bốc cháy linh lực rực rỡ; tiếng nhạc chiến đấu hoành tráng vang dội; Banner 'Bắt đầu' kích hoạt vào trận.", true),
+        // 7. Chiến thắng Quái Thường: Thắng áp đảo (Ao chình / Out trình)
+        new DialogueEntry("SC_47", "Chiến thắng Wave (Wave Victory)", "7. Chiến thắng Quái Thường: Thắng áp đảo (Ao chình / Out trình)", "Pháp Sư", "Ủa alo? Chưa kịp giãn gân cốt mà cả lò nhà quái đã 'bay màu' hết rồi á? Đúng là ao trình không lối thoát, đánh đấm gì tầm này nữa!", "Vung gậy xoay một vòng điệu nghệ, thổi khói nơi đầu trượng phép; chibi khoanh tay hất cằm cười nhếch mép cực ngầu, icon kính râm đen rơi xuống mắt.", true),
+        new DialogueEntry("SC_48", "Chiến thắng Wave (Wave Victory)", "7. Chiến thắng Quái Thường: Thắng áp đảo (Ao chình / Out trình)", "Thánh Vật", "Bình tĩnh bớt gáy lại bạn êi! Quái tép riu khởi động thôi mà làm như đoạt cúp thế giới. Nhưng công nhận quả combo ngọc vừa rồi nuột nà thật sự!", "Bay giật lùi đảo mắt trollface, sau đó giơ ngón cái tán thưởng; hiệu ứng chữ 'OUTPLAYED' neon nhấp nháy trên đầu Pháp Sư.", false),
+        new DialogueEntry("SC_49", "Chiến thắng Wave (Wave Victory)", "7. Chiến thắng Quái Thường: Thắng áp đảo (Ao chình / Out trình)", "Pháp Sư", "Nội tại thiên tài nó ăn vào máu rồi! Trẫm mà match ngọc thì chuẩn chỉ từng mi-li-mét, quái nhìn thấy chỉ có nước 'trầm cảm'!", "Chibi tạo dáng idol Kpop bắn tim, hào quang lấp lánh quanh người, gậy ma thuật phát sáng rực rỡ.", true),
+        new DialogueEntry("SC_50", "Chiến thắng Wave (Wave Victory)", "7. Chiến thắng Quái Thường: Thắng áp đảo (Ao chình / Out trình)", "Thánh Vật", "Thôi bớt flex lại giùm! Dọn chiến trường lẹ lẹ còn chuẩn bị lướt wave tiếp theo, radar đang báo phía trước còn nhiều kèo căng lắm đấy!", "Hóa thân thành chiếc chổi lông gà ma thuật quét bụi quét sàn; nhấp nháy đèn tín hiệu giục giã di chuyển sang wave mới.", false),
+        // 8. Chiến thắng Quái Thường: Thắng chật vật (Thở oxi / Lật kèo 1 chấm máu)
+        new DialogueEntry("SC_51", "Chiến thắng Wave (Wave Victory)", "8. Chiến thắng Quái Thường: Thắng chật vật (Thở oxi / Lật kèo 1 chấm máu)", "Pháp Sư", "Hú hồn chim én! Tưởng đâu quả này trẫm đăng xuất khỏi trái đất rồi chứ! Còn đúng 1 chấm máu đỏ lòm, tim đập thình thịch như đánh trống trường!", "Ngồi phệt xuống đất ôm ngực thở dốc hồng hộc; thanh máu nhấp nháy đỏ báo động ở mức 1% HP, mồ hôi chibi rơi thành suối.", true),
+        new DialogueEntry("SC_52", "Chiến thắng Wave (Wave Victory)", "8. Chiến thắng Quái Thường: Thắng chật vật (Thở oxi / Lật kèo 1 chấm máu)", "Thánh Vật", "Thần may mắn vừa gánh còng cả lưng đấy nhé! Cú match ngọc 5 viên phút chót lật kèo thần thánh, suýt tí nữa là về với ông bà bu rồi!", "Thở phào nhẹ nhõm biến thành hình bong bóng xì hơi; giơ bình cứu thương mini xịt băng gạc quấn quanh đầu Pháp Sư.", false),
+        new DialogueEntry("SC_53", "Chiến thắng Wave (Wave Victory)", "8. Chiến thắng Quái Thường: Thắng chật vật (Thở oxi / Lật kèo 1 chấm máu)", "Pháp Sư", "Người ta gọi đấy là bản lĩnh sinh tồn đỉnh chóp! 'Còn thở là còn gỡ', một giọt máu cũng đủ tiễn cả đội hình địch về nơi chín suối!", "Chống gậy gượng đứng dậy, một mắt nhắm tịt một mắt mở to, giơ nắm đấm run rẩy tỏ vẻ kiên cường bất khuất.", true),
+        new DialogueEntry("SC_54", "Chiến thắng Wave (Wave Victory)", "8. Chiến thắng Quái Thường: Thắng chật vật (Thở oxi / Lật kèo 1 chấm máu)", "Thánh Vật", "Gáy to thì giỏi lắm! Tí nữa nhớ ghé đài tế đàn hồi máu hoặc săn buff giáp đi, chứ wave sau mà dính 1 hắt hơi là bốc hơi luôn đó!", "Chiếu đèn laser đỏ cảnh báo nguy hiểm; hiện icon bình HP lớn nhấp nháy nhắc nhở hồi phục khẩn cấp.", false),
+        // 9. Chiến thắng Boss Wave: Hạ gục Quái Tinh Anh (Vượt ải gay cấn)
+        new DialogueEntry("SC_55", "Chiến thắng Wave (Wave Victory)", "9. Chiến thắng Boss Wave: Hạ gục Quái Tinh Anh (Vượt ải gay cấn)", "Thánh Vật", "Keng keng keng! Boss Wave đã quỵ ngã! Đỡ đòn trâu bò lẫn phép thuật hồi sinh cũng không đỡ nổi cơn mưa kỹ năng vừa rồi! Uy tín 100 điểm!", "Bắn pháo bông giấy ma thuật tung tóe; camera rung nhẹ ăn mừng; Boss Wave biến thành tượng đá rồi nứt vỡ tan tành.", false),
+        new DialogueEntry("SC_56", "Chiến thắng Wave (Wave Victory)", "9. Chiến thắng Boss Wave: Hạ gục Quái Tinh Anh (Vượt ải gay cấn)", "Pháp Sư", "Haha! Tinh anh với chả thủ lĩnh, đứng trước dàn combo match-3 của trẫm thì cũng thành bia đỡ đạn hết! Gáy khét lẹt cả góc rừng luôn nhé!", "Nhảy cẫng lên đạp chân lên bệ đá vỡ của Boss, giơ cao trượng ma thuật phóng tia sét chiến thắng lên trời; chibi cười toe toét đắc thắng.", true),
+        new DialogueEntry("SC_57", "Chiến thắng Wave (Wave Victory)", "9. Chiến thắng Boss Wave: Hạ gục Quái Tinh Anh (Vượt ải gay cấn)", "Thánh Vật", "Công nhận quả dồn mana dứt điểm hàng trước rồi hạ gục boss đỉnh chóp thật! Chiến thuật 5v1 này áp dụng mượt mà không tì vết!", "Bay vòng quanh Pháp Sư vỗ tay bôm bốp; hào quang MVP màu vàng kim chiếu rọi toàn thân nhân vật.", false),
+        new DialogueEntry("SC_58", "Chiến thắng Wave (Wave Victory)", "9. Chiến thắng Boss Wave: Hạ gục Quái Tinh Anh (Vượt ải gay cấn)", "Pháp Sư", "Phải thế chứ! Cứ đà phong độ này thì quái cấp nào cũng phải quỳ gối xin tha. Tiếp tục hành trình thôi, trẫm đang nóng máy lắm rồi!", "Hất áo choàng bay phấp phới, mắt rực lửa nhiệt huyết; hiệu ứng Buff ATK tăng tạm thời lóe sáng rực rỡ.", true),
+        // 10. Chiến thắng Final Boss: Tiễn Trùm Cuối (Đại thắng màn chơi)
+        new DialogueEntry("SC_59", "Chiến thắng Wave (Wave Victory)", "10. Chiến thắng Final Boss: Tiễn Trùm Cuối (Đại thắng màn chơi)", "Thánh Vật", "CHẤN ĐỘNG VŨ TRỤ! FINAL BOSS ĐÃ GỤC NGÃ HOÀN TOÀN! Tà khí tiêu tan, hắc ám rút lui, chúng ta đã phá đảo chiến trường sinh tử này rồi bạn êi!", "Toàn màn hình bùng nổ hiệu ứng ánh sáng hoàng kim rực rỡ; tiếng chuông vàng ngân vang rộn rã; Thánh Vật nhảy múa hiphop tưng bừng trên không.", false),
+        new DialogueEntry("SC_60", "Chiến thắng Wave (Wave Victory)", "10. Chiến thắng Final Boss: Tiễn Trùm Cuối (Đại thắng màn chơi)", "Pháp Sư", "Trùm cuối cũng chỉ là muỗi thôi! Máu trâu dam to cỡ mấy mà gặp combo tối thượng của trẫm thì cũng phải về làng dưỡng sức! Đỉnh của chóp!", "Tạo dáng siêu anh hùng hạ cánh (Superhero Landing); áo choàng rực sáng ma pháp 7 màu; chibi chống nạnh ngửa mặt cười lớn.", true),
+        new DialogueEntry("SC_61", "Chiến thắng Wave (Wave Victory)", "10. Chiến thắng Final Boss: Tiễn Trùm Cuối (Đại thắng màn chơi)", "Thánh Vật", "Phá đảo ngoạn mục không tì vết! Danh hiệu Bậc Thầy Phép Thuật Match-3 chính thức thuộc về bạn! Giờ thì gom sạch bảo vật ăn mừng thôi!", "Cầm cúp vô địch vàng chóe trao cho Pháp Sư; dàn pháo hoa ma thuật bay lượn trên nền trời, chữ 'VICTORY' 3D xoay tít.", false),
+        new DialogueEntry("SC_62", "Chiến thắng Wave (Wave Victory)", "10. Chiến thắng Final Boss: Tiễn Trùm Cuối (Đại thắng màn chơi)", "Pháp Sư", "Đỉnh nóc kịch trần bay phấp phới! Chiến thắng này xin dành tặng cho những cú match 5 viên thần thánh! Chúng ta là bất khả chiến bại!", "Nâng cúp vàng lên cao, chibi nháy mắt giơ hai ngón tay chữ V; toàn bộ thú cưng và linh hồn xuất hiện cùng vỗ tay chúc mừng.", true),
+        // 11. Thu thập Lõi Năng Lượng (Energy Core Loot)
+        new DialogueEntry("SC_63", "Thu thập Lõi Năng Lượng (Energy Core Loot)", "11. Rơi và Thu Thập Lõi Sau Trận Đánh", "Thánh Vật", "Mưa năng lượng rơi như mưa rào mùa hạ kìa! Gom lẹ gom lẹ, ví tiền đang rủng rỉnh reo vui!", "Hóa thân thành chiếc nam châm ma thuật hút lõi năng lượng vèo vèo; hiệu ứng tia sáng xanh vàng bay rợp trời về phía túi đồ.", false),
+        new DialogueEntry("SC_64", "Thu thập Lõi Năng Lượng (Energy Core Loot)", "11. Rơi và Thu Thập Lõi Sau Trận Đánh", "Pháp Sư", "Haha, phát tài phát lộc rồi! Lõi sáng lấp lánh nhìn sướng cả mắt, đếm mỏi cả tay luôn!", "Mở to túi thần kỳ hứng lõi, hai mắt biến thành hình viên đá rune xoay tròn; chibi nhảy chân sáo lượm đồ.", true),
+        new DialogueEntry("SC_65", "Thu thập Lõi Năng Lượng (Energy Core Loot)", "11. Rơi và Thu Thập Lõi Sau Trận Đánh", "Thánh Vật", "Tích tiểu thành đại, có mớ lõi này ghé đài tế đàn mua đồ nâng cấp skill thì quái chỉ có nước khóc thét!", "Hiện bảng thống kê lõi vừa nhặt với số lượng nhảy số ting ting; Thánh Vật làm động tác 'đếm tiền' cực nhộn.", false),
+        new DialogueEntry("SC_66", "Thu thập Lõi Năng Lượng (Energy Core Loot)", "11. Rơi và Thu Thập Lõi Sau Trận Đánh", "Pháp Sư", "Chuẩn bài con gà tây! Nạp đầy ví rồi thì ngại gì vết bẩn, wave tiếp theo thẳng tiến thôi!", "Vỗ bôm bốp vào túi tiền căng phồng bên hông, chỉ gậy trượng về phía trước đầy hào khí; sẵn sàng bước vào wave mới.", true),
         };
 
         foreach (var e in list)
@@ -97,8 +122,18 @@ public static class DialogueDatabase
         }
     }
 
+    public static IReadOnlyDictionary<string, DialogueEntry> HardcodedEntries => _entries;
+
     public static DialogueEntry Get(string id)
     {
+        // 1. Ưu tiên tải từ ScriptableObject asset (cho phép designer/writer chỉnh trên Inspector)
+        if (DialogueDatabaseSO.Instance != null)
+        {
+            var soEntry = DialogueDatabaseSO.Instance.GetEntry(id);
+            if (soEntry != null) return soEntry;
+        }
+
+        // 2. Fallback về từ điển C# tĩnh
         return _entries.TryGetValue(id, out var entry) ? entry : null;
     }
 
@@ -155,6 +190,17 @@ public static class DialogueDatabase
     }
 
     // Combat Results
-    public static List<DialogueLine> GetCombatVictoryLines() => GetLines("SC_42");
+    public static List<DialogueLine> GetCombatVictoryLines() => GetLines("SC_47", "SC_48", "SC_49", "SC_50");
+
+    public static List<DialogueLine> GetCombatVictoryLines(bool isBoss, bool isFinalBoss, float hpRatio)
+    {
+        if (isFinalBoss) return GetLines("SC_59", "SC_60", "SC_61", "SC_62");
+        if (isBoss) return GetLines("SC_55", "SC_56", "SC_57", "SC_58");
+        if (hpRatio < 0.30f) return GetLines("SC_51", "SC_52", "SC_53", "SC_54");
+        return GetLines("SC_47", "SC_48", "SC_49", "SC_50");
+    }
+
+    public static List<DialogueLine> GetEnergyLootLines() => GetLines("SC_63", "SC_64", "SC_65", "SC_66");
+
     public static List<DialogueLine> GetCombatDefeatLines() => GetLines("SC_40");
 }
