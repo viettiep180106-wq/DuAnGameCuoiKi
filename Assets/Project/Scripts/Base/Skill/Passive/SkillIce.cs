@@ -136,8 +136,9 @@ public class SkillIce : SkillPassive
             _iceBoltPrefab = Resources.Load<GameObject>("Prefab/Base/Skill/Passive/IceBolt");
         }
 
-        // Điểm thả từ trên trời cao (10.5 units) lao sấm sét xuống quái
-        Vector3 startSkyPos = pos + Vector3.up * 10.5f;
+        // Điểm thả từ trên trời cao (22.0 units) lao sấm sét xuống quái, Z=985 để luôn ở trước quái
+        Vector3 targetPos = new Vector3(pos.x, pos.y, 985f);
+        Vector3 startSkyPos = targetPos + Vector3.up * 22.0f;
 
         GameObject bolt = null;
         if (ObjectPoolingManager.Instance != null && _iceBoltPrefab != null)
@@ -149,13 +150,28 @@ public class SkillIce : SkillPassive
             bolt = Instantiate(_iceBoltPrefab, startSkyPos, Quaternion.identity);
         }
 
-        float fallDuration = 0.10f;
+        float fallDuration = 0.20f;
         if (bolt != null)
         {
-            var tr = bolt.GetComponent<TrailRenderer>();
-            if (tr != null) tr.Clear();
+            bolt.transform.position = startSkyPos;
+            bolt.transform.localScale = new Vector3(3.5f, 7.5f, 1f);
+            var srBolt = bolt.GetComponent<SpriteRenderer>();
+            if (srBolt != null)
+            {
+                srBolt.sortingLayerName = "Default";
+                srBolt.sortingOrder = 50;
+            }
 
-            bolt.transform.DOMove(pos, fallDuration).SetEase(Ease.InQuad).OnComplete(() =>
+            var tr = bolt.GetComponent<TrailRenderer>();
+            if (tr != null)
+            {
+                tr.Clear();
+                tr.widthMultiplier = 2.0f;
+                tr.sortingLayerName = "Default";
+                tr.sortingOrder = 49;
+            }
+
+            bolt.transform.DOMove(targetPos, fallDuration).SetEase(Ease.InQuad).OnComplete(() =>
             {
                 if (ObjectPoolingManager.Instance != null)
                 {
@@ -170,8 +186,11 @@ public class SkillIce : SkillPassive
                 {
                     var (rawDmg, isCrit) = CalculateDamage(dmgRatio);
                     enemy.TakeDamage(rawDmg, isCrit, GetElementType());
-                    EnemyBase.SpawnSkillVFX(pos, ElementType.Water);
-                    Camera.main?.transform.DOShakePosition(0.10f, 0.22f, 10, 90f, false, true);
+                    EnemyBase.SpawnSkillVFX(targetPos, ElementType.Water);
+                    if (Camera.main != null)
+                    {
+                        Camera.main.transform.DOShakePosition(0.12f, new Vector3(0.22f, 0.22f, 0f), 10, 90f, false, true);
+                    }
                     ApplyIceCrowdControl(enemy, slowChance, freezeChance);
                 }
             });
@@ -180,8 +199,11 @@ public class SkillIce : SkillPassive
         {
             var (rawDmg, isCrit) = CalculateDamage(dmgRatio);
             enemy.TakeDamage(rawDmg, isCrit, GetElementType());
-            EnemyBase.SpawnSkillVFX(pos, ElementType.Water);
-            Camera.main?.transform.DOShakePosition(0.10f, 0.22f, 10, 90f, false, true);
+            EnemyBase.SpawnSkillVFX(targetPos, ElementType.Water);
+            if (Camera.main != null)
+            {
+                Camera.main.transform.DOShakePosition(0.12f, new Vector3(0.22f, 0.22f, 0f), 10, 90f, false, true);
+            }
             ApplyIceCrowdControl(enemy, slowChance, freezeChance);
         }
     }

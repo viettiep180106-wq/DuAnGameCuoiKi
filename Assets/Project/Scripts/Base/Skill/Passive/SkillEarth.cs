@@ -12,8 +12,8 @@ using DG.Tweening;
 public class SkillEarth : SkillPassive
 {
     [Header("Earth Cleave Settings")]
-    public float slamHeight = 11.5f; // Điểm thả cao gấp hơn 3 lần từ trên trời rơi xuống
-    public float impactRadius = 1.35f;
+    public float slamHeight = 22.0f; // Điểm thả cao vút từ trên trời rơi xuống
+    public float impactRadius = 2.5f;
 
     public SkillEarth()
     {
@@ -72,23 +72,27 @@ public class SkillEarth : SkillPassive
         }
 
         centerPos /= cleaveTargets.Count;
+        centerPos.z = 985f; // Nổi bật ở phía trước quái (quái ở z=990)
 
         // Tảng thiên thạch / khối địa chấn to lớn giáng xuống từ trên trời vào tâm hàng
-        transform.localScale = Vector3.one * 1.55f;
+        transform.localScale = Vector3.one * 2.5f;
         var sr = GetComponentInChildren<SpriteRenderer>();
         if (sr != null)
         {
             sr.drawMode = SpriteDrawMode.Simple;
             sr.sortingLayerName = "Default";
-            sr.sortingOrder = 35;
+            sr.sortingOrder = 50;
             sr.color = Color.white; // Giữ nguyên màu sắc chi tiết của khối nham thạch
         }
 
         transform.position = centerPos + Vector3.up * slamHeight;
-        transform.DOMove(centerPos, 0.35f).SetEase(Ease.InExpo).OnComplete(() =>
+        transform.DOMove(centerPos, 0.40f).SetEase(Ease.InExpo).OnComplete(() =>
         {
-            // Rung chấn mặt đất
-            Camera.main?.transform.DOShakePosition(0.25f, 0.35f, 14, 90f, false, true);
+            // Rung chấn mặt đất (khóa trục Z để không rung làm lệch camera frustum)
+            if (Camera.main != null)
+            {
+                Camera.main.transform.DOShakePosition(0.25f, new Vector3(0.35f, 0.35f, 0f), 14, 90f, false, true);
+            }
             EnemyBase.SpawnSkillVFX(centerPos, ElementType.Earth);
             ApplyCleaveSlam(cleaveTargets);
             DOVirtual.DelayedCall(0.45f, DespawnSelf);
@@ -140,7 +144,7 @@ public class SkillEarth : SkillPassive
         Camera cam = Camera.main;
         if (cam != null)
         {
-            cam.transform.DOShakePosition(0.2f, 0.15f, 15, 90f, false, true);
+            cam.transform.DOShakePosition(0.2f, new Vector3(0.15f, 0.15f, 0f), 15, 90f, false, true);
         }
     }
 

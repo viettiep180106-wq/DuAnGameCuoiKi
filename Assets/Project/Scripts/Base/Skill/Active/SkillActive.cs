@@ -195,7 +195,7 @@ public class SkillActive : MonoBehaviour
         {
             Color elemColor = ElementalHelper.GetColor(element);
             Vector3 textPos = player != null ? player.transform.position + Vector3.up * 2.6f : Vector3.up * 2.6f;
-            DamageTextManager.Instance.SpawnCustomText($"★ [{skillName}] ★", elemColor, textPos, 1.5f);
+            DamageTextManager.Instance.SpawnCustomText($"[{skillName}]", elemColor, textPos, 1.5f);
         }
 
         // Báo cho Player tung animation tấn công

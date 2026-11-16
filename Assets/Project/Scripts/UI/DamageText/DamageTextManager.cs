@@ -43,15 +43,18 @@ public class DamageTextManager : MonoBehaviour
     {
         if (damageTextPrefab != null) return;
 
-        // Tạo runtime prefab mẫu với font size và cấu hình hiển thị chuẩn xác
+        // Tạo runtime prefab mẫu với font size và cấu hình hiển thị chuẩn xác (gấp 3 lần)
         runtimeFallbackPrefab = new GameObject("DamageTextItem_Runtime");
         runtimeFallbackPrefab.AddComponent<DamageTextItem>();
         var tmp = runtimeFallbackPrefab.AddComponent<TextMeshPro>();
-        tmp.fontSize = 20;
+        tmp.fontSize = 60; // Gấp 3 từ 20
         tmp.alignment = TextAlignmentOptions.Center;
         tmp.fontStyle = FontStyles.Bold;
-        tmp.outlineWidth = 0.25f;
-        tmp.outlineColor = Color.black;
+        if (Application.isPlaying)
+        {
+            tmp.outlineWidth = 0.25f;
+            tmp.outlineColor = Color.black;
+        }
         
         var mr = runtimeFallbackPrefab.GetComponent<MeshRenderer>();
         if (mr != null)
@@ -66,6 +69,7 @@ public class DamageTextManager : MonoBehaviour
 
     public void SpawnDamage(float damage, bool isCrit, ElementType element, Vector3 worldPos)
     {
+        if (!Application.isPlaying) return;
         if (damageTextPrefab == null) CreateFallbackPrefabIfNeeded();
 
         // Đảm bảo Z luôn ở 985f (nổi bật trước nhân vật ở Z=990, an toàn trong camera farClipPlane)
@@ -83,6 +87,7 @@ public class DamageTextManager : MonoBehaviour
 
     public void SpawnCustomText(string message, Color color, Vector3 worldPos, float scaleMultiplier = 1.35f)
     {
+        if (!Application.isPlaying) return;
         if (damageTextPrefab == null) CreateFallbackPrefabIfNeeded();
 
         Vector3 safePos = new Vector3(worldPos.x, worldPos.y, 985f);

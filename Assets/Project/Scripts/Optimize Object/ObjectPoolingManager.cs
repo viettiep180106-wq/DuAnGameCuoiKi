@@ -30,7 +30,8 @@ public class ObjectPoolingManager : MonoBehaviour
     {
         if (_instance != null && _instance != this)
         {
-            Destroy(gameObject);
+            if (Application.isPlaying) Destroy(gameObject);
+            else DestroyImmediate(gameObject);
         }
         else
         {
@@ -99,13 +100,15 @@ public class ObjectPoolingManager : MonoBehaviour
             }
             else
             {
-                Destroy(instance);
+                if (Application.isPlaying) Destroy(instance);
+                else DestroyImmediate(instance);
             }
             _instanceToPrefabMap.Remove(instance);
         }
         else
         {
-            Destroy(instance);
+            if (Application.isPlaying) Destroy(instance);
+            else DestroyImmediate(instance);
         }
     }
 
@@ -121,7 +124,12 @@ public class ObjectPoolingManager : MonoBehaviour
             createFunc: () => Instantiate(prefab),
             actionOnGet: obj => { if (obj != null) obj.SetActive(true); },
             actionOnRelease: obj => { if (obj != null) obj.SetActive(false); },
-            actionOnDestroy: obj => { if (obj != null) Destroy(obj); },
+            actionOnDestroy: obj => { 
+                if (obj != null) {
+                    if (Application.isPlaying) Destroy(obj);
+                    else DestroyImmediate(obj);
+                }
+            },
             collectionCheck: false,
             defaultCapacity: 10,
             maxSize: 100

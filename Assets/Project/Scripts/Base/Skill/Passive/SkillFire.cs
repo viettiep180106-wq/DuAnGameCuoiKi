@@ -117,7 +117,7 @@ public class SkillFire : SkillPassive
 
         // Hiệu ứng nổ phình to kèm VFX Lửa rực rỡ
         EnemyBase.SpawnSkillVFX(transform.position, ElementType.Fire);
-        Camera.main?.transform.DOShakePosition(0.18f, 0.25f, 10, 90f, false, true);
+        Camera.main?.transform.DOShakePosition(0.18f, new Vector3(0.25f, 0.25f, 0f), 10, 90f, false, true);
         transform.DOScale(transform.localScale * 1.6f, 0.18f).OnComplete(DespawnSelf);
     }
 

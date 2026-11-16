@@ -77,14 +77,17 @@ public class Player : BaseCharacter
             {
                 GameObject hudObj = new GameObject("ShieldHpHUD");
                 hudObj.transform.SetParent(transform, false);
-                hudObj.transform.localPosition = new Vector3(0f, 1.45f, -0.2f);
+                hudObj.transform.localPosition = new Vector3(0f, 1.6f, -0.2f);
                 _shieldHpText = hudObj.AddComponent<TMPro.TextMeshPro>();
-                _shieldHpText.fontSize = 2.4f;
+                _shieldHpText.fontSize = 3.2f;
                 _shieldHpText.alignment = TMPro.TextAlignmentOptions.Center;
                 _shieldHpText.fontStyle = TMPro.FontStyles.Bold;
-                _shieldHpText.outlineWidth = 0.25f;
-                _shieldHpText.outlineColor = Color.black;
                 _shieldHpText.color = new Color(1f, 0.88f, 0.15f); // Hoàng kim
+                if (Application.isPlaying)
+                {
+                    _shieldHpText.outlineWidth = 0.25f;
+                    _shieldHpText.outlineColor = Color.black;
+                }
                 var mr = hudObj.GetComponent<MeshRenderer>();
                 if (mr != null)
                 {
@@ -117,22 +120,65 @@ public class Player : BaseCharacter
         }
         else
         {
-            if (_shieldHpText != null)
-            {
-                _shieldHpText.gameObject.SetActive(false);
-            }
-            if (_activeShieldVisualObj != null && _activeShieldVisualObj.activeSelf)
-            {
-                // Khiên vỡ vụn
-                EnemyBase.SpawnSkillVFX(transform.position, ElementType.Metal);
-                _activeShieldVisualObj.SetActive(false);
-            }
+            ClearShield();
         }
+    }
+
+    public bool HasActiveShield()
+    {
+        return CurrentShield > 0 && _activeShieldVisualObj != null && _activeShieldVisualObj.activeInHierarchy;
+    }
+
+    public void PulseShieldVisual()
+    {
+        if (_activeShieldVisualObj != null)
+        {
+            _activeShieldVisualObj.transform.DOKill();
+            float baseScale = 14.0f / Mathf.Max(0.01f, transform.localScale.x);
+            _activeShieldVisualObj.transform.DOScale(baseScale * 1.15f, 0.15f).SetEase(Ease.OutQuad).OnComplete(() =>
+            {
+                if (_activeShieldVisualObj != null)
+                {
+                    _activeShieldVisualObj.transform.DOScale(baseScale, 0.2f).SetEase(Ease.InQuad);
+                }
+            });
+        }
+    }
+
+    public void ClearShield()
+    {
+        CurrentShield = 0f;
+        if (_activeShieldVisualObj != null)
+        {
+            _activeShieldVisualObj.transform.DOKill();
+            _activeShieldVisualObj.transform.SetParent(null);
+            if (ObjectPoolingManager.Instance != null && _activeShieldVisualObj.activeInHierarchy)
+            {
+                ObjectPoolingManager.Instance.Despawn(_activeShieldVisualObj);
+            }
+            else
+            {
+                if (Application.isPlaying)
+                    Destroy(_activeShieldVisualObj);
+                else
+                    DestroyImmediate(_activeShieldVisualObj);
+            }
+            _activeShieldVisualObj = null;
+        }
+
+        if (_shieldHpText != null)
+        {
+            _shieldHpText.text = "";
+            _shieldHpText.gameObject.SetActive(false);
+        }
+
+        OnShieldChanged?.Invoke(0f);
     }
 
     public void AddShield(float amount, GameObject visualObj = null)
     {
-        CurrentShield = Mathf.Max(CurrentShield, amount);
+        // Cộng dồn chỉ số khiên chính xác theo yêu cầu GDD
+        CurrentShield += amount;
         UpdateShieldVisualAndText(visualObj);
         OnShieldChanged?.Invoke(CurrentShield);
     }
@@ -192,8 +238,8 @@ public class Player : BaseCharacter
 
     private PlayerAnimationController animController;
 
-    public readonly Vector3 CombatPosition = new Vector3(-16.0f, -0.7f, 0f);
-    public readonly Vector3 MarchingPosition = new Vector3(-5.693f, -0.7f, 0f);
+    public readonly Vector3 CombatPosition = new Vector3(-16.0f, 2.5f, 0f);
+    public readonly Vector3 MarchingPosition = new Vector3(-5.693f, 2.5f, 0f);
 
     public void AlignToCombatPosition(float duration = 0f, Action onComplete = null)
     {
@@ -214,6 +260,7 @@ public class Player : BaseCharacter
 
     public void AlignToMarchingPosition(float duration = 0.35f, Action onComplete = null)
     {
+        ClearShield(); // Despawn khiên khi kết thúc wave / bước sang chế độ di chuyển
         if (spriteRenderer == null) spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         if (spriteRenderer != null) spriteRenderer.flipX = true; // Luôn quay mặt sang PHẢI theo hướng hành tiến
         transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
@@ -407,6 +454,7 @@ public class Player : BaseCharacter
     public override void Deid()
     {
         CleanUpAllEffect();
+        ClearShield();
         if (animController != null)
         {
             animController.ActiveAnimation(TypeAnimationAtivity.isDied);

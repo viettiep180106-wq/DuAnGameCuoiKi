@@ -35,15 +35,9 @@ public class SkillWood : SkillPassive
         int tier = Mathf.Max(1, (int)(skillValue / 3f));
         player.WoodArmorTier = Mathf.Max(player.WoodArmorTier, tier);
 
-        // Kích hoạt hồi máu tức thời tượng trưng cho sinh lực phục hồi
+        // Kích hoạt hồi máu tức thời tượng trưng cho sinh lực phục hồi (Player.Heal sẽ tự động hiển thị số máu hồi phục)
         float directHeal = player.MaxHealth * (0.04f * tier);
         player.Heal(directHeal);
-
-        // Hiển thị Pop-up số máu hồi phục rực rỡ trên đầu Player
-        if (DamageTextManager.Instance != null)
-        {
-            DamageTextManager.Instance.SpawnCustomText($"+{Mathf.RoundToInt(directHeal)} HP", new Color(0.2f, 1f, 0.35f), player.transform.position + Vector3.up * 1.8f, 1.4f);
-        }
 
         // Sinh hạt hiệu ứng ma thuật Mộc Diệp
         EnemyBase.SpawnSkillVFX(player.transform.position, ElementType.Wood);

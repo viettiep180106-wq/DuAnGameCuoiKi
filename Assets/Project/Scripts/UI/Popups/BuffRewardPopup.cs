@@ -83,10 +83,10 @@ public class BuffRewardPopup : MonoBehaviour
     {
         return buff switch
         {
-            BuffType.AttackBoost   => "⚔️ CƯỜNG HÓA\nTăng +10% Sức Tấn Công (Toàn bộ Level)",
-            BuffType.DefenseBoost  => "🛡️ KIM THẠCH\nTăng +20% Phòng Thủ (Toàn bộ Level)",
-            BuffType.HealthRestore => "💚 TÁI TẠO\nHồi phục 20% HP cho Pháp Sư",
-            BuffType.EnergyGain    => "⚡ LÕI MA PHÁP\nNhận ngay +20 Lõi Năng Lượng",
+            BuffType.AttackBoost   => "[CƯỜNG HÓA]\nTăng +10% Sức Tấn Công (Toàn bộ Level)",
+            BuffType.DefenseBoost  => "[KIM THẠCH]\nTăng +20% Phòng Thủ (Toàn bộ Level)",
+            BuffType.HealthRestore => "[TÁI TẠO]\nHồi phục 20% HP cho Pháp Sư",
+            BuffType.EnergyGain    => "[LÕI MA PHÁP]\nNhận ngay +20 Lõi Năng Lượng",
             _ => "Buff Thánh Vật"
         };
     }

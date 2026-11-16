@@ -96,7 +96,7 @@ public class WaveIntroBannerUI : MonoBehaviour
 
         if (waveTitleText != null)
         {
-            waveTitleText.text = "⚔️ BẮT ĐẦU CHIẾN ĐẤU! ⚔️";
+            waveTitleText.text = "BẮT ĐẦU CHIẾN ĐẤU!";
         }
 
         if (waveDetailText != null)

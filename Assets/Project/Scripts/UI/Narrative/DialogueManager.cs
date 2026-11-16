@@ -340,6 +340,17 @@ public class DialogueManager : MonoBehaviour
 
     public void PlayVictoryNarrative(int currentStep, Action onComplete)
     {
+        // Wave khám phá không chạy lời thoại chiến thắng quái của wave chiến đấu
+        if (LevelManager.instance != null)
+        {
+            var stepData = LevelManager.instance.GetStepData(currentStep);
+            if (stepData != null && (stepData.IsDiscoveryWave || stepData.GetWaveType() == WaveType.Discovery))
+            {
+                onComplete?.Invoke();
+                return;
+            }
+        }
+
         bool isBoss = false;
         bool isFinalBoss = false;
         if (GameManager.instance != null)

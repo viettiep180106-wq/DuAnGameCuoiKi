@@ -203,35 +203,36 @@ public class EnemyController : MonoBehaviour
         RegisterEnemy(enemy);
         enemy.row = assignedRow;
 
-        // Định vị đội hình 2 hàng bên PHẢI tiếp đất theo chuẩn GDD (Ziczac Cánh Cung 2.5D, không chồng lấn)
+        // Định vị đội hình 2 hàng bên PHẢI: nâng cao tọa độ Y ngang tầm Player, mỗi quái cùng hàng cách nhau đúng 5 units
         float posX;
         float posY;
+        float baseY = 2.5f; // Nâng cao vị trí đứng của quái, tách biệt hoàn toàn khỏi player stat bar
         if (assignedRow == EnemyRow.Front)
         {
-            // Hàng trước (2 quái): So le trước - sau, tiếp đất tự nhiên ngang tầm Player
-            int frontSlot = _spawnedFrontCount % 2;
-            posX = frontSlot == 0 ? 1.0f : 2.4f;
-            posY = frontSlot == 0 ? -0.5f : -2.0f;
+            // Hàng trước (2 quái): Khoảng cách Y giữa 2 quái đúng bằng 5 units (+2.5f và -2.5f)
+            bool frontSlot = _spawnedFrontCount < 2;
+            posX = frontSlot? 2.5f : 7.5f;
+            posY = frontSlot? ((baseY + 2.5f)*_spawnedFrontCount) : (- 2.5f);
             _spawnedFrontCount++;
         }
         else
         {
-            // Hàng sau (3 quái): Thế cánh cung bao quát ôm trọn chiến tuyến
+            // Hàng sau (3 quái): Thế cánh cung, khoảng cách Y giữa mỗi quái liền kề đúng bằng 5 units (+5f, 0f, -5f)
             int backSlot = _spawnedBackCount % 3;
             if (backSlot == 0)
             {
-                posX = 6.8f;
-                posY = 0.6f;
+                posX = 7.5f;
+                posY = baseY + 5.0f;
             }
             else if (backSlot == 1)
             {
-                posX = 8.2f;
-                posY = -1.0f;
+                posX = 7.5f;
+                posY = baseY;
             }
             else
             {
-                posX = 7.0f;
-                posY = -2.6f;
+                posX = 7.5f;
+                posY = baseY - 5.0f;
             }
             _spawnedBackCount++;
         }
@@ -243,7 +244,7 @@ public class EnemyController : MonoBehaviour
         {
             sr.flipX = true;
             sr.sortingLayerName = "Default";
-            sr.sortingOrder = 15 + Mathf.RoundToInt(-posY * 5);
+            sr.sortingOrder = 15 ;
         }
 
         // Quái đứng cố định trên mặt đất trong suốt trận đấu, không di chuyển/drift vào Player

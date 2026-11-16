@@ -15,11 +15,11 @@ public class CombatBackgroundScroller : MonoBehaviour
     [SerializeField] private bool _invertDirection = false;
 
     [Header("Speed Settings")]
-    [Tooltip("Hệ số nhân tốc độ di chuyển (Mặc định 2.0f theo yêu cầu nhanh gấp đôi).")]
-    [SerializeField] private float _speedMultiplier = 2.0f;
+    [Tooltip("Hệ số nhân tốc độ di chuyển.")]
+    [SerializeField] private float _speedMultiplier = 1.0f;
 
-    [Tooltip("Tốc độ mặc định nếu chưa khởi tạo Player hoặc trong test scene.")]
-    [SerializeField] private float _fallbackSpeed = 1.6f;
+    [Tooltip("Tốc độ mặc định nếu chưa khởi tạo Player hoặc trong test scene (đã nhân 2 theo yêu cầu).")]
+    [SerializeField] private float _fallbackSpeed = 3.2f;
 
     [Header("Looping & Boundary Settings")]
     [Tooltip("Chiều rộng của sprite nền để ghép nối vòng lặp vô hạn không kẽ hở.")]
@@ -77,14 +77,17 @@ public class CombatBackgroundScroller : MonoBehaviour
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
         if (sr != null)
         {
+            float rawWidth = 20f;
             if (sr.drawMode != SpriteDrawMode.Simple && sr.size.x > 0f)
             {
-                _backgroundWidth = sr.size.x;
+                rawWidth = sr.size.x;
             }
             else if (sr.sprite != null)
             {
-                _backgroundWidth = sr.sprite.rect.width / sr.sprite.pixelsPerUnit;
+                rawWidth = sr.sprite.rect.width / sr.sprite.pixelsPerUnit;
             }
+            float scaleX = Mathf.Abs(transform.localScale.x);
+            _backgroundWidth = rawWidth * (scaleX > 0f ? scaleX : 1f);
         }
 
         if (_clonePiece == null && transform.parent != null)
@@ -240,7 +243,8 @@ public class CombatBackgroundScroller : MonoBehaviour
             _cachedPlayer = Player.Instance;
         }
 
-        float baseSpeed = (_cachedPlayer != null) ? _cachedPlayer.MoveSpeed : _fallbackSpeed;
+        // Tốc độ di chuyển cơ bản nhân 2 theo yêu cầu trải nghiệm mượt mà
+        float baseSpeed = (_cachedPlayer != null) ? (_cachedPlayer.MoveSpeed * 2.0f) : _fallbackSpeed;
         return baseSpeed * _speedMultiplier;
     }
 

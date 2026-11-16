@@ -600,7 +600,7 @@ public class MainSceneUIController : MonoBehaviour
                 txtRt.anchoredPosition = Vector2.zero;
 
                 var tmp = txtObj.GetComponent<TextMeshProUGUI>();
-                tmp.text = "⚠️ HẾT NĂNG LƯỢNG! NHẤN [SKIP LƯỢT] ĐỂ ĐỔI LƯỢT";
+                tmp.text = "[CẢNH BÁO] HẾT NĂNG LƯỢNG! NHẤN [SKIP LƯỢT] ĐỂ ĐỔI LƯỢT";
                 tmp.fontSize = 22;
                 tmp.fontStyle = FontStyles.Bold;
                 tmp.color = new Color(1f, 0.85f, 0.35f, 1f);

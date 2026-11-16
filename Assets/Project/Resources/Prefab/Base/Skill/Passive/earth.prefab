@@ -183,7 +183,7 @@ MonoBehaviour:
   timeToLive: 5
   targetLayer:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 0
   target: {fileID: 0}
-  slamHeight: 3.5
+  slamHeight: 22
   impactRadius: 3

@@ -36,19 +36,19 @@ public class EnemyProjectile : MonoBehaviour, IPoolable
     public void OnSpawn()
     {
         _hasHit = false;
-        transform.localScale = Vector3.one * 7.5f;
+        transform.localScale = Vector3.one * 18.0f;
         if (_visualRenderer != null)
         {
             _visualRenderer.sortingLayerName = "Default";
-            _visualRenderer.sortingOrder = 32;
+            _visualRenderer.sortingOrder = 35;
         }
         if (_trailRenderer != null)
         {
             _trailRenderer.Clear();
             _trailRenderer.enabled = true;
-            _trailRenderer.widthMultiplier = 1.5f;
+            _trailRenderer.widthMultiplier = 3.0f;
             _trailRenderer.sortingLayerName = "Default";
-            _trailRenderer.sortingOrder = 31;
+            _trailRenderer.sortingOrder = 34;
         }
     }
 
@@ -146,7 +146,7 @@ public class EnemyProjectile : MonoBehaviour, IPoolable
         {
             player.TakeDamage(_damage, false, _element);
             EnemyBase.SpawnSkillVFX(transform.position, _element);
-            Camera.main?.transform.DOShakePosition(0.15f, 0.2f, 10, 90f, false, true);
+            Camera.main?.transform.DOShakePosition(0.15f, new Vector3(0.2f, 0.2f, 0f), 10, 90f, false, true);
         }
 
         // Hiệu ứng nổ nhỏ khi trúng mục tiêu rồi biến mất

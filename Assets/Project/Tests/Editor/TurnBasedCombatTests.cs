@@ -202,6 +202,35 @@ public class TurnBasedCombatTests
     }
 
     [Test]
+    public void SkillWind_MetalShield_AccumulatesOnMultipleMatches_AndDespawnsOnWaveClear()
+    {
+        // Arrange
+        GameObject skillObj1 = new GameObject("SkillWind_1", typeof(CircleCollider2D), typeof(Rigidbody2D), typeof(SkillWind));
+        skillObj1.transform.SetParent(_testRoot.transform);
+        SkillWind skill1 = skillObj1.GetComponent<SkillWind>();
+        skill1.Initialize(3); // Tier 1: 15% Max HP = 75
+
+        // Act 1: Lần match đầu tiên
+        skill1.Active();
+        Assert.AreEqual(75f, _player.CurrentShield, "Match 1: Shield should be 75");
+        Assert.IsTrue(_player.HasActiveShield(), "Player should have active shield visual");
+
+        // Act 2: Lần match thứ hai -> Cộng dồn chỉ số (75 + 75 = 150)
+        GameObject skillObj2 = new GameObject("SkillWind_2", typeof(CircleCollider2D), typeof(Rigidbody2D), typeof(SkillWind));
+        skillObj2.transform.SetParent(_testRoot.transform);
+        SkillWind skill2 = skillObj2.GetComponent<SkillWind>();
+        skill2.Initialize(3); // Thêm 75 khiên
+        skill2.Active();
+
+        Assert.AreEqual(150f, _player.CurrentShield, "Match 2: Shield should accumulate to 150");
+
+        // Act 3: Kết thúc wave chiến đấu -> Tự động despawn khiên
+        _player.ClearShield();
+        Assert.AreEqual(0f, _player.CurrentShield, "Shield should be reset to 0 upon ClearShield");
+        Assert.IsFalse(_player.HasActiveShield(), "Active shield should be false after clear");
+    }
+
+    [Test]
     public void SkillWood_WoodArmor_HealsUponReceivingDamage()
     {
         // Arrange

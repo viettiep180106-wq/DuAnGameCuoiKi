@@ -278,7 +278,7 @@ public class EnemyBase : BaseCharacter
                 {
                     targetPlayer.TakeDamage(skillDmg, false, currentElement);
                     SpawnSkillVFX(targetPlayer.transform.position, currentElement);
-                    Camera.main?.transform.DOShakePosition(0.2f, 0.25f, 10, 90f, false, true);
+                    Camera.main?.transform.DOShakePosition(0.2f, new Vector3(0.25f, 0.25f, 0f), 10, 90f, false, true);
                 }
                 else
                 {
@@ -353,6 +353,7 @@ public class EnemyBase : BaseCharacter
 
     public static void SpawnSkillVFX(Vector3 pos, ElementType element)
     {
+        if (!Application.isPlaying) return;
         string vfxPath = $"Prefab/VFX/VFX_Template_{element}";
         GameObject prefab = Resources.Load<GameObject>(vfxPath);
         if (prefab != null)
@@ -410,7 +411,7 @@ public class EnemyBase : BaseCharacter
             EnemyProjectile proj = projObj.GetComponent<EnemyProjectile>();
             if (proj != null)
             {
-                proj.Launch(finalDmg, currentElement, spawnPos, targetPos, 5.0f);
+                proj.Launch(finalDmg, currentElement, spawnPos, targetPos, 22.0f);
             }
         }
         else

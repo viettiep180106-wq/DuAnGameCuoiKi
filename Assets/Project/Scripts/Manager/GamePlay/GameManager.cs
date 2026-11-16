@@ -242,10 +242,11 @@ public class GameManager : MonoBehaviour
             BoardController.instance.SlideOutBoard();
         }
 
-        // 3. Chuyển Player về trạng thái đứng nghỉ (isIdel) khi kết thúc wave
+        // 3. Tự động despawn khiên hệ Kim & chuyển Player về trạng thái đứng nghỉ (isIdel) khi kết thúc wave
         Player player = Player.Instance != null ? Player.Instance : FindFirstObjectByType<Player>();
         if (player != null)
         {
+            player.ClearShield();
             var anim = player.GetComponent<PlayerAnimationController>();
             if (anim != null)
             {
@@ -285,7 +286,17 @@ public class GameManager : MonoBehaviour
                 }
             }
 
-            if (DialogueManager.Instance != null)
+            bool isDiscoveryWave = false;
+            if (LevelManager.instance != null)
+            {
+                StepData currentStepData = LevelManager.instance.GetStepData(step);
+                if (currentStepData != null)
+                {
+                    isDiscoveryWave = currentStepData.IsDiscoveryWave || currentStepData.GetWaveType() == WaveType.Discovery;
+                }
+            }
+
+            if (!isDiscoveryWave && DialogueManager.Instance != null)
             {
                 DialogueManager.Instance.PlayVictoryNarrative(step, OnVictoryDialogueCompleted);
             }
@@ -370,6 +381,11 @@ public class GameManager : MonoBehaviour
         SetState(GamePlayState.GameOverWin);
         isWaveCombatActive = false;
         isHandlingWaveClear = false;
+
+        if (Player.Instance != null)
+        {
+            Player.Instance.ClearShield();
+        }
 
         // Dừng toàn bộ hoạt động gameplay khi chiến thắng
         StopAllCoroutines();
