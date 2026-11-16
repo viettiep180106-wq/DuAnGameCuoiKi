@@ -57,7 +57,7 @@ public class SkillActive : MonoBehaviour
 
         if (PlayerLoadoutManager.Instance != null)
         {
-            PlayerLoadoutManager.Instance.OnActiveSkillUnlocked += HandleActiveSkillUnlocked;
+            //PlayerLoadoutManager.Instance.OnActiveSkillUnlocked += HandleActiveSkillUnlocked;
         }
     }
 
@@ -65,7 +65,7 @@ public class SkillActive : MonoBehaviour
     {
         if (PlayerLoadoutManager.Instance != null)
         {
-            PlayerLoadoutManager.Instance.OnActiveSkillUnlocked -= HandleActiveSkillUnlocked;
+            //PlayerLoadoutManager.Instance.OnActiveSkillUnlocked -= HandleActiveSkillUnlocked;
         }
     }
 
@@ -73,7 +73,7 @@ public class SkillActive : MonoBehaviour
     {
         if (PlayerLoadoutManager.Instance != null)
         {
-            isUnlocked = PlayerLoadoutManager.Instance.IsActiveSkillUnlocked(skillType);
+            //isUnlocked = PlayerLoadoutManager.Instance.IsActiveSkillUnlocked(skillType);
         }
         UpdateUnlockVisuals(false);
     }

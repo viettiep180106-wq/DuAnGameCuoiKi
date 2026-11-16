@@ -52,9 +52,9 @@ public class CombatTurnManager : MonoBehaviour
     public event Action OnRoundEnded;
 
     private Coroutine _enemyTurnCoroutine;
-    private Player _cachedPlayer;
-    private EnemyController _cachedEnemyController;
-    private SkipTurnButtonUI _cachedSkipButton;
+    [SerializeField]private Player _cachedPlayer;
+    [SerializeField]private EnemyController _cachedEnemyController;
+    [SerializeField]private SkipTurnButtonUI _cachedSkipButton;
 
     private Player CachedPlayer => Player.Instance != null ? Player.Instance : (_cachedPlayer != null ? _cachedPlayer : (_cachedPlayer = FindFirstObjectByType<Player>()));
     private EnemyController CachedEnemyController => EnemyController.instance != null ? EnemyController.instance : (_cachedEnemyController != null ? _cachedEnemyController : (_cachedEnemyController = FindFirstObjectByType<EnemyController>()));

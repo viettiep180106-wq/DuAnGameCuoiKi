@@ -222,40 +222,13 @@ public class BoardController : MonoBehaviour
                             {
                                 ObjectPoolingManager.Instance.Despawn(stone.gameObject);
                             }
-                            else
-                            {
-#if UNITY_EDITOR
-                                if (!Application.isPlaying) DestroyImmediate(stone.gameObject);
-                                else Destroy(stone.gameObject);
-#else
-                                Destroy(stone.gameObject);
-#endif
-                            }
                         }
-#if UNITY_EDITOR
-                        if (!Application.isPlaying) DestroyImmediate(grid[x][y].gameObject);
-                        else Destroy(grid[x][y].gameObject);
-#else
-                        Destroy(grid[x][y].gameObject);
-#endif
                     }
                 }
             }
             grid.Clear();
         }
 
-        if (slotsContainer != null)
-        {
-            for (int i = slotsContainer.childCount - 1; i >= 0; i--)
-            {
-#if UNITY_EDITOR
-                if (!Application.isPlaying) DestroyImmediate(slotsContainer.GetChild(i).gameObject);
-                else Destroy(slotsContainer.GetChild(i).gameObject);
-#else
-                Destroy(slotsContainer.GetChild(i).gameObject);
-#endif
-            }
-        }
 
         // Dọn dẹp triệt để stonesContainer: chỉ despawn các đá đang active, KHÔNG destroy các đá đã nằm trong pool (activeSelf == false)
         if (stonesContainer != null)
@@ -268,15 +241,6 @@ public class BoardController : MonoBehaviour
                     if (ObjectPoolingManager.Instance != null)
                     {
                         ObjectPoolingManager.Instance.Despawn(child);
-                    }
-                    else
-                    {
-#if UNITY_EDITOR
-                        if (!Application.isPlaying) DestroyImmediate(child);
-                        else Destroy(child);
-#else
-                        Destroy(child);
-#endif
                     }
                 }
             }
@@ -857,7 +821,7 @@ public class BoardController : MonoBehaviour
     /// </summary>
     public float GetTargetSlideInY()
     {
-        return -540f;
+        return -510f;
     }
 
     /// <summary>

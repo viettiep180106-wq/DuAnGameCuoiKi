@@ -3539,27 +3539,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 293084785}
   m_CullTransparentMesh: 1
---- !u!114 &299407856
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d9eb72a2e7d51e4b9ebfdb5c5bfc0ad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ActiveSkillDataSO
-  _skillId: skill_meteor
-  _skillName: "Thi\xEAn Th\u1EA1ch Ma Ph\xE1p"
-  _skillType: 0
-  _element: 3
-  _icon: {fileID: 0}
-  _cooldownTime: 12
-  _skillDamageMultiplier: 2.5
-  _dropRateFromBoss: 0.6
-  _description: 
 --- !u!1 &303288319
 GameObject:
   m_ObjectHideFlags: 0
@@ -11217,27 +11196,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 815511292}
   m_CullTransparentMesh: 1
---- !u!114 &828207501
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d9eb72a2e7d51e4b9ebfdb5c5bfc0ad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ActiveSkillDataSO
-  _skillId: skill_blade
-  _skillName: "Ki\u1EBFm Kh\xED B\xE3o T\xE1p"
-  _skillType: 3
-  _element: 0
-  _icon: {fileID: 0}
-  _cooldownTime: 10
-  _skillDamageMultiplier: 2.8
-  _dropRateFromBoss: 0.5
-  _description: 
 --- !u!1 &835693133
 GameObject:
   m_ObjectHideFlags: 0
@@ -12335,6 +12293,10 @@ PrefabInstance:
       value: 660
       objectReference: {fileID: 0}
     - target: {fileID: 6709080527847314932, guid: c1734953e964d6749be22a3b8988cdaa, type: 3}
+      propertyPath: btnEndTurn
+      value: 
+      objectReference: {fileID: 660631801}
+    - target: {fileID: 6709080527847314932, guid: c1734953e964d6749be22a3b8988cdaa, type: 3}
       propertyPath: boardFrameSize
       value: 680
       objectReference: {fileID: 0}
@@ -12380,7 +12342,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6744620045759693742, guid: c1734953e964d6749be22a3b8988cdaa, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -555
+      value: -510
       objectReference: {fileID: 0}
     - target: {fileID: 7306067038866290774, guid: c1734953e964d6749be22a3b8988cdaa, type: 3}
       propertyPath: m_IsActive
@@ -17877,27 +17839,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1231463310}
   m_CullTransparentMesh: 1
---- !u!114 &1252435650
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d9eb72a2e7d51e4b9ebfdb5c5bfc0ad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ActiveSkillDataSO
-  _skillId: skill_freeze
-  _skillName: "B\u0103ng H\xE0 Phong \u1EA4n"
-  _skillType: 1
-  _element: 2
-  _icon: {fileID: 0}
-  _cooldownTime: 18
-  _skillDamageMultiplier: 2
-  _dropRateFromBoss: 0.5
-  _description: 
 --- !u!1 &1252928842
 GameObject:
   m_ObjectHideFlags: 0
@@ -23613,12 +23554,6 @@ MonoBehaviour:
   - {fileID: 948921313}
   - {fileID: 1197497721}
   - {fileID: 1272136543}
-  _allActiveSkills:
-  - {fileID: 299407856}
-  - {fileID: 1252435650}
-  - {fileID: 1752991860}
-  - {fileID: 828207501}
-  _unlockedActiveSkills: 03000000
 --- !u!4 &1665438518
 Transform:
   m_ObjectHideFlags: 0
@@ -24306,27 +24241,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1744531002}
   m_CullTransparentMesh: 1
---- !u!114 &1752991860
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d9eb72a2e7d51e4b9ebfdb5c5bfc0ad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ActiveSkillDataSO
-  _skillId: skill_shield
-  _skillName: "Khi\xEAn Th\xE1nh V\u1EF1c"
-  _skillType: 2
-  _element: 1
-  _icon: {fileID: 0}
-  _cooldownTime: 15
-  _skillDamageMultiplier: 1.5
-  _dropRateFromBoss: 0.45
-  _description: 
 --- !u!1 &1762866802
 GameObject:
   m_ObjectHideFlags: 0

@@ -649,19 +649,6 @@ public class EnemyBase : BaseCharacter
                 PlayerStatsUI.Instance.PlayEnergyCoreCollectJuice();
             }
 
-            // Cơ chế GDD: Tiêu diệt Boss Wave có tỉ lệ rơi ra Kỹ Năng Chủ Động (Skill Active)
-            bool isWaveBoss = GameManager.instance != null && GameManager.instance.CurrentStep == GameManager.instance.TotalSteps;
-            if (isBoss || isWaveBoss)
-            {
-                if (PlayerLoadoutManager.Instance != null)
-                {
-                    ActiveSkillDataSO dropped = PlayerLoadoutManager.Instance.TryDropActiveSkillFromBoss(currentElement);
-                    if (dropped != null)
-                    {
-                        Debug.Log($"<color=#ffdd00>★ [BOSS DROP] Tiêu diệt Boss rơi ra Skill Active: {dropped.SkillName}!</color>");
-                    }
-                }
-            }
         }
     }
 

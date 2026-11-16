@@ -90,33 +90,33 @@ public class SkillLoadoutSystemTests
         Object.DestroyImmediate(containerObj);
     }
 
-    [Test]
-    public void BossDrop_ActiveSkillUnlock_UpdatesStatus()
-    {
-        // Arrange
-        Assert.That(_loadoutManager.IsActiveSkillUnlocked(ActiveSkillType.MeteorStrike), Is.False, "Ban đầu MeteorStrike phải bị khóa!");
+    // [Test]
+    // public void BossDrop_ActiveSkillUnlock_UpdatesStatus()
+    // {
+    //     // Arrange
+    //     Assert.That(_loadoutManager.IsActiveSkillUnlocked(ActiveSkillType.MeteorStrike), Is.False, "Ban đầu MeteorStrike phải bị khóa!");
 
-        // Act
-        bool unlocked = _loadoutManager.UnlockActiveSkill(ActiveSkillType.MeteorStrike);
+    //     // Act
+    //     bool unlocked = _loadoutManager.UnlockActiveSkill(ActiveSkillType.MeteorStrike);
 
-        // Assert
-        Assert.That(unlocked, Is.True, "Mở khóa lần đầu phải trả về true!");
-        Assert.That(_loadoutManager.IsActiveSkillUnlocked(ActiveSkillType.MeteorStrike), Is.True, "Sau khi mở khóa, IsActiveSkillUnlocked phải là true!");
-    }
+    //     // Assert
+    //     Assert.That(unlocked, Is.True, "Mở khóa lần đầu phải trả về true!");
+    //     Assert.That(_loadoutManager.IsActiveSkillUnlocked(ActiveSkillType.MeteorStrike), Is.True, "Sau khi mở khóa, IsActiveSkillUnlocked phải là true!");
+    // }
 
-    [Test]
-    public void BossDrop_TryDropFromBoss_DropsAndUnlocksSkill()
-    {
-        // Arrange: Ban đầu BladeStorm đã mở khóa, còn 3 skill chưa mở
-        int initialCount = _loadoutManager.UnlockedActiveSkills.Count;
+    // [Test]
+    // public void BossDrop_TryDropFromBoss_DropsAndUnlocksSkill()
+    // {
+    //     // Arrange: Ban đầu BladeStorm đã mở khóa, còn 3 skill chưa mở
+    //     int initialCount = _loadoutManager.UnlockedActiveSkills.Count;
 
-        // Act: Giả lập đánh bại Boss nhiều lần để kiểm tra tỷ lệ rơi
-        for (int i = 0; i < 20; i++)
-        {
-            _loadoutManager.TryDropActiveSkillFromBoss(ElementType.Fire);
-        }
+    //     // Act: Giả lập đánh bại Boss nhiều lần để kiểm tra tỷ lệ rơi
+    //     for (int i = 0; i < 20; i++)
+    //     {
+    //         _loadoutManager.TryDropActiveSkillFromBoss(ElementType.Fire);
+    //     }
 
-        // Assert: Sau 20 lần đánh Boss, ít nhất phải rơi thêm skill active
-        Assert.That(_loadoutManager.UnlockedActiveSkills.Count, Is.GreaterThanOrEqualTo(initialCount));
-    }
+    //     // Assert: Sau 20 lần đánh Boss, ít nhất phải rơi thêm skill active
+    //     Assert.That(_loadoutManager.UnlockedActiveSkills.Count, Is.GreaterThanOrEqualTo(initialCount));
+    // }
 }

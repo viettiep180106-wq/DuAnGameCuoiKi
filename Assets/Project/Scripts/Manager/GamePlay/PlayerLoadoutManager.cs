@@ -26,15 +26,10 @@ public class PlayerLoadoutManager : MonoBehaviour
     [Header("Default Equipped Passives")]
     [SerializeField] private List<SkillPassiveDataSO> _equippedPassives = new List<SkillPassiveDataSO>();
 
-    [Header("Active Skills Status")]
-    [SerializeField] private List<ActiveSkillDataSO> _allActiveSkills = new List<ActiveSkillDataSO>();
-    [SerializeField] private List<ActiveSkillType> _unlockedActiveSkills = new List<ActiveSkillType>();
-
     // Mapping nhanh từ TypeStone -> SkillPassiveDataSO
     private readonly Dictionary<TypeStone, SkillPassiveDataSO> _stoneToSkillMap = new Dictionary<TypeStone, SkillPassiveDataSO>();
 
     public event Action<TypeStone, SkillPassiveDataSO> OnPassiveSkillEquipped;
-    public event Action<ActiveSkillDataSO> OnActiveSkillUnlocked;
 
     private void Awake()
     {
@@ -70,8 +65,6 @@ public class PlayerLoadoutManager : MonoBehaviour
         // 2. Nếu thiếu kỹ năng cho các hệ đá cơ bản, tự động nạp fallback mặc định kèm Icon
         EnsureDefaultPassiveSkills();
 
-        // 3. Khởi tạo danh sách Active Skills mặc định (nếu rỗng)
-        EnsureDefaultActiveSkills();
     }
 
     private void EnsureDefaultPassiveSkills()
@@ -144,23 +137,6 @@ public class PlayerLoadoutManager : MonoBehaviour
         return so;
     }
 
-    private void EnsureDefaultActiveSkills()
-    {
-        if (_allActiveSkills.Count == 0)
-        {
-            // Nạp 4 kỹ năng Active chuẩn theo GDD
-            _allActiveSkills.Add(CreateActiveSkillData("skill_meteor", "Thiên Thạch Ma Pháp", ActiveSkillType.MeteorStrike, ElementType.Fire, 12f, 2.5f, 0.6f));
-            _allActiveSkills.Add(CreateActiveSkillData("skill_freeze", "Băng Hà Phong Ấn", ActiveSkillType.AbsoluteFreeze, ElementType.Water, 18f, 2.0f, 0.5f));
-            _allActiveSkills.Add(CreateActiveSkillData("skill_shield", "Khiên Thánh Vực", ActiveSkillType.SacredShield, ElementType.Wood, 15f, 1.5f, 0.45f));
-            _allActiveSkills.Add(CreateActiveSkillData("skill_blade", "Kiếm Khí Bão Táp", ActiveSkillType.BladeStorm, ElementType.Metal, 10f, 2.8f, 0.5f));
-        }
-
-        // Ban đầu người chơi bắt đầu với 1 kỹ năng Active cơ bản (BladeStorm)
-        if (_unlockedActiveSkills.Count == 0)
-        {
-            _unlockedActiveSkills.Add(ActiveSkillType.BladeStorm);
-        }
-    }
 
     private ActiveSkillDataSO CreateActiveSkillData(string id, string name, ActiveSkillType type, ElementType elem, float cd, float dmgMul, float dropRate)
     {
@@ -222,50 +198,5 @@ public class PlayerLoadoutManager : MonoBehaviour
         OnPassiveSkillEquipped?.Invoke(newSkill.StoneType, newSkill);
     }
 
-    /// <summary>
-    /// Kiểm tra xem một kỹ năng Active đã được mở khóa (hoặc nhặt từ Boss) chưa
-    /// </summary>
-    public bool IsActiveSkillUnlocked(ActiveSkillType type)
-    {
-        return _unlockedActiveSkills.Contains(type);
-    }
-
-    /// <summary>
-    /// Mở khóa kỹ năng Active mới khi nhặt được từ Boss Wave
-    /// </summary>
-    public bool UnlockActiveSkill(ActiveSkillType type)
-    {
-        if (!_unlockedActiveSkills.Contains(type))
-        {
-            _unlockedActiveSkills.Add(type);
-
-            ActiveSkillDataSO data = _allActiveSkills.Find(s => s != null && s.SkillType == type);
-            OnActiveSkillUnlocked?.Invoke(data);
-            return true;
-        }
-        return false;
-    }
-
-    /// <summary>
-    /// Thử roll rơi kỹ năng Active khi tiêu diệt Boss Wave theo tỷ lệ GDD
-    /// </summary>
-    public ActiveSkillDataSO TryDropActiveSkillFromBoss(ElementType bossElement)
-    {
-        List<ActiveSkillDataSO> lockedSkills = _allActiveSkills.FindAll(s => s != null && !_unlockedActiveSkills.Contains(s.SkillType));
-        if (lockedSkills.Count == 0) return null;
-
-        ActiveSkillDataSO candidate = lockedSkills.Find(s => s.Element == bossElement) ?? lockedSkills[UnityEngine.Random.Range(0, lockedSkills.Count)];
-
-        float roll = UnityEngine.Random.value;
-        if (roll <= candidate.DropRateFromBoss)
-        {
-            UnlockActiveSkill(candidate.SkillType);
-            return candidate;
-        }
-
-        return null;
-    }
-
     public IReadOnlyList<SkillPassiveDataSO> EquippedPassives => _equippedPassives;
-    public IReadOnlyList<ActiveSkillType> UnlockedActiveSkills => _unlockedActiveSkills;
 }
