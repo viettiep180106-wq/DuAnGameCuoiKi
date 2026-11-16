@@ -20,12 +20,41 @@ public class SkillIce : SkillPassive
         stoneType = TypeStone.Ice;
     }
 
+    public override void OnSpawn()
+    {
+        base.OnSpawn();
+        transform.localScale = Vector3.one;
+        var sr = GetComponent<SpriteRenderer>();
+        if (sr != null)
+        {
+            sr.DOKill();
+            sr.color = new Color(0.2f, 0.8f, 1f, 0.4f);
+            sr.transform.localScale = Vector3.one;
+        }
+    }
+
+    public override void OnDespawn()
+    {
+        StopAllCoroutines();
+        transform.DOKill();
+        var sr = GetComponent<SpriteRenderer>();
+        if (sr != null)
+        {
+            sr.DOKill();
+            sr.color = new Color(0.2f, 0.8f, 1f, 0.4f);
+            sr.transform.localScale = Vector3.one;
+        }
+        transform.localScale = Vector3.one;
+        base.OnDespawn();
+    }
+
     public override void Active()
     {
         base.Active();
         var sr = GetComponent<SpriteRenderer>();
         if (sr != null)
         {
+            sr.DOKill();
             sr.color = new Color(0.2f, 0.8f, 1f, 0.4f);
             sr.transform.localScale = Vector3.one * 1.5f;
             sr.DOFade(0f, 0.45f);
@@ -187,9 +216,17 @@ public class SkillIce : SkillPassive
     {
         StopAllCoroutines();
         transform.DOKill();
+        var sr = GetComponent<SpriteRenderer>();
+        if (sr != null)
+        {
+            sr.DOKill();
+        }
         if (gameObject.activeInHierarchy)
         {
-            ObjectPoolingManager.Instance.Despawn(gameObject);
+            if (ObjectPoolingManager.Instance != null)
+                ObjectPoolingManager.Instance.Despawn(gameObject);
+            else
+                Destroy(gameObject);
         }
     }
 }

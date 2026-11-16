@@ -131,7 +131,16 @@ public class PlayerLoadoutManager : MonoBehaviour
             _ => ElementType.Metal
         };
 
-        so.Initialize($"skill_default_{stone}", $"Kỹ Năng {stone}", stone, elem, prefab, icon, 25f);
+        string skillDisplayName = stone switch
+        {
+            TypeStone.Fire => "Bom Cảm Tử",
+            TypeStone.Ice or TypeStone.Water => "Mưa Băng",
+            TypeStone.Wood => "Mộc Giáp",
+            TypeStone.Earth => "Địa Tầng",
+            _ => "Khiên Kim Cang"
+        };
+
+        so.Initialize($"skill_default_{stone}", skillDisplayName, stone, elem, prefab, icon, 25f);
         return so;
     }
 

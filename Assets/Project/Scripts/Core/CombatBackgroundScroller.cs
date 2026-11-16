@@ -15,11 +15,11 @@ public class CombatBackgroundScroller : MonoBehaviour
     [SerializeField] private bool _invertDirection = false;
 
     [Header("Speed Settings")]
-    [Tooltip("Hệ số nhân tốc độ di chuyển.")]
-    [SerializeField] private float _speedMultiplier = 1.0f;
+    [Tooltip("Hệ số nhân tốc độ di chuyển (Mặc định 2.0f theo yêu cầu nhanh gấp đôi).")]
+    [SerializeField] private float _speedMultiplier = 2.0f;
 
     [Tooltip("Tốc độ mặc định nếu chưa khởi tạo Player hoặc trong test scene.")]
-    [SerializeField] private float _fallbackSpeed = 0.8f;
+    [SerializeField] private float _fallbackSpeed = 1.6f;
 
     [Header("Looping & Boundary Settings")]
     [Tooltip("Chiều rộng của sprite nền để ghép nối vòng lặp vô hạn không kẽ hở.")]

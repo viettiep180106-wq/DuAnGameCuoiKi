@@ -58,44 +58,7 @@ public class BoardController : MonoBehaviour
         }
 
         EnsureContainers();
-        EnsureSkipTurnButton();
         LoadPrefabFromResource();
-    }
-
-
-    public void EnsureSkipTurnButton()
-    {
-        if (center == null) return;
-        Transform parentTrans = center.parent != null ? center.parent : transform;
-        Transform existing = parentTrans.Find("SkipTurnButton");
-        if (existing == null)
-        {
-            GameObject skipObj = new GameObject("SkipTurnButton", typeof(RectTransform), typeof(UnityEngine.UI.Image), typeof(UnityEngine.UI.Button), typeof(SkipTurnButtonUI));
-            skipObj.transform.SetParent(parentTrans, false);
-            RectTransform rt = skipObj.GetComponent<RectTransform>();
-            rt.anchorMin = new Vector2(0.5f, 0f);
-            rt.anchorMax = new Vector2(0.5f, 0f);
-            rt.pivot = new Vector2(0.5f, 0f);
-            rt.sizeDelta = new Vector2(170f, 48f);
-            rt.anchoredPosition = new Vector2(250f, 20f);
-
-            var img = skipObj.GetComponent<UnityEngine.UI.Image>();
-            img.color = new Color(0.2f, 0.65f, 0.95f, 0.95f);
-
-            GameObject textObj = new GameObject("Label", typeof(RectTransform), typeof(TMPro.TextMeshProUGUI));
-            textObj.transform.SetParent(skipObj.transform, false);
-            RectTransform textRt = textObj.GetComponent<RectTransform>();
-            textRt.anchorMin = Vector2.zero;
-            textRt.anchorMax = Vector2.one;
-            textRt.sizeDelta = Vector2.zero;
-            textRt.anchoredPosition = Vector2.zero;
-            var tmp = textObj.GetComponent<TMPro.TextMeshProUGUI>();
-            tmp.text = "SKIP LƯỢT";
-            tmp.fontSize = 20;
-            tmp.fontStyle = TMPro.FontStyles.Bold;
-            tmp.alignment = TMPro.TextAlignmentOptions.Center;
-            tmp.color = Color.white;
-        }
     }
 
     public void EnsureSlotPrefab()

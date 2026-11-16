@@ -14,13 +14,20 @@ public class DamageTextItem : MonoBehaviour, IPoolable
     public void OnSpawn()
     {
         transform.localScale = Vector3.one;
+        if (textComponent == null) textComponent = GetComponentInChildren<TMP_Text>();
+        if (textComponent != null) textComponent.alpha = 1f;
     }
 
     public void OnDespawn()
     {
         CancelInvoke(nameof(DespawnSelf));
         transform.DOKill();
-        if (textComponent != null) textComponent.DOKill();
+        if (textComponent != null)
+        {
+            textComponent.DOKill();
+            textComponent.alpha = 1f;
+        }
+        transform.localScale = Vector3.one;
     }
 
     public void Show(float damage, bool isCrit, ElementType element, Vector3 worldPos)

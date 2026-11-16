@@ -265,7 +265,7 @@ public class GameManager : MonoBehaviour
                 if (step >= maxSteps)
                 {
                     // Vượt qua toàn bộ Wave của màn chơi -> CHIẾN THẮNG MÀN CHƠI!
-                    WinGame(true);
+                    OnWinGame?.Invoke(true);
                 }
                 else
                 {
@@ -397,7 +397,6 @@ public class GameManager : MonoBehaviour
         }
 
         if (Win != null) Win.SetActive(set);
-        OnWinGame?.Invoke(set);
     }
 
     public void PauseGame(bool pause)
