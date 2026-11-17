@@ -49,6 +49,28 @@ public class EnemyController : MonoBehaviour
         return false;
     }
 
+    /// <summary>
+    /// Hồi sinh toàn bộ đồng minh tử trận (Kỹ năng tối thượng của Cổ Thụ Ngàn Năm)
+    /// </summary>
+    public int ReviveAllDeadAllies(ElementType targetElement, float hpPercent)
+    {
+        int revivedCount = 0;
+        for (int i = _deadEnemiesInWave.Count - 1; i >= 0; i--)
+        {
+            EnemyBase candidate = _deadEnemiesInWave[i];
+            if (candidate != null && candidate.CurrentHP <= 0)
+            {
+                _deadEnemiesInWave.RemoveAt(i);
+                float revHp = Mathf.Max(1f, candidate.MaxHealth * hpPercent);
+                candidate.ReviveWithHP(revHp);
+                RegisterEnemy(candidate);
+                numEnemy++;
+                revivedCount++;
+            }
+        }
+        return revivedCount;
+    }
+
     private void Awake()
     {
         _instance = this;
@@ -511,6 +533,7 @@ public class EnemyController : MonoBehaviour
             if (e != null && e.gameObject.activeInHierarchy && e.CurrentHP > 0)
             {
                 e.skillCooldownRound = Mathf.Max(0, e.skillCooldownRound - 1);
+                e.TickRoundBuffsAndShields();
             }
         }
     }

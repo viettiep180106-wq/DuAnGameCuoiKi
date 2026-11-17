@@ -177,6 +177,7 @@ public struct EffectPayLoad
 {
     public Effect EffectType;
     public float duration;
+    public int rounds; // Số Round tồn tại trong chiến đấu theo lượt (Turn-based)
     public float value;
     public float tickRate; // cd mỗi lần nhảy sát thương
     public float slowRate; 

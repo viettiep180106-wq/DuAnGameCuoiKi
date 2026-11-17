@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using DG.Tweening;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(PlayerAnimationController), typeof(BoxCollider2D))]
 public class Player : BaseCharacter
@@ -56,6 +57,17 @@ public class Player : BaseCharacter
     public bool HasImmunityCrowdControl { get; set; } = false;
     public int WoodArmorTier { get; set; } = 0;
     public bool HasUsedEmergencyHeal { get; set; } = false;
+
+    [Header("Turn-based Debuffs & Status Effects (GDD)")]
+    public List<ActiveRoundEffect> ActiveRoundEffects = new List<ActiveRoundEffect>();
+    public bool IsStunned => StunRounds > 0;
+    public int StunRounds = 0;
+    public int ExtraSkillCost = 0;
+    public int ExtraSkillCostRounds = 0;
+    public float AtkDebuffPercent = 0f;
+    public int AtkDebuffRounds = 0;
+    public float DefDebuffPercent = 0f;
+    public int DefDebuffRounds = 0;
 
     public event Action<float> OnShieldChanged;
     public event Action<int> OnEnergyCoresChanged;
@@ -356,22 +368,35 @@ public class Player : BaseCharacter
 
     public override void TakeDamage(float damage)
     {
-        TakeDamage(damage, false, ElementType.Wood);
+        TakeDamage(damage, false, ElementType.Wood, 0f, false);
     }
 
     public override void TakeDamage(float rawDamage, bool isCrit, ElementType attackerElement)
+    {
+        TakeDamage(rawDamage, isCrit, attackerElement, 0f, false);
+    }
+
+    public void TakeDamage(float rawDamage, bool isCrit, ElementType attackerElement, float ignoreDefPercent, bool ignoreShield)
     {
         if (animController != null)
         {
             animController.ActiveAnimation(TypeAnimationAtivity.isHit);
         }
 
-        float defense = data != null ? data.Dev : 0f;
+        // Tính toán thủ sau khi trừ debuff giảm DEF và trừ % xuyên giáp của quái
+        float baseDef = data != null ? data.Dev : 0f;
+        float defense = baseDef * Mathf.Clamp01(1f - DefDebuffPercent);
+        if (ignoreDefPercent > 0f)
+        {
+            defense *= Mathf.Clamp01(1f - ignoreDefPercent);
+        }
+        defense = Mathf.Max(0f, defense);
+
         float elementMultiplier = ElementalHelper.GetMultiplier(attackerElement, currentElement);
         float finalDamage = Mathf.Max(1f, (rawDamage * elementMultiplier) - defense);
 
-        // 1. Khiên Kim Cang (Shield) hấp thụ sát thương trước HP
-        if (CurrentShield > 0)
+        // 1. Khiên Kim Cang (Shield) hấp thụ sát thương trước HP (trừ khi đòn đánh bỏ qua khiên - ignoreShield)
+        if (!ignoreShield && CurrentShield > 0)
         {
             float absorbed = Mathf.Min(CurrentShield, finalDamage);
             CurrentShield -= absorbed;
@@ -427,6 +452,168 @@ public class Player : BaseCharacter
         }
     }
 
+    public void ApplyRoundDoT(Effect effectType, float hpPercentPerRound, int rounds, ElementType element, string displayName = "")
+    {
+        if (HP <= 0 || rounds <= 0) return;
+
+        var existing = ActiveRoundEffects.Find(e => e.EffectType == effectType);
+        if (existing != null)
+        {
+            existing.RoundsRemaining = Mathf.Max(existing.RoundsRemaining, rounds);
+            existing.Value = Mathf.Max(existing.Value, hpPercentPerRound);
+        }
+        else
+        {
+            ActiveRoundEffects.Add(new ActiveRoundEffect
+            {
+                EffectType = effectType,
+                Value = hpPercentPerRound,
+                RoundsRemaining = rounds,
+                Element = element,
+                DisplayName = string.IsNullOrEmpty(displayName) ? effectType.ToString() : displayName
+            });
+        }
+
+        if (DamageTextManager.Instance != null)
+        {
+            Color labelColor = effectType switch
+            {
+                Effect.DoT => new Color(1f, 0.45f, 0.1f),
+                Effect.Bleed => new Color(0.9f, 0.15f, 0.15f),
+                _ => new Color(0.6f, 0.2f, 0.9f)
+            };
+            string tag = string.IsNullOrEmpty(displayName) ? $"[{effectType.ToString().ToUpper()}]" : $"[{displayName.ToUpper()}]";
+            DamageTextManager.Instance.SpawnCustomText(tag, labelColor, transform.position + Vector3.up * 1.6f, 1.4f);
+        }
+    }
+
+    public void ApplyStun(int rounds)
+    {
+        if (HasImmunityCrowdControl)
+        {
+            HasImmunityCrowdControl = false;
+            if (DamageTextManager.Instance != null)
+            {
+                DamageTextManager.Instance.SpawnCustomText("[MIỄN NHIỄM CHOÁNG]", Color.white, transform.position + Vector3.up * 1.6f, 1.4f);
+            }
+            return;
+        }
+
+        StunRounds = Mathf.Max(StunRounds, rounds);
+        if (DamageTextManager.Instance != null)
+        {
+            DamageTextManager.Instance.SpawnCustomText("[CHOÁNG]", Color.yellow, transform.position + Vector3.up * 1.6f, 1.5f);
+        }
+    }
+
+    public void ConsumeStunRound()
+    {
+        if (StunRounds > 0)
+        {
+            StunRounds--;
+        }
+    }
+
+    public void ApplySkillCostDebuff(int extraCost, int rounds)
+    {
+        ExtraSkillCost = Mathf.Max(ExtraSkillCost, extraCost);
+        ExtraSkillCostRounds = Mathf.Max(ExtraSkillCostRounds, rounds);
+        if (DamageTextManager.Instance != null)
+        {
+            DamageTextManager.Instance.SpawnCustomText($"+{extraCost} CHI PHÍ SKILL", new Color(0.2f, 0.7f, 1f), transform.position + Vector3.up * 1.6f, 1.4f);
+        }
+    }
+
+    public void ApplyStatDebuff(bool isAtk, float percent, int rounds)
+    {
+        if (isAtk)
+        {
+            AtkDebuffPercent = Mathf.Max(AtkDebuffPercent, percent);
+            AtkDebuffRounds = Mathf.Max(AtkDebuffRounds, rounds);
+            if (DamageTextManager.Instance != null)
+            {
+                DamageTextManager.Instance.SpawnCustomText($"-{Mathf.RoundToInt(percent * 100f)}% CÔNG", new Color(1f, 0.5f, 0.2f), transform.position + Vector3.up * 1.6f, 1.4f);
+            }
+        }
+        else
+        {
+            DefDebuffPercent = Mathf.Max(DefDebuffPercent, percent);
+            DefDebuffRounds = Mathf.Max(DefDebuffRounds, rounds);
+            if (DamageTextManager.Instance != null)
+            {
+                DamageTextManager.Instance.SpawnCustomText($"-{Mathf.RoundToInt(percent * 100f)}% THỦ", new Color(0.3f, 0.7f, 1f), transform.position + Vector3.up * 1.6f, 1.4f);
+            }
+        }
+    }
+
+    public void ConsumeAllEnergy()
+    {
+        energyCores = 0;
+        OnEnergyCoresChanged?.Invoke(energyCores);
+        if (DamageTextManager.Instance != null)
+        {
+            DamageTextManager.Instance.SpawnCustomText("TRIỆT TIÊU NĂNG LƯỢNG!", new Color(0.2f, 0.8f, 1f), transform.position + Vector3.up * 1.6f, 1.5f);
+        }
+    }
+
+    public void TickRoundEffects()
+    {
+        if (HP <= 0) return;
+
+        // 1. Tick các hiệu ứng DoT (Thiêu đốt, Chảy máu, Độc tố)
+        for (int i = ActiveRoundEffects.Count - 1; i >= 0; i--)
+        {
+            var effect = ActiveRoundEffects[i];
+            float dotDamage = Mathf.Max(1f, MaxHP * effect.Value);
+
+            HP = Mathf.Max(0f, HP - dotDamage);
+            UpdateHPUI(MaxHP > 0 ? HP / MaxHP : 1f);
+
+            Color dotColor = effect.EffectType switch
+            {
+                Effect.DoT => new Color(1f, 0.4f, 0.1f),
+                Effect.Bleed => new Color(0.9f, 0.1f, 0.1f),
+                _ => new Color(0.6f, 0.2f, 0.9f)
+            };
+
+            if (DamageTextManager.Instance != null)
+            {
+                DamageTextManager.Instance.SpawnCustomText($"-{Mathf.RoundToInt(dotDamage)} {effect.DisplayName}", dotColor, transform.position + Vector3.up * 0.8f, 1.3f);
+            }
+
+            if (HP <= 0)
+            {
+                Deid();
+                return;
+            }
+
+            effect.RoundsRemaining--;
+            if (effect.RoundsRemaining <= 0)
+            {
+                ActiveRoundEffects.RemoveAt(i);
+            }
+        }
+
+        // 2. Giảm thời hạn các debuff
+        if (ExtraSkillCostRounds > 0)
+        {
+            ExtraSkillCostRounds--;
+            if (ExtraSkillCostRounds <= 0) ExtraSkillCost = 0;
+        }
+
+        if (AtkDebuffRounds > 0)
+        {
+            AtkDebuffRounds--;
+            if (AtkDebuffRounds <= 0) AtkDebuffPercent = 0f;
+        }
+
+        if (DefDebuffRounds > 0)
+        {
+            DefDebuffRounds--;
+            if (DefDebuffRounds <= 0) DefDebuffPercent = 0f;
+        }
+    }
+
     public void PlayAttackAnimation()
     {
         if (animController != null)
@@ -465,4 +652,14 @@ public class Player : BaseCharacter
             GameManager.instance.OnLoseGame?.Invoke(true);
         }
     }
+}
+
+[System.Serializable]
+public class ActiveRoundEffect
+{
+    public Effect EffectType;
+    public float Value; // % Max HP mỗi round cho DoT
+    public int RoundsRemaining;
+    public ElementType Element;
+    public string DisplayName;
 }

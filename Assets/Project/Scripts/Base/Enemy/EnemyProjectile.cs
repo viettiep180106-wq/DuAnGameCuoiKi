@@ -16,6 +16,8 @@ public class EnemyProjectile : MonoBehaviour, IPoolable
     private float _damage = 10f;
     private ElementType _element = ElementType.Wood;
     private bool _hasHit = false;
+    private float _ignoreDefPercent = 0f;
+    private bool _ignoreShield = false;
     private Tween _moveTween;
 
     private void Awake()
@@ -66,10 +68,12 @@ public class EnemyProjectile : MonoBehaviour, IPoolable
     /// <summary>
     /// Bắn đạn hướng về phía mục tiêu với màu sắc theo hệ nguyên tố của quái
     /// </summary>
-    public void Launch(float damage, ElementType element, Vector3 spawnPos, Vector3 targetPos, float speed = 5.0f)
+    public void Launch(float damage, ElementType element, Vector3 spawnPos, Vector3 targetPos, float speed = 5.0f, float ignoreDefPercent = 0f, bool ignoreShield = false)
     {
         _damage = damage;
         _element = element;
+        _ignoreDefPercent = ignoreDefPercent;
+        _ignoreShield = ignoreShield;
         _hasHit = false;
 
         transform.position = spawnPos;
@@ -144,7 +148,7 @@ public class EnemyProjectile : MonoBehaviour, IPoolable
 
         if (player != null && player.CurrentHP > 0)
         {
-            player.TakeDamage(_damage, false, _element);
+            player.TakeDamage(_damage, false, _element, _ignoreDefPercent, _ignoreShield);
             EnemyBase.SpawnSkillVFX(transform.position, _element);
             Camera.main?.transform.DOShakePosition(0.15f, new Vector3(0.2f, 0.2f, 0f), 10, 90f, false, true);
         }

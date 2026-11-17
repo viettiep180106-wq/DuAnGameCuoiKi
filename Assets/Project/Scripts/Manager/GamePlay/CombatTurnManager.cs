@@ -189,8 +189,9 @@ public class CombatTurnManager : MonoBehaviour
     public bool TryConsumeSkillEnergy()
     {
         Player player = CachedPlayer;
-        if (player == null || player.EnergyCores < BASE_MATCH_COST) return false;
-        return player.TrySpendEnergy(BASE_MATCH_COST);
+        int cost = BASE_MATCH_COST + (player != null ? player.ExtraSkillCost : 0);
+        if (player == null || player.EnergyCores < cost) return false;
+        return player.TrySpendEnergy(cost);
     }
 
     /// <summary>
@@ -303,10 +304,17 @@ public class CombatTurnManager : MonoBehaviour
             return;
         }
 
-        // 3. Làm mới Khiên Kim Cang (Hệ Kim) theo chu kỳ Round
+        // 3. Làm mới Khiên Kim Cang (Hệ Kim) và các hiệu ứng Turn-based theo chu kỳ Round
         if (player != null)
         {
             player.TickRoundMetalShield();
+            player.TickRoundEffects();
+        }
+
+        if (player != null && player.CurrentHP <= 0)
+        {
+            EndBattle(false);
+            return;
         }
 
         // 4. Giảm thời hạn khóa ngọc Match-3 theo chu kỳ Round
@@ -319,6 +327,18 @@ public class CombatTurnManager : MonoBehaviour
         _currentRound++;
         _playerMatchesThisTurn = 0;
         OnRoundChanged?.Invoke(_currentRound);
+
+        // Kiểm tra nếu Player đang dính hiệu ứng Choáng (Stun) -> Bỏ qua lượt Match-3
+        if (player != null && player.IsStunned)
+        {
+            player.ConsumeStunRound();
+            if (DamageTextManager.Instance != null)
+            {
+                DamageTextManager.Instance.SpawnCustomText("[CHOÁNG! MẤT LƯỢT]", Color.yellow, player.transform.position + Vector3.up * 1.5f, 1.5f);
+            }
+            StartEnemyTurn();
+            return;
+        }
 
         SetState(CombatTurnState.PlayerTurn);
 
