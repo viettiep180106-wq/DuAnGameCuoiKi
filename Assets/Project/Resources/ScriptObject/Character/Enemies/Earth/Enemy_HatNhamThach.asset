@@ -28,8 +28,9 @@ MonoBehaviour:
   reflect: 0.1
   scale: 1.35
   isBoss: 1
-  combatType: 0
   attackRange: 0.95
+  normalAttackActionType: 0
+  activeSkillActionType: 1
   activeSkillName: "L\xE1 Ch\u1EAFn Dung Nham B\xF9ng N\u1ED5"
   skillMultiplier: 1.5
   skillCdRound: 3
@@ -40,4 +41,4 @@ MonoBehaviour:
     l\u1EA1i 10% s\xE1t th\u01B0\u01A1ng nh\u1EADn v\xE0o t\u1EEB Player"
   normalAttackDesc: "L\u0103n kh\u1ED1i \u0111\xE1 n\xF3ng \u0111\u1ECF g\xE2y 100%
     ATK (70 ST)"
-  enemyPrefab: {fileID: 0}
+  enemyPrefab: {fileID: 208695350607123520, guid: 7fcf6c88881b6a842930284a3432163e, type: 3}

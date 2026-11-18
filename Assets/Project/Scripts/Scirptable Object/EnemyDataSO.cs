@@ -9,6 +9,13 @@ public enum EnemyCategory
     FinalBoss   // Final Boss (Trùm Cuối)
 }
 
+public enum EnemySkillActionType
+{
+    MeleeDash,      // Cận chiến: Lao nhanh sang trước mặt Player -> Đánh/Chiêu -> Lùi về
+    DefensiveSelf,  // Phòng thủ/Buff tự thân/toàn đội: ĐỨNG TẠI CHỖ thi triển (khiên, giáp, hồi máu)
+    RangedSpell     // Tầm xa/Pháp thuật/Phong ấn: ĐỨNG TẠI CHỖ bắn đạn ma thuật hoặc niệm chú phong ấn
+}
+
 [CreateAssetMenu(fileName = "EnemyData_", menuName = "ScriptableObjects/Character/EnemyDataSO")]
 public class EnemyDataSO : ScriptableObject
 {
@@ -33,8 +40,17 @@ public class EnemyDataSO : ScriptableObject
     public float reflect = 0f;
     public float scale = 0.85f;
     public bool isBoss = false;
-    public EnemyCombatType combatType = EnemyCombatType.Melee;
     public float attackRange = 0.85f;
+
+    [Header("----Action Types (Data-Driven Motion)----")]
+    public EnemySkillActionType normalAttackActionType = EnemySkillActionType.MeleeDash;
+    public EnemySkillActionType activeSkillActionType = EnemySkillActionType.RangedSpell;
+
+    public EnemyCombatType combatType
+    {
+        get => normalAttackActionType == EnemySkillActionType.RangedSpell ? EnemyCombatType.Ranged : EnemyCombatType.Melee;
+        set => normalAttackActionType = (value == EnemyCombatType.Ranged ? EnemySkillActionType.RangedSpell : EnemySkillActionType.MeleeDash);
+    }
 
     [Header("----Active Skill (Cooldown Round)----")]
     public string activeSkillName;
@@ -73,6 +89,8 @@ public class EnemyDataSO : ScriptableObject
             Scale = scale,
             IsBoss = isBoss || (category != EnemyCategory.Normal),
             CombatType = combatType,
+            NormalAttackActionType = normalAttackActionType,
+            ActiveSkillActionType = activeSkillActionType,
             AttackRange = attackRange
         };
     }

@@ -28,8 +28,9 @@ MonoBehaviour:
   reflect: 0
   scale: 0.85
   isBoss: 0
-  combatType: 1
   attackRange: 3.8
+  normalAttackActionType: 2
+  activeSkillActionType: 2
   activeSkillName: "Tia L\u1EEDa \u0110\u1ECF"
   skillMultiplier: 1.5
   skillCdRound: 2
@@ -39,4 +40,4 @@ MonoBehaviour:
     khi m\u1EE5c ti\xEAu thu\u1ED9c h\u1EC7 M\u1ED9c"
   normalAttackDesc: "\u0110\xF2n \u0111\xE1nh c\u01A1 b\u1EA3n g\xE2y 100% ATK (16
     ST)"
-  enemyPrefab: {fileID: 0}
+  enemyPrefab: {fileID: 208695350607123520, guid: 7fcf6c88881b6a842930284a3432163e, type: 3}

@@ -28,8 +28,9 @@ MonoBehaviour:
   reflect: 0
   scale: 0.75
   isBoss: 0
-  combatType: 1
   attackRange: 3.5
+  normalAttackActionType: 2
+  activeSkillActionType: 1
   activeSkillName: "M\u01B0a Ph\u01B0\u1EDBc L\xE0nh"
   skillMultiplier: 1.15
   skillCdRound: 2
@@ -38,4 +39,4 @@ MonoBehaviour:
   passiveSkillDesc: "[H\u01B0\u01A1ng Th\u1EA3o M\u1ED9c] T\u0103ng 10% hi\u1EC7u
     qu\u1EA3 h\u1ED3i m\xE1u c\u1EE7a b\u1EA3n th\xE2n"
   normalAttackDesc: "Phun ph\u1EA5n hoa g\xE2y 100% ATK (10 ST)"
-  enemyPrefab: {fileID: 0}
+  enemyPrefab: {fileID: 208695350607123520, guid: 7fcf6c88881b6a842930284a3432163e, type: 3}

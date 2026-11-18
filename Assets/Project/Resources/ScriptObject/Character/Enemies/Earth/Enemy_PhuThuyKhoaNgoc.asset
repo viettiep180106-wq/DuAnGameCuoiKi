@@ -28,8 +28,9 @@ MonoBehaviour:
   reflect: 0
   scale: 1.15
   isBoss: 1
-  combatType: 1
   attackRange: 4
+  normalAttackActionType: 2
+  activeSkillActionType: 2
   activeSkillName: "\u0110\u1EA1i Phong \u1EA4n Tr\u1EADn \u0110\u1ECBa"
   skillMultiplier: 0.7
   skillCdRound: 2
@@ -40,4 +41,4 @@ MonoBehaviour:
     t\xEDch l\u0169y Energy c\u1EE7a Player"
   normalAttackDesc: "B\u1EAFn qu\u1EA3 c\u1EA7u \u0111\u1ECBa ch\u1EA5n g\xE2y 100%
     ATK (80 ST)"
-  enemyPrefab: {fileID: 0}
+  enemyPrefab: {fileID: 208695350607123520, guid: 7fcf6c88881b6a842930284a3432163e, type: 3}

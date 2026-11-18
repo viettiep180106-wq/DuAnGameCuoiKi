@@ -661,6 +661,11 @@ public class BoardController : MonoBehaviour
     public void Trans(Direction type, StoneBase stone)
     {
         if (!canTrans) return;
+        if (stone != null && stone.isLocked)
+        {
+            stone.transform.DOShakePosition(0.2f, 6f);
+            return;
+        }
 
         // Kiểm tra chi phí Lõi Năng Lượng trước khi cho phép swap (GDD Rule)
         if (CombatTurnManager.Instance != null && !CombatTurnManager.Instance.CanPlayerAffordNextMatch())
@@ -720,8 +725,12 @@ public class BoardController : MonoBehaviour
                 break;
         }
 
-        if (stoneB == null)
+        if (stoneB == null || stoneB.isLocked)
         {
+            if (stoneB != null && stoneB.isLocked)
+            {
+                stoneB.transform.DOShakePosition(0.2f, 6f);
+            }
             canTrans = true;
             yield break;
         }

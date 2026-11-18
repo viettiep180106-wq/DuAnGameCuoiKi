@@ -31,6 +31,8 @@ public struct EnemyConfig
     public float Scale;
     public bool IsBoss;
     public EnemyCombatType CombatType;
+    public EnemySkillActionType NormalAttackActionType;
+    public EnemySkillActionType ActiveSkillActionType;
     public float AttackRange;
 }
 

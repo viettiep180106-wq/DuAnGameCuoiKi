@@ -28,8 +28,9 @@ MonoBehaviour:
   reflect: 0
   scale: 1.3
   isBoss: 1
-  combatType: 1
-  attackRange: 4
+  attackRange: 1.2
+  normalAttackActionType: 0
+  activeSkillActionType: 2
   activeSkillName: "\u0110\u1EA7m L\u1EA7y \u0102n M\xF2n"
   skillMultiplier: 0.8
   skillCdRound: 3
@@ -38,6 +39,6 @@ MonoBehaviour:
     10 Energy kh\u1EDFi \u0111\u1EA7u c\u1EE7a Player"
   passiveSkillDesc: "[B\xF9n S\u1ED1ng Dai D\u1EB3ng] Khi HP d\u01B0\u1EDBi 50%,
     t\u1EF1 h\u1ED3i ph\u1EE5c 5% Max HP m\u1ED7i Round"
-  normalAttackDesc: "Qu\u1EADt x\xFAc tu \u0111\u1EA7m l\u1EA7y g\xE2y 100% ATK (80
+  normalAttackDesc: "Qu\u1EA5t x\xFAc tu c\u1EADn chi\u1EBFn g\xE2y 100% ATK (80
     ST)"
-  enemyPrefab: {fileID: 0}
+  enemyPrefab: {fileID: 208695350607123520, guid: 7fcf6c88881b6a842930284a3432163e, type: 3}

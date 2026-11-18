@@ -62,7 +62,8 @@ public class StoneBase : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, 
         isLocked = true;
         lockDurationRounds = rounds;
         var img = GetComponent<UnityEngine.UI.Image>();
-        if (img != null) img.color = new Color(0.6f, 0.55f, 0.55f, 0.9f);
+        if (img != null) img.color = new Color(0.35f, 0.35f, 0.35f, 0.85f);
+        transform.DOShakePosition(0.25f, 8f);
     }
 
     public void FreezeStone(int rounds)

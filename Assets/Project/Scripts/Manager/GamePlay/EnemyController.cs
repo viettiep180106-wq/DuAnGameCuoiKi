@@ -97,6 +97,11 @@ public class EnemyController : MonoBehaviour
 
     private EnemyBase GetEnemyPrefab(EnemyType enemyType)
     {
+        EnemyDataSO so = EnemyDataSO.Get(enemyType);
+        if (so != null && so.enemyPrefab != null)
+        {
+            return so.enemyPrefab;
+        }
         if (listEnemy.TryGetValue(enemyType, out var prefab)) return prefab;
         return defaultEnemyPrefab;
     }

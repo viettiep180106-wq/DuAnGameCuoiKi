@@ -21,89 +21,43 @@ public class EnemyBase : BaseCharacter
     [Header("----ScriptableObject Data Reference (Single Source of Truth)----")]
     public EnemyDataSO enemyData;
 
-    [SerializeField] private EnemyType _type;
     public EnemyType type
     {
-        get => enemyData != null ? enemyData.enemyType : _type;
-        set => _type = value;
+        get => enemyData != null ? enemyData.enemyType : EnemyType.BoRac;
+        set
+        {
+            if (enemyData == null || enemyData.enemyType != value)
+            {
+                enemyData = EnemyDataSO.Get(value);
+            }
+        }
     }
 
-    [SerializeField] private bool _isBoss = false;
+    private bool _isDynamicBoss = false;
     public bool isBoss
     {
-        get => enemyData != null ? (enemyData.isBoss || enemyData.category != EnemyCategory.Normal) : _isBoss;
-        set => _isBoss = value;
+        get => _isDynamicBoss || (enemyData != null && (enemyData.isBoss || enemyData.category != EnemyCategory.Normal));
+        set => _isDynamicBoss = value;
     }
 
-    [SerializeField] private float _reflectPercent = 0f;
-    public float reflectPercent
-    {
-        get => enemyData != null ? enemyData.reflect : _reflectPercent;
-        set => _reflectPercent = value;
-    }
-
+    public float temporaryReflectBuff = 0f;
+    public int reflectBuffRounds = 0;
+    public float reflectPercent => (enemyData != null ? enemyData.reflect : 0f) + temporaryReflectBuff;
     public float currentAtk = 10f;
-
-    [SerializeField] private float _attackCooldown = 2f;
-    public float attackCooldown
-    {
-        get => enemyData != null ? enemyData.attackCd : _attackCooldown;
-        set => _attackCooldown = value;
-    }
-
-    [SerializeField] private EnemyCombatType _combatType = EnemyCombatType.Melee;
-    public EnemyCombatType combatType
-    {
-        get => enemyData != null ? enemyData.combatType : _combatType;
-        set => _combatType = value;
-    }
-
-    [SerializeField] private float _attackRange = 0.85f;
-    public float attackRange
-    {
-        get => enemyData != null ? enemyData.attackRange : _attackRange;
-        set => _attackRange = value;
-    }
+    public float currentDef = 0f;
+    public float attackCooldown => enemyData != null ? enemyData.attackCd : 2f;
+    public EnemyCombatType combatType => enemyData != null ? enemyData.combatType : EnemyCombatType.Melee;
+    public float attackRange => enemyData != null ? enemyData.attackRange : 0.85f;
 
     [Header("Turn-Based Settings (GDD 5v1)")]
     public EnemyRow row = EnemyRow.Front;
-
-    [SerializeField] private EnemyRole _role = EnemyRole.DPS_FBS;
-    public EnemyRole role
-    {
-        get => enemyData != null ? enemyData.role : _role;
-        set => _role = value;
-    }
+    public EnemyRole role => enemyData != null ? enemyData.role : EnemyRole.DPS_FBS;
 
     public int skillCooldownRound = 0;
-
-    [SerializeField] private int _maxSkillCooldownRound = 2;
-    public int maxSkillCooldownRound
-    {
-        get => enemyData != null ? enemyData.skillCdRound : _maxSkillCooldownRound;
-        set => _maxSkillCooldownRound = value;
-    }
-
-    [SerializeField] private float _skillMultiplier = 1.5f;
-    public float skillMultiplier
-    {
-        get => enemyData != null ? enemyData.skillMultiplier : _skillMultiplier;
-        set => _skillMultiplier = value;
-    }
-
-    [SerializeField] private float _critRate = 0.1f;
-    public float critRate
-    {
-        get => enemyData != null ? enemyData.critRate : _critRate;
-        set => _critRate = value;
-    }
-
-    [SerializeField] private float _critDmg = 1.5f;
-    public float critDmg
-    {
-        get => enemyData != null ? enemyData.critDmg : _critDmg;
-        set => _critDmg = value;
-    }
+    public int maxSkillCooldownRound => enemyData != null ? enemyData.skillCdRound : 2;
+    public float skillMultiplier => enemyData != null ? enemyData.skillMultiplier : 1.5f;
+    public float critRate => enemyData != null ? enemyData.critRate : 0.1f;
+    public float critDmg => enemyData != null ? enemyData.critDmg : 1.5f;
 
     public bool isRevived = false;
 
@@ -211,29 +165,61 @@ public class EnemyBase : BaseCharacter
     }
 
     /// <summary>
-    /// Xác định kỹ năng này có phải là đòn lao tới cận chiến hay không:
-    /// - Chỉ có các quái DPS cận chiến có chiêu vồ / bổ búa / ám sát mới lao sang Player khi dùng skill (Chó Săn, Chiến Binh Dung Nham, Sát Thủ Bóng Tối, Bậc Thầy Sát Thủ, Thủy Quái Nhỏ).
-    /// - TOÀN BỘ chiêu Phòng thủ (Tank tự bật khiên/giáp/bọc bùn), chiêu Hỗ trợ (hồi máu, buff, hồi sinh),
-    ///   chiêu Pháp sư (khóa ngọc Match-3, làm chậm, hút energy, địa chấn) và quái tầm xa ĐỀU ĐỨNG TẠI CHỖ THI TRIỂN!
+    /// Phân loại hình thái kỹ năng của quái:
+    /// - MeleeDash: Lao sang trước mặt Player -> Tung chiêu -> Lùi về.
+    /// - DefensiveSelf: Đứng tại chỗ bật khiên/giáp/hồi máu.
+    /// - RangedSpell: Đứng tại chỗ niệm chú/bắn đạn/phong ấn.
     /// </summary>
-    public bool IsSkillMeleeDash()
+    public EnemySkillActionType GetSkillActionType()
     {
+        if (enemyData != null)
+        {
+            return enemyData.activeSkillActionType;
+        }
+
         return type switch
         {
-            EnemyType.ChoSanDiaNguc => true,
-            EnemyType.ChienBinhDungNham => true,
-            EnemyType.SatThuBongToi => true,
-            EnemyType.BacThaySatThu => true,
-            EnemyType.ThuyQuaiNho => true,
-            _ => false
+            EnemyType.ChoSanDiaNguc or
+            EnemyType.ChienBinhDungNham or
+            EnemyType.SatThuBongToi or
+            EnemyType.BacThaySatThu or
+            EnemyType.ThuyQuaiNho => EnemySkillActionType.MeleeDash,
+
+            EnemyType.SlimeBun or
+            EnemyType.BoCapDa or
+            EnemyType.HatNhamThach or
+            EnemyType.LinhDat or
+            EnemyType.GolemThep or
+            EnemyType.KySiSat or
+            EnemyType.CoMayXayThit or
+            EnemyType.BoRac or
+            EnemyType.TinhLinhHoiMau or
+            EnemyType.CoThuNganNam => EnemySkillActionType.DefensiveSelf,
+
+            _ => EnemySkillActionType.RangedSpell
         };
     }
 
     /// <summary>
+    /// Phân loại hình thái đòn đánh thường của quái (Cận chiến MeleeDash hoặc Tầm xa RangedSpell).
+    /// </summary>
+    public EnemySkillActionType GetNormalAttackActionType()
+    {
+        if (enemyData != null)
+        {
+            return enemyData.normalAttackActionType;
+        }
+
+        return combatType == EnemyCombatType.Ranged ? EnemySkillActionType.RangedSpell : EnemySkillActionType.MeleeDash;
+    }
+
+    public bool IsSkillMeleeDash() => GetSkillActionType() == EnemySkillActionType.MeleeDash;
+
+    /// <summary>
     /// Thực thi lượt hành động của quái trong hệ thống Turn-based 5v1:
-    /// - Phân biệt chính xác giữa kỹ năng Cận chiến (lao tới) và kỹ năng Phòng thủ/Buff/Phép (đứng tại chỗ).
-    /// - Quái Tank/Phòng thủ (như hệ Thổ Slime Bùn, Bọ Cạp Đá, Hạt Nham Thạch) đứng tại chỗ bật khiên/bọc bùn, không lao sang Player.
-    /// - Khi đánh thường: Quái cận chiến mới lao sang Player đánh rồi lùi về.
+    /// - Phân biệt chính xác dựa trên ActionType của chiêu thức thay vì role:
+    /// - Đánh thường: Cận chiến (MeleeDash) lao sang Player; Tầm xa (RangedSpell) đứng tại chỗ bắn.
+    /// - Dùng skill: MeleeDash lao sang Player; DefensiveSelf / RangedSpell đứng tại chỗ thi triển.
     /// </summary>
     public virtual IEnumerator ExecuteTurnActionRoutine()
     {
@@ -248,10 +234,9 @@ public class EnemyBase : BaseCharacter
         Vector3 originalPos = transform.position;
         bool isSkill = (skillCooldownRound <= 0);
 
-        // PHÂN BIỆT RÕ RÀNG HÌNH THỨC CHUYỂN ĐỘNG CỦA LƯỢT:
-        // 1. Khi dùng Skill: Chỉ lao tới nếu là chiêu cận chiến đặc thù (IsSkillMeleeDash == true)
-        // 2. Khi Đánh thường: Lao tới nếu quái thuộc nhóm cận chiến (combatType == Melee)
-        bool shouldDashToPlayer = isSkill ? IsSkillMeleeDash() : (combatType == EnemyCombatType.Melee);
+        // PHÂN BIỆT DỰA VÀO HÌNH THÁI CỦA ĐÚNG CHIÊU THỨC ĐANG THI TRIỂN:
+        EnemySkillActionType currentActionType = isSkill ? GetSkillActionType() : GetNormalAttackActionType();
+        bool shouldDashToPlayer = (currentActionType == EnemySkillActionType.MeleeDash);
 
         if (shouldDashToPlayer)
         {
@@ -337,13 +322,13 @@ public class EnemyBase : BaseCharacter
         }
 
         // Thực hiện gây sát thương
-        if (combatType == EnemyCombatType.Melee)
+        if (GetNormalAttackActionType() == EnemySkillActionType.RangedSpell)
         {
-            targetPlayer.TakeDamage(atkDmg, false, currentElement, ignoreDef, ignoreShield);
+            ShootProjectile(targetPlayer, atkDmg, ignoreDef, ignoreShield);
         }
         else
         {
-            ShootProjectile(targetPlayer, atkDmg, ignoreDef, ignoreShield);
+            targetPlayer.TakeDamage(atkDmg, false, currentElement, ignoreDef, ignoreShield);
         }
 
         // Passive: Rễ Cây Ăn Thịt hút máu 10% sát thương gây ra
@@ -582,6 +567,10 @@ public class EnemyBase : BaseCharacter
         else if (count > 0)
         {
             BoardController.instance.LockRandomStones(count, rounds);
+            if (DamageTextManager.Instance != null)
+            {
+                DamageTextManager.Instance.SpawnCustomText($"[PHONG ẤN {count} NGỌC]", new Color(0.95f, 0.25f, 0.25f), transform.position + Vector3.up * 2.2f, 1.5f);
+            }
         }
     }
 
@@ -609,7 +598,8 @@ public class EnemyBase : BaseCharacter
 
         if (reflectPct > 0f)
         {
-            reflectPercent = reflectPct;
+            temporaryReflectBuff = reflectPct;
+            reflectBuffRounds = 2;
         }
 
         SpawnSkillVFX(transform.position, currentElement);
@@ -695,6 +685,15 @@ public class EnemyBase : BaseCharacter
             if (damageReductionRounds <= 0)
             {
                 damageReductionPercent = 0f;
+            }
+        }
+
+        if (reflectBuffRounds > 0)
+        {
+            reflectBuffRounds--;
+            if (reflectBuffRounds <= 0)
+            {
+                temporaryReflectBuff = 0f;
             }
         }
 
@@ -902,16 +901,8 @@ public class EnemyBase : BaseCharacter
         HP = hp;
         MaxHP = hp;
         currentAtk = atk;
-        reflectPercent = reflect;
-        attackCooldown = attackCd;
-        combatType = cType;
-        attackRange = atkRange > 0 ? atkRange : (cType == EnemyCombatType.Ranged ? 3.8f : 0.85f);
-        role = enemyRole;
-        skillMultiplier = sMultiplier;
-        maxSkillCooldownRound = sCdRound;
+        currentDef = def;
         skillCooldownRound = sCdRound;
-        critRate = cRate;
-        critDmg = cDmg;
         isRevived = false;
         damageReductionPercent = 0f;
         currentShield = 0f;
@@ -960,6 +951,7 @@ public class EnemyBase : BaseCharacter
         HP = scaledHp;
         MaxHP = scaledHp;
         currentAtk = scaledAtk;
+        currentDef = scaledDef;
         row = so.defaultRow;
         skillCooldownRound = so.skillCdRound;
         isRevived = false;

@@ -201,6 +201,12 @@ public class CombatTurnManager : MonoBehaviour
     {
         if (_currentState != CombatTurnState.PlayerTurn) return;
 
+        // Giảm thời hạn khóa ngọc khi người chơi kết thúc lượt của mình
+        if (BoardController.instance != null)
+        {
+            BoardController.instance.TickStoneLocks();
+        }
+
         // Khóa bàn cờ Match-3
         if (BoardController.instance != null)
         {
@@ -317,12 +323,6 @@ public class CombatTurnManager : MonoBehaviour
             return;
         }
 
-        // 4. Giảm thời hạn khóa ngọc Match-3 theo chu kỳ Round
-        if (BoardController.instance != null)
-        {
-            BoardController.instance.TickStoneLocks();
-        }
-
         // 5. Bắt đầu Round mới: Reset số lần match của Player để lại có 3 lần free
         _currentRound++;
         _playerMatchesThisTurn = 0;
@@ -331,6 +331,10 @@ public class CombatTurnManager : MonoBehaviour
         // Kiểm tra nếu Player đang dính hiệu ứng Choáng (Stun) -> Bỏ qua lượt Match-3
         if (player != null && player.IsStunned)
         {
+            if (BoardController.instance != null)
+            {
+                BoardController.instance.TickStoneLocks();
+            }
             player.ConsumeStunRound();
             if (DamageTextManager.Instance != null)
             {

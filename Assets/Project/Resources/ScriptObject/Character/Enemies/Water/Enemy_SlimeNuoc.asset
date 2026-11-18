@@ -28,8 +28,9 @@ MonoBehaviour:
   reflect: 0
   scale: 0.8
   isBoss: 0
-  combatType: 0
-  attackRange: 0.85
+  attackRange: 3.8
+  normalAttackActionType: 2
+  activeSkillActionType: 2
   activeSkillName: "Tia N\u01B0\u1EDBc L\xE0m Ch\u1EADm"
   skillMultiplier: 0.6
   skillCdRound: 2
@@ -37,6 +38,6 @@ MonoBehaviour:
     ph\xED cast skill c\u1EE7a Player th\xEAm 2 Energy (t\u1EEB 5 l\xEAn 7) trong
     1 Round"
   passiveSkillDesc: "T\u0103ng 10% n\xE9 tr\xE1nh \u0111\xF2n \u0111\xE1nh th\u01B0\u1EDDng"
-  normalAttackDesc: "\u0110\u1EADp b\u1ECDt n\u01B0\u1EDBc c\u01A1 b\u1EA3n g\xE2y
+  normalAttackDesc: "B\u1EAFn tia n\u01B0\u1EDBc \xE1p l\u1EF1c t\u1EA7m xa g\xE2y
     100% ATK (16 ST)"
-  enemyPrefab: {fileID: 0}
+  enemyPrefab: {fileID: 208695350607123520, guid: 7fcf6c88881b6a842930284a3432163e, type: 3}

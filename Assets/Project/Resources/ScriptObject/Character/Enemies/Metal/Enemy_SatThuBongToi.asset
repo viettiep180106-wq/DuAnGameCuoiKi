@@ -28,8 +28,9 @@ MonoBehaviour:
   reflect: 0
   scale: 0.8
   isBoss: 0
-  combatType: 0
   attackRange: 0.85
+  normalAttackActionType: 0
+  activeSkillActionType: 0
   activeSkillName: "\xC1m S\xE1t B\u1EA5t Ng\u1EDD"
   skillMultiplier: 1.8
   skillCdRound: 2
@@ -38,4 +39,4 @@ MonoBehaviour:
   passiveSkillDesc: "T\u0103ng 15% T\u1EC9 l\u1EC7 ch\xED m\u1EA1ng khi t\u1EA5n
     c\xF4ng Player"
   normalAttackDesc: "Ch\xE9m song ki\u1EBFm g\xE2y 100% ATK (30 ST)"
-  enemyPrefab: {fileID: 0}
+  enemyPrefab: {fileID: 208695350607123520, guid: 7fcf6c88881b6a842930284a3432163e, type: 3}

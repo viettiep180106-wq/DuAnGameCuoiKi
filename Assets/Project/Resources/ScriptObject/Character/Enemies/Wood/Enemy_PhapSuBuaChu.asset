@@ -28,8 +28,9 @@ MonoBehaviour:
   reflect: 0
   scale: 1.15
   isBoss: 1
-  combatType: 1
   attackRange: 4
+  normalAttackActionType: 2
+  activeSkillActionType: 1
   activeSkillName: "B\xF9a Ch\xFA Ph\u1EE5c Sinh & C\u01B0\u01A1ng Gi\xE1p"
   skillMultiplier: 1.4
   skillCdRound: 3
@@ -39,4 +40,4 @@ MonoBehaviour:
     th\u01B0\u1EDDng g\xE2y hi\u1EC7u \u1EE9ng DoT r\xFAt 2% Max HP Player/Round
     trong 2 Round"
   normalAttackDesc: "Ph\xF3ng b\xF9a ch\xFA t\u1EA7m xa g\xE2y 100% ATK (80 ST)"
-  enemyPrefab: {fileID: 0}
+  enemyPrefab: {fileID: 208695350607123520, guid: 7fcf6c88881b6a842930284a3432163e, type: 3}

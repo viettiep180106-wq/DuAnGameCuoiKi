@@ -28,8 +28,9 @@ MonoBehaviour:
   reflect: 0.25
   scale: 1.35
   isBoss: 1
-  combatType: 0
   attackRange: 0.95
+  normalAttackActionType: 0
+  activeSkillActionType: 1
   activeSkillName: "Gi\xE1p Gai Ph\u1EA3n Ph\xE1o"
   skillMultiplier: 1.5
   skillCdRound: 3
@@ -40,4 +41,4 @@ MonoBehaviour:
     xuy\xEAn 50% DEF c\u1EE7a Player"
   normalAttackDesc: "C\u01B0a x\xEDch m\xE1y xay c\xE0n qu\xE9t g\xE2y 100% ATK (110
     ST)"
-  enemyPrefab: {fileID: 0}
+  enemyPrefab: {fileID: 208695350607123520, guid: 7fcf6c88881b6a842930284a3432163e, type: 3}

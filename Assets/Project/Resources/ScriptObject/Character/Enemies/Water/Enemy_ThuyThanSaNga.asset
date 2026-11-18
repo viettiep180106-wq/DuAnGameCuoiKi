@@ -28,8 +28,9 @@ MonoBehaviour:
   reflect: 0
   scale: 1.9
   isBoss: 1
-  combatType: 0
   attackRange: 1.2
+  normalAttackActionType: 0
+  activeSkillActionType: 2
   activeSkillName: "S\xF3ng Th\u1EA7n Di\u1EC7t Tuy\u1EC7t T\u1ED1i Th\u01B0\u1EE3ng"
   skillMultiplier: 2.2
   skillCdRound: 3
@@ -39,6 +40,6 @@ MonoBehaviour:
   passiveSkillDesc: "[Thao T\xFAng D\xF2ng Ch\u1EA3y] \u0110\xF2n \u0111\xE1nh th\u01B0\u1EDDng
     t\u1EF1 \u0111\u1ED9ng \u0111\xE1nh c\u1EAFp 5 Energy c\u1EE7a Player. Gi\u1EA3m
     20% s\xE1t th\u01B0\u01A1ng nh\u1EADn v\xE0o khi c\xF2n qu\xE1i h\u1EC7 Th\u1EE7y"
-  normalAttackDesc: "Ch\xE9m tr\u1EA3m \u0111ao n\u01B0\u1EDBc g\xE2y 100% ATK (100
-    ST)"
-  enemyPrefab: {fileID: 0}
+  normalAttackDesc: "Tr\u1EA3m \u0111ao n\u01B0\u1EDBc c\u1EADn chi\u1EBFn g\xE2y
+    100% ATK (100 ST)"
+  enemyPrefab: {fileID: 208695350607123520, guid: 7fcf6c88881b6a842930284a3432163e, type: 3}

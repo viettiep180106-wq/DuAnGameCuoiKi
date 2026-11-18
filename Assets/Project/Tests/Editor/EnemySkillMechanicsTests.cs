@@ -285,4 +285,82 @@ public class EnemySkillMechanicsTests
         Assert.AreEqual(1.2f, e.critDmg);
         Assert.AreEqual(0.2f, e.reflectPercent);
     }
+
+    private EnemyBase CreateEnemyWithType(EnemyType enemyType)
+    {
+        GameObject enemyObj = new GameObject($"Enemy_{enemyType}", typeof(BoxCollider2D), typeof(EnemyAnimationController), typeof(EnemyBase));
+        enemyObj.transform.SetParent(_testRoot.transform);
+        EnemyBase enemy = enemyObj.GetComponent<EnemyBase>();
+        enemy.type = enemyType;
+        return enemy;
+    }
+
+    [Test]
+    public void Test_12_EnemySkillActionType_Segregation()
+    {
+        // Assert: Phân loại chính xác 3 loại hành vi
+        Assert.AreEqual(EnemySkillActionType.DefensiveSelf, CreateEnemyWithType(EnemyType.SlimeBun).GetSkillActionType());
+        Assert.AreEqual(EnemySkillActionType.DefensiveSelf, CreateEnemyWithType(EnemyType.BoCapDa).GetSkillActionType());
+        Assert.AreEqual(EnemySkillActionType.DefensiveSelf, CreateEnemyWithType(EnemyType.HatNhamThach).GetSkillActionType());
+        Assert.AreEqual(EnemySkillActionType.RangedSpell, CreateEnemyWithType(EnemyType.PhapSuPhongAn).GetSkillActionType());
+        Assert.AreEqual(EnemySkillActionType.RangedSpell, CreateEnemyWithType(EnemyType.PhuThuyKhoaNgoc).GetSkillActionType());
+        Assert.AreEqual(EnemySkillActionType.MeleeDash, CreateEnemyWithType(EnemyType.ChienBinhDungNham).GetSkillActionType());
+        Assert.AreEqual(EnemySkillActionType.MeleeDash, CreateEnemyWithType(EnemyType.ChoSanDiaNguc).GetSkillActionType());
+    }
+
+    [Test]
+    public void Test_13_StoneLock_Mechanics()
+    {
+        GameObject stoneObj = new GameObject("TestStone", typeof(RectTransform), typeof(UnityEngine.UI.Image), typeof(StoneBase));
+        stoneObj.transform.SetParent(_testRoot.transform);
+        StoneBase stone = stoneObj.GetComponent<StoneBase>();
+
+        Assert.IsFalse(stone.isLocked);
+
+        // Khóa ngọc 1 Round
+        stone.LockStone(1);
+        Assert.IsTrue(stone.isLocked);
+
+        // Hết 1 Round (người chơi kết thúc lượt) -> Mở khóa
+        stone.TickLockRound();
+        Assert.IsFalse(stone.isLocked);
+    }
+
+    [Test]
+    public void Test_14_EnemyTypeSetter_AutomaticallyBindsEnemyDataSO()
+    {
+        GameObject obj = new GameObject("TestEnemyTypeSetter", typeof(BoxCollider2D), typeof(EnemyAnimationController), typeof(EnemyBase));
+        obj.transform.SetParent(_testRoot.transform);
+        EnemyBase e = obj.GetComponent<EnemyBase>();
+
+        e.type = EnemyType.BoCapDa;
+
+        Assert.IsNotNull(e.enemyData);
+        Assert.AreEqual(EnemyType.BoCapDa, e.enemyData.enemyType);
+        Assert.AreEqual(EnemyType.BoCapDa, e.type);
+    }
+
+    [Test]
+    public void Test_15_DataDriven_NormalAndSkillActionTypes_AllArchetypes()
+    {
+        // 1. Tank Archetype (Slime Bùn, Bọ Cạp Đá): Đánh thường MeleeDash (lao sang đánh), Active Skill DefensiveSelf (đứng tại chỗ bật giáp/khiên)
+        EnemyBase slime = CreateEnemyWithType(EnemyType.SlimeBun);
+        Assert.AreEqual(EnemySkillActionType.MeleeDash, slime.GetNormalAttackActionType(), "Tank đánh thường phải là MeleeDash để lao sang đánh Player!");
+        Assert.AreEqual(EnemySkillActionType.DefensiveSelf, slime.GetSkillActionType(), "Tank dùng skill phòng thủ phải đứng tại chỗ bật bọc bùn!");
+
+        // 2. Ranged Mage Archetype (Pháp Sư Phong Ấn): Cả đánh thường và skill đều là RangedSpell (đứng tại chỗ)
+        EnemyBase mage = CreateEnemyWithType(EnemyType.PhapSuPhongAn);
+        Assert.AreEqual(EnemySkillActionType.RangedSpell, mage.GetNormalAttackActionType(), "Pháp sư đánh thường đứng tại chỗ bắn chưởng!");
+        Assert.AreEqual(EnemySkillActionType.RangedSpell, mage.GetSkillActionType(), "Pháp sư cast skill đứng tại chỗ niệm chú phong ấn!");
+
+        // 3. Hybrid Boss Archetype (Boss Đất Nung, Thủy Thần Sa Ngã): Đánh thường MeleeDash, Active Skill RangedSpell
+        EnemyBase bossDatNung = CreateEnemyWithType(EnemyType.BossDatNung);
+        Assert.AreEqual(EnemySkillActionType.MeleeDash, bossDatNung.GetNormalAttackActionType(), "Boss Đất Nung đánh thường nện cột đá cận chiến!");
+        Assert.AreEqual(EnemySkillActionType.RangedSpell, bossDatNung.GetSkillActionType(), "Boss Đất Nung cast skill đứng tại chỗ tạo địa chấn + khóa ngọc!");
+
+        // 4. Melee DPS Archetype (Chó Săn Địa Ngục, Chiến Binh Dung Nham): Cả đánh thường và skill đều lao sang chém
+        EnemyBase dog = CreateEnemyWithType(EnemyType.ChoSanDiaNguc);
+        Assert.AreEqual(EnemySkillActionType.MeleeDash, dog.GetNormalAttackActionType());
+        Assert.AreEqual(EnemySkillActionType.MeleeDash, dog.GetSkillActionType());
+    }
 }

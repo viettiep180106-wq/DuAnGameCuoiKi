@@ -28,8 +28,9 @@ MonoBehaviour:
   reflect: 0
   scale: 2
   isBoss: 1
-  combatType: 0
   attackRange: 1.2
+  normalAttackActionType: 0
+  activeSkillActionType: 1
   activeSkillName: "R\u1EC5 C\xE2y Ph\u1EE5c Sinh T\u1ED1i Th\u01B0\u1EE3ng"
   skillMultiplier: 1.5
   skillCdRound: 4
@@ -39,5 +40,6 @@ MonoBehaviour:
   passiveSkillDesc: "[M\u1EA7m S\u1ED1ng V\u0129nh C\u1EEDu] C\u1EE9 sau 3 Round
     t\u1EF1 \u0111\u1ED9ng tri\u1EC7u h\u1ED3i 2 B\u1ECD R\xE1c (H\xE0ng tr\u01B0\u1EDBc)
     \u0111\u1EC3 c\u1EA3n \u0111\xF2n b\u1EA3o v\u1EC7 b\u1EA3n th\xE2n"
-  normalAttackDesc: "R\u1EC5 ng\u1EA7m \u0111\xE2m n\xE1t g\xE2y 100% ATK (80 ST)"
-  enemyPrefab: {fileID: 0}
+  normalAttackDesc: "R\u1EC5 ng\u1EA7m \u0111\xE2m n\xE1t c\u1EADn chi\u1EBFn g\xE2y
+    100% ATK (80 ST)"
+  enemyPrefab: {fileID: 208695350607123520, guid: 7fcf6c88881b6a842930284a3432163e, type: 3}
