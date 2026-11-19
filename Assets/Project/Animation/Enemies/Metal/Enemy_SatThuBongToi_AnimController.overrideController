@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Enemy_SatThuBongToi_AnimController
+  m_Controller: {fileID: 9100000, guid: 6b63faaac71e075498f9df9a6f21ac09, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: edb6d56c915a81549bd15c2532e43b83, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 5c0a2b07f8f6aa544bfa8f8c07ddce98, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 8009149ffd8381a40b20e26e4d233ddd, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: fb4cd6d12e227d84a9f8b2930141d332, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: a49059b1b65108b47abb7ba3e85d2808, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: ccf0d885f97e77e4ea6d231693b69e81, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 451935427e512aa40ba588361235ff11, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: a15eb0a678e93f244a9f6934df5180a9, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 3ed1c6530652244458e6162d7d22efb1, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: c0cd56d975ffdb44eb48181ebd2b1ffe, type: 2}

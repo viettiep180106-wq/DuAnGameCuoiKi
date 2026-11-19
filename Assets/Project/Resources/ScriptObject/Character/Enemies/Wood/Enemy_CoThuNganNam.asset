@@ -42,4 +42,4 @@ MonoBehaviour:
     \u0111\u1EC3 c\u1EA3n \u0111\xF2n b\u1EA3o v\u1EC7 b\u1EA3n th\xE2n"
   normalAttackDesc: "R\u1EC5 ng\u1EA7m \u0111\xE2m n\xE1t c\u1EADn chi\u1EBFn g\xE2y
     100% ATK (80 ST)"
-  enemyPrefab: {fileID: 208695350607123520, guid: 7fcf6c88881b6a842930284a3432163e, type: 3}
+  enemyPrefab: {fileID: 6303459366105206840, guid: c6b408548ff70414597e7e20fd951444, type: 3}

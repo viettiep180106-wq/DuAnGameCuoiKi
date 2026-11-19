@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Enemy_HoaThanDietVong_AnimController
+  m_Controller: {fileID: 9100000, guid: 6b63faaac71e075498f9df9a6f21ac09, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: edb6d56c915a81549bd15c2532e43b83, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 537ea960b5e9187499ef1722b7b513bd, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 8009149ffd8381a40b20e26e4d233ddd, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 0071bbed3be3df947b5e5242f0ce3947, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: a49059b1b65108b47abb7ba3e85d2808, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: db3412cf2c9d31e49932b866bdce9c70, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 451935427e512aa40ba588361235ff11, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: c14ee4b0642fba241af8609f76ce46c7, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 3ed1c6530652244458e6162d7d22efb1, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: f41d1e0b10de8bf44b6eaf98d2655be6, type: 2}

@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Enemy_KySiSat_AnimController
+  m_Controller: {fileID: 9100000, guid: 6b63faaac71e075498f9df9a6f21ac09, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: edb6d56c915a81549bd15c2532e43b83, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 0f39bae133793ea4bbba5b2420117d5c, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 8009149ffd8381a40b20e26e4d233ddd, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: d9342fa9ab3725d4cbd00617e2be9042, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: a49059b1b65108b47abb7ba3e85d2808, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: d6bd34bfad1a10d459c2b72341558806, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 451935427e512aa40ba588361235ff11, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 4962c9c12f8039c4d9da50bfe8180bc5, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 3ed1c6530652244458e6162d7d22efb1, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 980db435201a671409200c49e39aa626, type: 2}

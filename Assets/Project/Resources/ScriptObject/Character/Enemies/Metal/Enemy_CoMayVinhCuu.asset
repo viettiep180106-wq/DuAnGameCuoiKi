@@ -42,4 +42,4 @@ MonoBehaviour:
     b\u1ECF qua to\xE0n b\u1ED9 khi\xEAn th\u1EE7 c\u1EE7a Player"
   normalAttackDesc: "B\u1EAFn \u0111\u1EA1n ph\xE1o t\u1EA7m xa g\xE2y 100% ATK (280
     ST)"
-  enemyPrefab: {fileID: 208695350607123520, guid: 7fcf6c88881b6a842930284a3432163e, type: 3}
+  enemyPrefab: {fileID: 3352382906617130715, guid: 9f76f298f38ef3c40b719c0025f110a2, type: 3}

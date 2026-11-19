@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Enemy_PhuThuyLua_AnimController
+  m_Controller: {fileID: 9100000, guid: 6b63faaac71e075498f9df9a6f21ac09, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: edb6d56c915a81549bd15c2532e43b83, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: a1a22730af09a4e43b42269d54a4e0e2, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 8009149ffd8381a40b20e26e4d233ddd, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 21ad6dedb1442f94fb1ca79ad28c257c, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: a49059b1b65108b47abb7ba3e85d2808, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 4588a76156726844bb475bb25dc39463, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 451935427e512aa40ba588361235ff11, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 8940cbe276a52774f80c1be128827cee, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 3ed1c6530652244458e6162d7d22efb1, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 1bd2fb1f4c50b1e41b30e85cc99de98b, type: 2}

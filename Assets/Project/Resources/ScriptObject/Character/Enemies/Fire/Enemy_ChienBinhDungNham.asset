@@ -39,4 +39,4 @@ MonoBehaviour:
   passiveSkillDesc: "Gi\u1EA3m 15% s\xE1t th\u01B0\u01A1ng nh\u1EADn v\xE0o t\u1EEB
     c\xE1c \u0111\xF2n \u0111\xE1nh th\u01B0\u1EDDng"
   normalAttackDesc: "B\u1ED5 b\xFAa r\u1EF1c l\u1EEDa g\xE2y 100% ATK (100 ST)"
-  enemyPrefab: {fileID: 208695350607123520, guid: 7fcf6c88881b6a842930284a3432163e, type: 3}
+  enemyPrefab: {fileID: 9155505887621536616, guid: 6979fd2d170a6da488bae89302beffea, type: 3}

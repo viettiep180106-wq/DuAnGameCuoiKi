@@ -40,4 +40,4 @@ MonoBehaviour:
     Cho\xE1ng"
   normalAttackDesc: "\u0110\u1EA5m th\xE9p n\u1EB7ng n\u1EC1 g\xE2y 100% ATK (24
     ST)"
-  enemyPrefab: {fileID: 208695350607123520, guid: 7fcf6c88881b6a842930284a3432163e, type: 3}
+  enemyPrefab: {fileID: 1882513579769044336, guid: 65648ce68da82e144a3eb48776fe331f, type: 3}

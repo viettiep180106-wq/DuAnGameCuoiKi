@@ -40,4 +40,4 @@ MonoBehaviour:
     khi m\u1EE5c ti\xEAu thu\u1ED9c h\u1EC7 M\u1ED9c"
   normalAttackDesc: "\u0110\xF2n \u0111\xE1nh c\u01A1 b\u1EA3n g\xE2y 100% ATK (16
     ST)"
-  enemyPrefab: {fileID: 208695350607123520, guid: 7fcf6c88881b6a842930284a3432163e, type: 3}
+  enemyPrefab: {fileID: 7508759512890082709, guid: e755e63623b78cf48b840461cee2e9e4, type: 3}

@@ -40,4 +40,4 @@ MonoBehaviour:
   passiveSkillDesc: "Khi t\u1EED tr\u1EADn, h\u1ED3i ph\u1EE5c 5% Max HP cho 1 \u0111\u1ED3ng
     minh ng\u1EABu nhi\xEAn"
   normalAttackDesc: "C\u1EAFn lao t\u1EDBi g\xE2y 100% ATK (20 ST)"
-  enemyPrefab: {fileID: 208695350607123520, guid: 7fcf6c88881b6a842930284a3432163e, type: 3}
+  enemyPrefab: {fileID: 8014839234111935393, guid: b0612b8d5ca640146a19bc02e65bb792, type: 3}
