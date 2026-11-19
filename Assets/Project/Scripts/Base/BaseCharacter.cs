@@ -4,21 +4,21 @@ using DG.Tweening;
 using System;
 using System.Collections.Generic;
 
-public class BaseCharacter : MonoBehaviour, IPoolable
+public abstract class BaseCharacter : MonoBehaviour, IPoolable
 {
-    [Header("----Setting UI----")]
+    [Header("----Setting UI References----")]
     public TextUI textHP;
     public FillBarUI fillBarUI;
     public SpriteRenderer spriteRenderer;
 
-    [Header("Setting Data")]
-    public BaseCharacterDataSO data;
-    [SerializeField] protected float HP; 
-    [SerializeField] protected float MaxHP;
-    [SerializeField] protected ElementType currentElement = ElementType.Wood;
-    public Tween moveTwen;
-    public Vector3 currentTargetPos;
-    public Color colorOrigin;
+    [Header("----Runtime State (Internal)----")]
+    [HideInInspector] [SerializeField] protected float HP; 
+    [HideInInspector] [SerializeField] protected float MaxHP;
+    [HideInInspector] [SerializeField] protected ElementType currentElement = ElementType.Wood;
+
+    [HideInInspector] public Tween moveTwen;
+    [HideInInspector] public Vector3 currentTargetPos;
+    [HideInInspector] public Color colorOrigin;
 
     public ElementType Element 
     { 
@@ -28,6 +28,11 @@ public class BaseCharacter : MonoBehaviour, IPoolable
 
     public float CurrentHP => HP;
     public float MaxHealth => MaxHP;
+
+    // Abstract properties để các lớp con tự cung cấp theo DataSO của chúng
+    public abstract float CurrentDEF { get; }
+    public abstract float MoveSpeed { get; }
+    public abstract float CurrentATK { get; }
 
     public event Action<float, bool, ElementType> OnTakeDamageDetail;
 
@@ -52,11 +57,6 @@ public class BaseCharacter : MonoBehaviour, IPoolable
 
     public virtual void OnSpawn()
     {
-        if (data != null)
-        {
-            HP = data.HP;
-            MaxHP = HP;
-        }
         UpdateHPUI(MaxHP > 0 ? HP / MaxHP : 1f);
     }
 
@@ -65,22 +65,25 @@ public class BaseCharacter : MonoBehaviour, IPoolable
         CleanUpAllEffect();
     }
 
+    /// <summary>
+    /// Cho phép các lớp con kích hoạt animation bay/di chuyển tương ứng mà không tốn GetComponent runtime
+    /// </summary>
+    protected virtual void PlayFlyOrMoveAnimation()
+    {
+    }
+
     public virtual void Trans(Vector3 posTarget, Ease easeType = Ease.Linear)
     {
-        var anim = GetComponent<EnemyAnimationController>();
-        if (anim != null)
-        {
-            anim.ActiveAnimation(TypeAnimationAtivity.isFly);
-        }
+        PlayFlyOrMoveAnimation();
 
         currentTargetPos = posTarget;
         Vector2 currentPos2D = transform.position;
         Vector2 targetPos2D = posTarget;
         float distance = Vector2.Distance(targetPos2D, currentPos2D);
 
-        if (distance > 0.1f)
+        if (distance > 0.05f)
         {
-            float speed = data != null && data.Speed_Trans > 0 ? data.Speed_Trans : 1f;
+            float speed = MoveSpeed > 0f ? MoveSpeed : 1f;
             float duration = distance / speed;
             moveTwen?.Kill();
             moveTwen = transform.DOMove(posTarget, duration).SetEase(easeType).OnComplete(() =>
@@ -103,7 +106,7 @@ public class BaseCharacter : MonoBehaviour, IPoolable
     /// </summary>
     public virtual void TakeDamage(float rawDamage, bool isCrit, ElementType attackerElement)
     {
-        float defense = data != null ? data.Dev : 0f;
+        float defense = CurrentDEF;
         float elementMultiplier = ElementalHelper.GetMultiplier(attackerElement, currentElement);
         
         // Công thức GDD: (Sát thương x Khắc chế) - Thủ, tối thiểu 1 sát thương
@@ -157,7 +160,7 @@ public class BaseCharacter : MonoBehaviour, IPoolable
 
     public IEnumerator Death()
     {
-        yield return new WaitForSeconds(0.6f);
+        yield return YieldCaches.Wait060;
         ObjectPoolingManager.Instance.Despawn(gameObject);
     }
 
@@ -172,6 +175,8 @@ public class BaseCharacter : MonoBehaviour, IPoolable
 }
 
 public enum Effect { DoT, Stun, Bleed, Slow, Freeze, Knockback };
+
+public enum TypeAnimationAtivity { isFly, isAttack, isIdel, isAttack_1, isAttack_2, isDied, isHit };
 
 public struct EffectPayLoad
 {

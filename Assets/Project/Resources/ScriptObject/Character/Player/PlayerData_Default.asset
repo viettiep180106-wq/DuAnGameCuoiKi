@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f20cd6611993fb4da5ed51c7097a65a, type: 3}
+  m_Name: PlayerData_Default
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerDataSO
+  playerName: Hero
+  element: 1
+  maxHP: 500
+  atk: 200
+  def: 0
+  critRate: 0.1
+  critDmg: 1
+  speed: 0.8
+  initialEnergyCores: 50

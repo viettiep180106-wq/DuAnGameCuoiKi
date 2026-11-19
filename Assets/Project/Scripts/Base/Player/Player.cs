@@ -9,38 +9,58 @@ public class Player : BaseCharacter
     public static Player Instance { get; set; }
     public static void SetInstanceForTest(Player p) => Instance = p;
 
-    [Header("----Player Stats (Level 1 GDD)----")]
-    [SerializeField] private float playerAtk = 200f;
-    [SerializeField] private float critRate = 0.1f;    // 10%
-    [SerializeField] private float critDmg = 1.0f;     // +100% dmg khi bạo kích (x2.0)
-    [SerializeField] private int energyCores = 50;     // Lõi năng lượng dùng cho Gacha/Sự kiện
+    [Header("----ScriptableObject Data Reference (Single Source of Truth)----")]
+    [SerializeField] private PlayerDataSO playerData;
+    public PlayerDataSO PlayerData => playerData;
+
+    [Header("----Player Runtime Stats----")]
+    [HideInInspector] [SerializeField] private float playerAtk = 200f;
+    [HideInInspector] [SerializeField] private float critRate = 0.1f;    // 10%
+    [HideInInspector] [SerializeField] private float critDmg = 1.0f;     // +100% dmg khi bạo kích (x2.0)
+    [HideInInspector] [SerializeField] private int energyCores = 50;     // Lõi năng lượng dùng cho Gacha/Sự kiện
+    private float _additionalDEF = 0f;
 
     public float PlayerATK => playerAtk;
     public float CritRate => critRate;
     public float CritDamage => critDmg;
     public int EnergyCores => energyCores;
-    public float MoveSpeed => data != null && data.Speed_Trans > 0 ? data.Speed_Trans : 0.8f;
+
+    public override float CurrentDEF => (playerData != null ? playerData.def : 0f) + _additionalDEF;
+    public override float MoveSpeed => playerData != null && playerData.speed > 0f ? playerData.speed : 0.8f;
+    public override float CurrentATK => playerAtk;
+
+    public event Action OnStatsUpdated;
+
+    protected override void PlayFlyOrMoveAnimation()
+    {
+        PlayFlyAnimation();
+    }
 
     public void ModifyATK(float multiplier)
     {
         playerAtk *= multiplier;
+        OnStatsUpdated?.Invoke();
     }
 
     public void ModifyMaxHP(float multiplier)
     {
         MaxHP *= multiplier;
         HP = Mathf.Min(HP, MaxHP);
+        UpdateHPUI(MaxHP > 0 ? HP / MaxHP : 1f);
+        OnStatsUpdated?.Invoke();
     }
 
     public void ModifyDEF(float delta)
     {
-        if (data != null) data.Dev += delta;
+        _additionalDEF += delta;
+        OnStatsUpdated?.Invoke();
     }
 
     public void ModifyCrit(float deltaRate, float deltaDmg)
     {
         critRate += deltaRate;
         critDmg += deltaDmg;
+        OnStatsUpdated?.Invoke();
     }
 
     public void SetStatsForTest(float hp, float atk, int energy = 50)
@@ -288,21 +308,17 @@ public class Player : BaseCharacter
         }
     }
 
-    protected override void Awake()
+    private void InitializeStats()
     {
-        base.Awake();
-        Instance = this;
-        animController = GetComponent<PlayerAnimationController>();
-        AlignToMarchingPosition();
-
-        // Chỉ số Level 1 chuẩn theo GDD
-        if (data != null && data.HP > 0)
+        if (playerData != null)
         {
-            HP = data.HP;
-            MaxHP = data.HP;
-            playerAtk = data.Atk > 0 ? data.Atk : 200f;
-            critRate = data.Crit_Rate > 0 ? data.Crit_Rate : 0.1f;
-            critDmg = data.Crit_Dmg > 0 ? data.Crit_Dmg : 1.0f;
+            HP = playerData.maxHP;
+            MaxHP = playerData.maxHP;
+            playerAtk = playerData.atk;
+            critRate = playerData.critRate;
+            critDmg = playerData.critDmg;
+            energyCores = playerData.initialEnergyCores;
+            currentElement = playerData.element;
         }
         else
         {
@@ -311,29 +327,27 @@ public class Player : BaseCharacter
             playerAtk = 200f;
             critRate = 0.1f;
             critDmg = 1.0f;
+            energyCores = 50;
         }
+        _additionalDEF = 0f;
         UpdateHPUI(1f);
+        OnStatsUpdated?.Invoke();
+    }
+
+    protected override void Awake()
+    {
+        base.Awake();
+        Instance = this;
+        animController = GetComponent<PlayerAnimationController>();
+        AlignToMarchingPosition();
+        InitializeStats();
     }
 
     public override void OnSpawn()
     {
         base.OnSpawn();
         AlignToCombatPosition();
-        // Áp dụng stats chuẩn Level 1 từ GDD
-        if (data != null)
-        {
-            HP = data.HP > 0 ? data.HP : 500f;
-            MaxHP = HP;
-            playerAtk = data.Atk > 0 ? data.Atk : 200f;
-            critRate = data.Crit_Rate > 0 ? data.Crit_Rate : 0.1f;
-            critDmg = data.Crit_Dmg > 0 ? data.Crit_Dmg : 1.0f;
-        }
-        else
-        {
-            HP = 500f;
-            MaxHP = 500f;
-        }
-        UpdateHPUI(1f);
+        InitializeStats();
     }
 
     /// <summary>
@@ -384,7 +398,7 @@ public class Player : BaseCharacter
         }
 
         // Tính toán thủ sau khi trừ debuff giảm DEF và trừ % xuyên giáp của quái
-        float baseDef = data != null ? data.Dev : 0f;
+        float baseDef = CurrentDEF;
         float defense = baseDef * Mathf.Clamp01(1f - DefDebuffPercent);
         if (ignoreDefPercent > 0f)
         {
@@ -424,6 +438,7 @@ public class Player : BaseCharacter
                 return;
             }
             UpdateHPUI(MaxHP > 0 ? HP / MaxHP : 1f);
+            OnStatsUpdated?.Invoke();
 
             // Pop-up số damage nhận vào của Player
             if (DamageTextManager.Instance != null)
@@ -568,6 +583,7 @@ public class Player : BaseCharacter
 
             HP = Mathf.Max(0f, HP - dotDamage);
             UpdateHPUI(MaxHP > 0 ? HP / MaxHP : 1f);
+            OnStatsUpdated?.Invoke();
 
             Color dotColor = effect.EffectType switch
             {

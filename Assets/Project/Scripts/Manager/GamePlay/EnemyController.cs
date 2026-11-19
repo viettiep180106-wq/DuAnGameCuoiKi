@@ -509,17 +509,8 @@ public class EnemyController : MonoBehaviour
         }
 
         // Sắp xếp theo Tốc độ hành động (Speed giảm dần)
-        frontRow.Sort((a, b) => {
-            float speedA = a.data != null ? a.data.Speed_Trans : 0.25f;
-            float speedB = b.data != null ? b.data.Speed_Trans : 0.25f;
-            return speedB.CompareTo(speedA);
-        });
-
-        backRow.Sort((a, b) => {
-            float speedA = a.data != null ? a.data.Speed_Trans : 0.25f;
-            float speedB = b.data != null ? b.data.Speed_Trans : 0.25f;
-            return speedB.CompareTo(speedA);
-        });
+        frontRow.Sort((a, b) => b.MoveSpeed.CompareTo(a.MoveSpeed));
+        backRow.Sort((a, b) => b.MoveSpeed.CompareTo(a.MoveSpeed));
 
         List<EnemyBase> ordered = new List<EnemyBase>(frontRow.Count + backRow.Count);
         ordered.AddRange(frontRow);

@@ -40,39 +40,51 @@ public class EnemyBase : BaseCharacter
         set => _isDynamicBoss = value;
     }
 
-    public float temporaryReflectBuff = 0f;
-    public int reflectBuffRounds = 0;
+    public override float CurrentDEF => currentDef;
+    public override float MoveSpeed => enemyData != null ? BlockMetrics.ConvertSpeedToWorldUnits(enemyData.speed) : 0.4f;
+    public override float CurrentATK => currentAtk;
+
+    protected override void PlayFlyOrMoveAnimation()
+    {
+        if (animController != null)
+        {
+            animController.ActiveAnimation(TypeAnimationAtivity.isFly);
+        }
+    }
+
+    [HideInInspector] public float temporaryReflectBuff = 0f;
+    [HideInInspector] public int reflectBuffRounds = 0;
     public float reflectPercent => (enemyData != null ? enemyData.reflect : 0f) + temporaryReflectBuff;
-    public float currentAtk = 10f;
-    public float currentDef = 0f;
+    [HideInInspector] public float currentAtk = 10f;
+    [HideInInspector] public float currentDef = 0f;
     public float attackCooldown => enemyData != null ? enemyData.attackCd : 2f;
     public EnemyCombatType combatType => enemyData != null ? enemyData.combatType : EnemyCombatType.Melee;
     public float attackRange => enemyData != null ? enemyData.attackRange : 0.85f;
 
     [Header("Turn-Based Settings (GDD 5v1)")]
-    public EnemyRow row = EnemyRow.Front;
+    [HideInInspector] public EnemyRow row = EnemyRow.Front;
     public EnemyRole role => enemyData != null ? enemyData.role : EnemyRole.DPS_FBS;
 
-    public int skillCooldownRound = 0;
+    [HideInInspector] public int skillCooldownRound = 0;
     public int maxSkillCooldownRound => enemyData != null ? enemyData.skillCdRound : 2;
     public float skillMultiplier => enemyData != null ? enemyData.skillMultiplier : 1.5f;
     public float critRate => enemyData != null ? enemyData.critRate : 0.1f;
     public float critDmg => enemyData != null ? enemyData.critDmg : 1.5f;
 
-    public bool isRevived = false;
+    [HideInInspector] public bool isRevived = false;
 
     [Header("Combat Buffs & Shields (GDD)")]
-    public float damageReductionPercent = 0f;
-    public float currentShield = 0f;
-    public float maxShieldGranted = 0f;
-    public float shieldExplodeMultiplierOnBreak = 0f;
-    public int damageReductionRounds = 0;
-    public int shieldRounds = 0;
-    public float atkBuffPercent = 0f;
-    public int atkBuffRounds = 0;
-    public float defBuffPercent = 0f;
-    public int defBuffRounds = 0;
-    public int roundCounterForPassive = 0;
+    [HideInInspector] public float damageReductionPercent = 0f;
+    [HideInInspector] public float currentShield = 0f;
+    [HideInInspector] public float maxShieldGranted = 0f;
+    [HideInInspector] public float shieldExplodeMultiplierOnBreak = 0f;
+    [HideInInspector] public int damageReductionRounds = 0;
+    [HideInInspector] public int shieldRounds = 0;
+    [HideInInspector] public float atkBuffPercent = 0f;
+    [HideInInspector] public int atkBuffRounds = 0;
+    [HideInInspector] public float defBuffPercent = 0f;
+    [HideInInspector] public int defBuffRounds = 0;
+    [HideInInspector] public int roundCounterForPassive = 0;
 
     public bool IsTargetable => row == EnemyRow.Front || (EnemyController.instance != null && EnemyController.instance.AllFrontRowEnemiesDead());
 
@@ -97,8 +109,26 @@ public class EnemyBase : BaseCharacter
     public override void OnSpawn()
     {
         base.OnSpawn();
-        currentAtk = data != null ? data.Atk : 10f;
-        _nextAttackTime = Time.time + 0.5f; // Chờ 0.5s sau khi spawn mới tung đòn đầu tiên nếu đã trong tầm
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.color = Color.white;
+            colorOrigin = Color.white;
+        }
+
+        if (enemyData != null)
+        {
+            currentAtk = enemyData.atk;
+            currentDef = enemyData.def;
+            row = enemyData.defaultRow;
+            skillCooldownRound = enemyData.skillCdRound;
+            currentElement = enemyData.element;
+        }
+        else
+        {
+            currentAtk = 10f;
+            currentDef = 0f;
+        }
+        _nextAttackTime = Time.time + 0.5f;
 
         // Passive Cỗ Máy Vĩnh Cửu: Tự tạo khiên 15% Max HP đầu trận
         if (type == EnemyType.CoMayVinhCuu)
@@ -109,7 +139,7 @@ public class EnemyBase : BaseCharacter
         // Passive Hỏa Thần Diệt Vong: Phá hủy 50% DEF của Player suốt trận đấu
         else if (type == EnemyType.HoaThanDietVong)
         {
-            Player p = FindFirstObjectByType<Player>();
+            Player p = Player.Instance;
             if (p != null)
             {
                 p.ApplyStatDebuff(false, 0.50f, 999);
@@ -117,52 +147,8 @@ public class EnemyBase : BaseCharacter
         }
     }
 
-    protected virtual void Update()
-    {
-        if (HP <= 0) return;
-        if (GameManager.instance != null && !GameManager.instance.IsWaveCombatActive) return;
-
-        // Trong chế độ Turn-based: Toàn bộ hành động tấn công được quản lý tuần tự bởi CombatTurnManager
-        if (CombatTurnManager.Instance != null && CombatTurnManager.Instance.isActiveAndEnabled)
-        {
-            return;
-        }
-
-        if (_cachedPlayer == null)
-        {
-            _cachedPlayer = Player.Instance != null ? Player.Instance : FindFirstObjectByType<Player>();
-        }
-        if (_cachedPlayer == null || _cachedPlayer.CurrentHP <= 0) return;
-
-        // Tung đòn tấn công theo chu kỳ hồi chiêu (quái cận chiến lướt tới đánh rồi lùi về)
-        if (Time.time >= _nextAttackTime)
-        {
-            _nextAttackTime = Time.time + (attackCooldown > 0 ? attackCooldown : 2.5f);
-            if (combatType == EnemyCombatType.Melee)
-            {
-                StartCoroutine(MeleeAttackRoutine(_cachedPlayer));
-            }
-            else
-            {
-                PerformCombatAttack(_cachedPlayer);
-            }
-        }
-    }
-
-    private IEnumerator MeleeAttackRoutine(Player targetPlayer)
-    {
-        if (HP <= 0 || targetPlayer == null || targetPlayer.CurrentHP <= 0) yield break;
-        Vector3 originPos = transform.position;
-        Vector3 targetPos = new Vector3(targetPlayer.transform.position.x + 2.2f, targetPlayer.transform.position.y, originPos.z);
-
-        transform.DOMove(targetPos, 0.28f).SetEase(Ease.OutQuad);
-        yield return new WaitForSeconds(0.30f);
-
-        PerformCombatAttack(targetPlayer);
-        yield return new WaitForSeconds(0.30f);
-
-        transform.DOMove(originPos, 0.25f).SetEase(Ease.InQuad);
-    }
+    // TỐI ƯU HIỆU SUẤT: Loại bỏ 100% hàm Update() và Coroutine rác khỏi từng MonoBehaviour Enemy.
+    // Toàn bộ chu kỳ chiến đấu được quản lý tuần tự và chính xác thông qua ExecuteTurnActionRoutine() từ CombatTurnManager.
 
     /// <summary>
     /// Phân loại hình thái kỹ năng của quái:
@@ -227,7 +213,7 @@ public class EnemyBase : BaseCharacter
 
         if (_cachedPlayer == null)
         {
-            _cachedPlayer = Player.Instance != null ? Player.Instance : FindFirstObjectByType<Player>();
+            _cachedPlayer = Player.Instance;
         }
         if (_cachedPlayer == null || _cachedPlayer.CurrentHP <= 0) yield break;
 
@@ -243,7 +229,7 @@ public class EnemyBase : BaseCharacter
             // === HÀNH ĐỘNG CẬN CHIẾN: Lao nhanh sang phía Player -> Đánh/Chiêu -> Lùi về ===
             Vector3 targetPos = new Vector3(_cachedPlayer.transform.position.x + 2.2f, _cachedPlayer.transform.position.y, originalPos.z);
             transform.DOMove(targetPos, 0.28f).SetEase(Ease.OutQuad);
-            yield return new WaitForSeconds(0.30f);
+            yield return YieldCaches.Wait030;
 
             if (isSkill)
             {
@@ -255,11 +241,11 @@ public class EnemyBase : BaseCharacter
                 PerformNormalAttack(_cachedPlayer);
             }
 
-            yield return new WaitForSeconds(0.32f);
+            yield return YieldCaches.Wait032;
 
             // Lùi về vị trí ban đầu trong đội hình
             transform.DOMove(originalPos, 0.25f).SetEase(Ease.InQuad);
-            yield return new WaitForSeconds(0.25f);
+            yield return YieldCaches.Wait025;
         }
         else
         {
@@ -279,7 +265,7 @@ public class EnemyBase : BaseCharacter
                 PerformNormalAttack(_cachedPlayer);
             }
 
-            yield return new WaitForSeconds(0.45f);
+            yield return YieldCaches.Wait045;
         }
     }
 
@@ -907,22 +893,11 @@ public class EnemyBase : BaseCharacter
         damageReductionPercent = 0f;
         currentShield = 0f;
 
-        // Cập nhật BaseCharacterDataSO runtime hoặc ghi đè
-        if (data != null)
-        {
-            data.Dev = def;
-            // Áp dụng công thức tính block: 1 block = (khoảng cách mép đối diện đến player) / 20
-            data.Speed_Trans = BlockMetrics.ConvertSpeedToWorldUnits(speed);
-        }
-
-        // Tự động nhuộm màu nguyên tố và chỉnh kích thước quái (Bọ Rác nhỏ, Boss to)
+        // Giữ nguyên 100% màu gốc của Sprite nghệ thuật (không nhuộm màu theo hệ)
         if (spriteRenderer != null)
         {
-            Color elemColor = ElementalHelper.GetColor(elem);
-            // Pha nhẹ với màu trắng để không làm mờ chi tiết sprite gốc
-            Color finalTint = Color.Lerp(Color.white, elemColor, 0.65f);
-            colorOrigin = finalTint;
-            spriteRenderer.color = finalTint;
+            spriteRenderer.color = Color.white;
+            colorOrigin = Color.white;
         }
 
         // Nâng base scale lên 9.5f để quái (PPU = 200, scale 0.85) có chiều cao thế giới đạt ~5.0 units ngang bằng Player (5.15 units)
@@ -958,18 +933,11 @@ public class EnemyBase : BaseCharacter
         damageReductionPercent = 0f;
         currentShield = 0f;
 
-        if (data != null)
-        {
-            data.Dev = scaledDef;
-            data.Speed_Trans = BlockMetrics.ConvertSpeedToWorldUnits(so.speed);
-        }
-
+        // Giữ nguyên 100% màu gốc của Sprite nghệ thuật (không nhuộm màu theo hệ)
         if (spriteRenderer != null)
         {
-            Color elemColor = ElementalHelper.GetColor(so.element);
-            Color finalTint = Color.Lerp(Color.white, elemColor, 0.65f);
-            colorOrigin = finalTint;
-            spriteRenderer.color = finalTint;
+            spriteRenderer.color = Color.white;
+            colorOrigin = Color.white;
         }
 
         transform.localScale = Vector3.one * (9.5f * so.scale);
@@ -1079,7 +1047,7 @@ public class EnemyBase : BaseCharacter
             if (shieldBefore > 0f && currentShield <= 0f && shieldExplodeMultiplierOnBreak > 0f)
             {
                 float explodeDamage = maxShieldGranted * shieldExplodeMultiplierOnBreak;
-                Player p = FindFirstObjectByType<Player>();
+                Player p = Player.Instance;
                 if (p != null)
                 {
                     p.TakeDamage(explodeDamage, false, ElementType.Fire);
@@ -1111,7 +1079,7 @@ public class EnemyBase : BaseCharacter
         if (totalReflect > 0 && damageTaken > 0)
         {
             float reflected = damageTaken * totalReflect;
-            Player player = FindFirstObjectByType<Player>();
+            Player player = Player.Instance;
             if (player != null)
             {
                 player.TakeDamage(reflected, false, currentElement);
@@ -1184,7 +1152,7 @@ public class EnemyBase : BaseCharacter
             if (!isRevived)
             {
                 float teamTotal = EnemyController.instance != null ? EnemyController.instance.InitialWaveTotalStat : 0f;
-                float myStat = MaxHP + (data != null ? data.Dev : 0f);
+                float myStat = MaxHP + CurrentDEF;
                 if (teamTotal > 0f)
                 {
                     energyDrop = Mathf.RoundToInt(waveEnergy * (myStat / teamTotal));

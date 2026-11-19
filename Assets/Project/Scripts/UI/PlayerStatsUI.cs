@@ -25,12 +25,27 @@ public class PlayerStatsUI : MonoBehaviour
 
     private void Start()
     {
+        BindPlayerEvents();
+        UpdateStatsUI();
+    }
+
+    private void OnEnable()
+    {
+        BindPlayerEvents();
+        UpdateStatsUI();
+    }
+
+    private void BindPlayerEvents()
+    {
         if (Player.Instance != null)
         {
+            Player.Instance.OnStatsUpdated -= UpdateStatsUI;
+            Player.Instance.OnStatsUpdated += UpdateStatsUI;
+
+            Player.Instance.OnEnergyCoresChanged -= UpdateEnergyUI;
             Player.Instance.OnEnergyCoresChanged += UpdateEnergyUI;
+
             displayedEnergy = Player.Instance.EnergyCores;
-            UpdateStatsUI();
-            UpdateEnergyUI(displayedEnergy);
         }
         else
         {
@@ -39,38 +54,11 @@ public class PlayerStatsUI : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
-        // Cập nhật thông số liên tục nếu có thay đổi trong chiến đấu hoặc sau khi nhận Buff/Debuff
-        if (Player.Instance != null)
-        {
-            if (hpText != null)
-            {
-                float curHp = Player.Instance.CurrentHP > 0 ? Player.Instance.CurrentHP : (Player.Instance.MaxHealth > 0 ? Player.Instance.MaxHealth : 500f);
-                float maxHp = Player.Instance.MaxHealth > 0 ? Player.Instance.MaxHealth : 500f;
-                hpText.text = $"HP: {Mathf.RoundToInt(curHp)}/{Mathf.RoundToInt(maxHp)}";
-            }
-            if (atkText != null)
-            {
-                float atk = Player.Instance.PlayerATK > 0 ? Player.Instance.PlayerATK : 200f;
-                atkText.text = $"ATK: {Mathf.RoundToInt(atk)}";
-            }
-            if (defText != null)
-            {
-                float defVal = Player.Instance.data != null ? Player.Instance.data.Dev : 0f;
-                defText.text = $"DEF: {Mathf.RoundToInt(defVal)}";
-            }
-            if (energyCoresText != null && displayedEnergy != Player.Instance.EnergyCores)
-            {
-                UpdateEnergyUI(Player.Instance.EnergyCores);
-            }
-        }
-    }
-
     private void OnDestroy()
     {
         if (Player.Instance != null)
         {
+            Player.Instance.OnStatsUpdated -= UpdateStatsUI;
             Player.Instance.OnEnergyCoresChanged -= UpdateEnergyUI;
         }
     }
@@ -98,12 +86,13 @@ public class PlayerStatsUI : MonoBehaviour
 
         if (hpText != null)
         {
+            atkText.DOKill();
             hpText.text = $"HP: {Mathf.RoundToInt(Player.Instance.CurrentHP)}/{Mathf.RoundToInt(Player.Instance.MaxHealth)}";
         }
 
         if (defText != null)
         {
-            float defVal = Player.Instance.data != null ? Player.Instance.data.Dev : 0f;
+            float defVal = Player.Instance.CurrentDEF;
             defText.text = $"DEF: {Mathf.RoundToInt(defVal)}";
         }
 

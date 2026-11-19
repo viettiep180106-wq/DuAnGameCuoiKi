@@ -122,9 +122,9 @@ public class SkillEarth : SkillPassive
                 eb.TakeDamage(cleaveDmg, isCrit, GetElementType());
 
                 // Giảm DEF
-                if (defReductionPercent > 0f && eb.data != null)
+                if (defReductionPercent > 0f)
                 {
-                    eb.data.Dev = Mathf.Max(0f, eb.data.Dev * (1f - defReductionPercent));
+                    eb.currentDef = Mathf.Max(0f, eb.currentDef * (1f - defReductionPercent));
                 }
 
                 // Tỷ lệ Choáng (Stun)

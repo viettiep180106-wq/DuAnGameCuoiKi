@@ -120,11 +120,12 @@ public class BuffRewardPopup : MonoBehaviour
         switch (buff)
         {
             case BuffType.AttackBoost:
-                // Tăng Atk
-                if (Player.Instance.data != null) Player.Instance.data.Atk *= 1.1f;
+                // Tăng Atk runtime 10%
+                Player.Instance.ModifyATK(1.1f);
                 break;
             case BuffType.DefenseBoost:
-                if (Player.Instance.data != null) Player.Instance.data.Dev += 5f;
+                // Tăng Def runtime +5
+                Player.Instance.ModifyDEF(5f);
                 break;
             case BuffType.HealthRestore:
                 Player.Instance.Health(Player.Instance.MaxHealth * 0.2f);
