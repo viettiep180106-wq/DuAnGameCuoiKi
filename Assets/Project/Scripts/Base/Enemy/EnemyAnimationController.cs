@@ -1,33 +1,49 @@
 using UnityEngine;
-using System;
 using UnityEngine.Events;
 
 public class EnemyAnimationController : MonoBehaviour
 {
     public Animator enemy;
     public UnityAction<TypeAnimationAtivity> OnChangedStatusEnemy;
+
+    private void Awake()
+    {
+        if (enemy == null)
+        {
+            enemy = GetComponent<Animator>();
+        }
+    }
+
     private void OnEnable()
     {
-        OnChangedStatusEnemy+=Status;
+        OnChangedStatusEnemy -= Status;
+        OnChangedStatusEnemy += Status;
     }
+
     public void Status(TypeAnimationAtivity name)
     {
-        if(name != TypeAnimationAtivity.isFly)
+        if (enemy == null)
         {
-            enemy.SetTrigger(name.ToString());
+            enemy = GetComponent<Animator>();
+            if (enemy == null) return;
         }
-        else
+
+        // Trạng thái Fly là trạng thái mặc định (Idle), Animator tự động hồi về thông qua HasExitTime
+        if (name == TypeAnimationAtivity.isFly)
         {
-            enemy.SetBool(name.ToString(),true);
+            return;
         }
+
+        enemy.SetTrigger(name.ToString());
     }
+
     private void OnDisable()
     {
-        OnChangedStatusEnemy-=Status;
-        
+        OnChangedStatusEnemy -= Status;
     }
+
     public void ActiveAnimation(TypeAnimationAtivity type)
     {
-        OnChangedStatusEnemy?.Invoke(type);
+        Status(type);
     }
 }

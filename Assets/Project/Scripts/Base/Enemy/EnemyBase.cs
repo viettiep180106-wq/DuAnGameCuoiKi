@@ -981,11 +981,6 @@ public class EnemyBase : BaseCharacter
 
     public override void TakeDamage(float rawDamage, bool isCrit, ElementType attackerElement)
     {
-        if (animController != null)
-        {
-            animController.ActiveAnimation(TypeAnimationAtivity.isHit);
-        }
-
         // Passive: Né tránh hoàn toàn (Slime Nước 10%, Kẻ Trộm Kỹ Năng 15%)
         if (type == EnemyType.SlimeNuoc && UnityEngine.Random.value <= 0.10f)
         {
@@ -1068,6 +1063,11 @@ public class EnemyBase : BaseCharacter
         float hpBefore = HP;
         base.TakeDamage(rawDamage, isCrit, attackerElement);
         float damageTaken = hpBefore - HP;
+
+        if (HP > 0 && damageTaken > 0 && animController != null)
+        {
+            animController.ActiveAnimation(TypeAnimationAtivity.isHit);
+        }
 
         // Cơ chế Phản Sát Thương (Tank / Boss Hạt Nham Thạch / Boss Đất Nung phản % sát thương nhận vào)
         float totalReflect = reflectPercent;
