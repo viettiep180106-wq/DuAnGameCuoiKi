@@ -39,6 +39,15 @@ public class SkillWood : SkillPassive
         float directHeal = player.MaxHealth * (0.04f * tier);
         player.Heal(directHeal);
 
+        if (player.TryPlayWoodArmorVisual(WoodArmorVisual.Kind.Activate))
+        {
+            var legacyRenderer = GetComponent<SpriteRenderer>();
+            if (legacyRenderer)
+                legacyRenderer.color = Color.clear;
+            DOVirtual.DelayedCall(1f, DespawnSelf, ignoreTimeScale: false).SetId(gameObject.GetInstanceID());
+            return;
+        }
+
         // Sinh hạt hiệu ứng ma thuật Mộc Diệp
         EnemyBase.SpawnSkillVFX(player.transform.position, ElementType.Wood);
 

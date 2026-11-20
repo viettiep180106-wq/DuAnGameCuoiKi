@@ -12,6 +12,7 @@ public class SkillWind : SkillPassive
 {
     [Header("Metal / Shield Settings")]
     public float visualScale = 2.0f;
+    private SpriteRenderer hiddenLegacyRenderer;
 
     public SkillWind()
     {
@@ -20,6 +21,11 @@ public class SkillWind : SkillPassive
 
     public override void OnDespawn()
     {
+        if (hiddenLegacyRenderer != null)
+        {
+            hiddenLegacyRenderer.enabled = true;
+            hiddenLegacyRenderer = null;
+        }
         transform.DOKill();
         transform.SetParent(null);
         base.OnDespawn();
@@ -61,8 +67,9 @@ public class SkillWind : SkillPassive
         // NẾU KHIÊN ĐANG TỒN TẠI: Chỉ cộng dồn chỉ số khiên & cập nhật text, KHÔNG bật thêm visual GameObject!
         if (player.HasActiveShield())
         {
-            player.AddShield(shieldAmount);
-            player.PulseShieldVisual();
+            player.AddMetalShield(shieldAmount);
+            if (!player.HasMetalShieldVfx)
+                player.PulseShieldVisual();
 
             if (DamageTextManager.Instance != null)
             {
@@ -84,13 +91,18 @@ public class SkillWind : SkillPassive
         var sr = GetComponent<SpriteRenderer>();
         if (sr != null)
         {
+            if (player.HasMetalShieldVfx && sr.enabled)
+            {
+                sr.enabled = false;
+                hiddenLegacyRenderer = sr;
+            }
             sr.sortingLayerName = "Default";
             sr.sortingOrder = 30;
             sr.color = new Color(1f, 0.92f, 0.35f, 0.80f); // Khiên mờ hoàng kim bảo vệ
         }
 
         // Bàn giao Visual cho Player quản lý: duy trì bảo vệ và hiển thị text HP khiên, tự hủy khi về 0 hoặc hết wave
-        player.AddShield(shieldAmount, gameObject);
+        player.AddMetalShield(shieldAmount, gameObject);
     }
 
     private void DespawnSelf()

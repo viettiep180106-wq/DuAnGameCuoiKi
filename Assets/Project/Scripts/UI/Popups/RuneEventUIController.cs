@@ -108,6 +108,7 @@ public class RuneEventUIController : MonoBehaviour
     private bool _isFirstRoll = true;
     private BuffDebuffType[] _currentCardBuffs = new BuffDebuffType[3];
     private bool _hasInteractedWithActivity = false;
+    private bool _isLeftBuff = true;
 
     private void Awake()
     {
@@ -407,7 +408,7 @@ public class RuneEventUIController : MonoBehaviour
     {
         if (BuffDebuffDatabase.Instance == null) return;
 
-        List<BuffDebuffInfo> buffs = BuffDebuffDatabase.Instance.GetRandomBuffs(4);
+        List<BuffDebuffInfo> buffs = BuffDebuffDatabase.Instance.GetRandomBuffs(4, allowRare: false);
         List<BuffDebuffInfo> debuffs = BuffDebuffDatabase.Instance.GetRandomDebuffs(4);
 
         int[] buffSectors = { 1, 3, 5, 7 };
@@ -644,7 +645,7 @@ public class RuneEventUIController : MonoBehaviour
         _isFirstRoll = true;
         UpdateRollCostUI();
 
-        // Ban đầu úp bộ bài giữa màn hình
+        // Ban đầu hiển thị bộ bài giữa màn hình
         if (_deckTransform != null)
         {
             _deckTransform.gameObject.SetActive(true);
@@ -660,14 +661,25 @@ public class RuneEventUIController : MonoBehaviour
             foreach (var ct in _cardTransforms) if (ct != null) ct.gameObject.SetActive(false);
         }
 
+        if (_btnRoll5 != null) _btnRoll5.interactable = false;
+
         DialogueManager.Instance?.AddDirectDialogue("Thánh Vật", "Bộ bài cổ ngữ xuất hiện! Lần chia đầu tiên hoàn toàn MIỄN PHÍ! Chọn lấy 1 lá bài thần kỳ!", false);
+
+        // Tự động xào bài và chia 3 lá bài ra ngay khi mở giao diện
+        DOVirtual.DelayedCall(0.35f, () =>
+        {
+            if (this != null && gameObject.activeInHierarchy && _rollPanel != null && _rollPanel.activeSelf)
+            {
+                StartCoroutine(ShuffleAndDealCardsRoutine());
+            }
+        });
     }
 
     private void UpdateRollCostUI()
     {
         if (_rollCostText != null)
         {
-            _rollCostText.text = _isFirstRoll ? "ROLL (Miễn phí)" : "ROLL (5 Lõi)";
+            _rollCostText.text = _isFirstRoll ? "Lần đầu: Miễn phí" : "Đổi bài: 5 Lõi";
         }
     }
 
@@ -737,12 +749,14 @@ public class RuneEventUIController : MonoBehaviour
             yield return new WaitForSeconds(0.15f);
         }
 
-        // Sinh 3 buff ngẫu nhiên (có tỉ lệ ra buff hiếm)
-        for (int i = 0; i < 3; i++)
+        // Sinh 3 buff ngẫu nhiên tuân thủ kiểm soát trùng bài theo GDD (tối đa 1 cặp trùng, không trùng cả 3 lá)
+        List<BuffDebuffType> rolledCards = InterWaveEventManager.Instance != null 
+            ? InterWaveEventManager.Instance.GetThreeRollCards() 
+            : new List<BuffDebuffType> { BuffDebuffType.Buff_CuongHoa_Atk, BuffDebuffType.Buff_CuongHoa_Def, BuffDebuffType.Buff_CuongHoa_MaxHP };
+
+        for (int i = 0; i < 3 && i < rolledCards.Count; i++)
         {
-            _currentCardBuffs[i] = InterWaveEventManager.Instance != null 
-                ? InterWaveEventManager.Instance.GetRandomBuff() 
-                : BuffDebuffType.Buff_CuongHoa_Atk;
+            _currentCardBuffs[i] = rolledCards[i];
         }
 
         // Chia 3 lá bài trải ngang cân đối (-260, 0, +260)
@@ -808,6 +822,8 @@ public class RuneEventUIController : MonoBehaviour
         }
 
         if (_deckTransform != null) _deckTransform.gameObject.SetActive(false);
+        _isFirstRoll = false;
+        UpdateRollCostUI();
         if (_btnRoll5 != null) _btnRoll5.interactable = true;
         if (_instructionText != null) _instructionText.text = "Chọn 1 trong 3 lá bài để nhận phước lành!";
     }
@@ -906,21 +922,27 @@ public class RuneEventUIController : MonoBehaviour
             _chestImage.transform.DOScale(Vector3.zero, 0.35f).SetEase(Ease.InBack);
         }
 
-        if (_chestTapPrompt != null) _chestTapPrompt.text = "Chọn một trong hai phong thư!";
+        if (_chestTapPrompt != null) _chestTapPrompt.text = "Chọn 1 trong 2 phong thư định mệnh!";
 
         yield return new WaitForSeconds(0.35f);
 
         if (_envelopeContainer != null)
         {
-            if (_btnEnvelopeBuff != null && _spriteEnvelope1 != null)
+            // Ngẫu nhiên 50/50 vị trí của Phong thư Thiên Thần (Buff) và Ác Ma (Debuff)
+            _isLeftBuff = UnityEngine.Random.value < 0.5f;
+
+            // Cả hai phong thư ban đầu đều mang ngoại hình phong bì đóng bí ẩn giống hệt nhau
+            if (_btnEnvelopeBuff != null)
             {
                 var img = _btnEnvelopeBuff.GetComponent<Image>();
-                if (img != null) img.sprite = _spriteEnvelope1;
+                if (img != null && _spriteEnvelope1 != null) img.sprite = _spriteEnvelope1;
+                _btnEnvelopeBuff.interactable = true;
             }
-            if (_btnEnvelopeDebuff != null && _spriteEnvelope2 != null)
+            if (_btnEnvelopeDebuff != null)
             {
                 var img = _btnEnvelopeDebuff.GetComponent<Image>();
-                if (img != null) img.sprite = _spriteEnvelope2;
+                if (img != null && _spriteEnvelope1 != null) img.sprite = _spriteEnvelope1;
+                _btnEnvelopeDebuff.interactable = true;
             }
 
             _envelopeContainer.SetActive(true);
@@ -928,13 +950,30 @@ public class RuneEventUIController : MonoBehaviour
             _envelopeContainer.transform.DOScale(Vector3.one, 0.45f).SetEase(Ease.OutBack);
         }
 
-        DialogueManager.Instance?.AddDirectDialogue("Thánh Vật", "Tada! Hai phong thư định mệnh: Một thiên thần ban phúc, một ác ma giáng hoạ! Chọn đi bạn ơi!", false);
+        DialogueManager.Instance?.AddDirectDialogue("Thánh Vật", "Tada! Hai phong thư bí ẩn giống hệt nhau: Một thiên thần ban phúc, một ác ma giáng hoạ! Chọn đi bạn ơi!", false);
     }
 
-    private void OnEnvelopeSelected(bool isBuffEnvelope)
+    private void OnEnvelopeSelected(bool isLeft)
     {
         if (_btnEnvelopeBuff != null) _btnEnvelopeBuff.interactable = false;
         if (_btnEnvelopeDebuff != null) _btnEnvelopeDebuff.interactable = false;
+
+        bool isBuffEnvelope = isLeft ? _isLeftBuff : !_isLeftBuff;
+
+        // Tiết lộ hình ảnh thực tế của hai phong thư sau khi chọn
+        if (_btnEnvelopeBuff != null)
+        {
+            var img = _btnEnvelopeBuff.GetComponent<Image>();
+            if (img != null) img.sprite = _isLeftBuff ? _spriteEnvelope1 : _spriteEnvelope2;
+        }
+        if (_btnEnvelopeDebuff != null)
+        {
+            var img = _btnEnvelopeDebuff.GetComponent<Image>();
+            if (img != null) img.sprite = _isLeftBuff ? _spriteEnvelope2 : _spriteEnvelope1;
+        }
+
+        Button chosenBtn = isLeft ? _btnEnvelopeBuff : _btnEnvelopeDebuff;
+        if (chosenBtn != null) chosenBtn.transform.DOPunchScale(Vector3.one * 0.25f, 0.35f, 6);
 
         if (isBuffEnvelope)
         {

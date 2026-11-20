@@ -14,6 +14,9 @@ public class SkillIce : SkillPassive
 {
     [Header("Ice Rain Settings")]
     public float boltDelay = 0.08f;
+    [SerializeField] private IceRainStrikeVisual strikePrefab;
+    private int castVersion;
+    private bool HasStrikeVisual => strikePrefab && strikePrefab.IsConfigured;
 
     public SkillIce()
     {
@@ -35,6 +38,7 @@ public class SkillIce : SkillPassive
 
     public override void OnDespawn()
     {
+        castVersion++;
         StopAllCoroutines();
         transform.DOKill();
         var sr = GetComponent<SpriteRenderer>();
@@ -57,7 +61,10 @@ public class SkillIce : SkillPassive
             sr.DOKill();
             sr.color = new Color(0.2f, 0.8f, 1f, 0.4f);
             sr.transform.localScale = Vector3.one * 1.5f;
-            sr.DOFade(0f, 0.45f);
+            if (HasStrikeVisual)
+                sr.color = Color.clear;
+            else
+                sr.DOFade(0f, 0.45f);
         }
         StartCoroutine(FireIceRainRoutine());
     }
@@ -121,7 +128,7 @@ public class SkillIce : SkillPassive
             yield return new WaitForSeconds(boltDelay);
         }
 
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(HasStrikeVisual ? IceRainStrikeVisual.ImpactTime : 0.3f);
         DespawnSelf();
     }
 
@@ -131,13 +138,24 @@ public class SkillIce : SkillPassive
     {
         if (enemy == null || enemy.CurrentHP <= 0) return;
 
+        Vector3 targetPos = new Vector3(pos.x, pos.y, 985f);
+        if (HasStrikeVisual)
+        {
+            int version = castVersion;
+            var pool = ObjectPoolingManager.Instance;
+            var visual = pool ? pool.Spawn(strikePrefab, targetPos, Quaternion.identity)
+                : Instantiate(strikePrefab, targetPos, Quaternion.identity);
+            visual.Play(pool, () => this && version == castVersion
+                && ApplyIceHit(enemy, targetPos, dmgRatio, slowChance, freezeChance, false));
+            return;
+        }
+
         if (_iceBoltPrefab == null)
         {
             _iceBoltPrefab = Resources.Load<GameObject>("Prefab/Base/Skill/Passive/IceBolt");
         }
 
         // Điểm thả từ trên trời cao (22.0 units) lao sấm sét xuống quái, Z=985 để luôn ở trước quái
-        Vector3 targetPos = new Vector3(pos.x, pos.y, 985f);
         Vector3 startSkyPos = targetPos + Vector3.up * 22.0f;
 
         GameObject bolt = null;
@@ -182,30 +200,29 @@ public class SkillIce : SkillPassive
                     Destroy(bolt);
                 }
 
-                if (enemy != null && enemy.CurrentHP > 0)
-                {
-                    var (rawDmg, isCrit) = CalculateDamage(dmgRatio);
-                    enemy.TakeDamage(rawDmg, isCrit, GetElementType());
-                    EnemyBase.SpawnSkillVFX(targetPos, ElementType.Water);
-                    if (Camera.main != null)
-                    {
-                        Camera.main.transform.DOShakePosition(0.12f, new Vector3(0.22f, 0.22f, 0f), 10, 90f, false, true);
-                    }
-                    ApplyIceCrowdControl(enemy, slowChance, freezeChance);
-                }
+                ApplyIceHit(enemy, targetPos, dmgRatio, slowChance, freezeChance, true);
             });
         }
         else
         {
-            var (rawDmg, isCrit) = CalculateDamage(dmgRatio);
-            enemy.TakeDamage(rawDmg, isCrit, GetElementType());
-            EnemyBase.SpawnSkillVFX(targetPos, ElementType.Water);
-            if (Camera.main != null)
-            {
-                Camera.main.transform.DOShakePosition(0.12f, new Vector3(0.22f, 0.22f, 0f), 10, 90f, false, true);
-            }
-            ApplyIceCrowdControl(enemy, slowChance, freezeChance);
+            ApplyIceHit(enemy, targetPos, dmgRatio, slowChance, freezeChance, true);
         }
+    }
+
+    private bool ApplyIceHit(EnemyBase enemy, Vector3 position, float dmgRatio, float slowChance, float freezeChance,
+        bool useDefaultVfx)
+    {
+        if (!enemy || !enemy.gameObject.activeInHierarchy || enemy.CurrentHP <= 0)
+            return false;
+
+        var (rawDmg, isCrit) = CalculateDamage(dmgRatio);
+        enemy.TakeDamage(rawDmg, isCrit, GetElementType());
+        if (useDefaultVfx)
+            EnemyBase.SpawnSkillVFX(position, ElementType.Water);
+        if (Camera.main != null)
+            Camera.main.transform.DOShakePosition(0.12f, new Vector3(0.22f, 0.22f, 0f), 10, 90f, false, true);
+        ApplyIceCrowdControl(enemy, slowChance, freezeChance);
+        return true;
     }
 
     private void ApplyIceCrowdControl(EnemyBase enemy, float slowChance, float freezeChance)

@@ -188,6 +188,9 @@ MonoBehaviour:
   target: {fileID: 0}
   splashRadius: 1.6
   flightSpeed: 10
+  emberSprite: {fileID: 21300000, guid: a2be0b62142c4640a0d5c4b6a9b32306, type: 3}
+  fireballSprite: {fileID: 21300000, guid: f346a00d4dd447bf825c73e8d7853c3e, type: 3}
+  burstPrefab: {fileID: 2039782779054778150, guid: 090fac998d78a5a48b81d0b108f4ab82, type: 3}
 --- !u!96 &1936908388633661242
 TrailRenderer:
   serializedVersion: 4

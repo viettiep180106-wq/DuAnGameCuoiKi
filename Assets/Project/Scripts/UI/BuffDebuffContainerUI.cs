@@ -103,6 +103,9 @@ public class BuffDebuffContainerUI : MonoBehaviour
     /// </summary>
     public void AddBuffDebuffIcon(BuffDebuffType type, bool isBuff)
     {
+        // Các buff tức thời 1 lần (Hồi máu, Hồi lõi, Reset CD) không thêm vào thanh icon container
+        if (InterWaveEventManager.IsInstantBuff(type)) return;
+
         EnsureLayoutGroup();
 
         BuffDebuffInfo info = BuffDebuffDatabase.Instance != null ? BuffDebuffDatabase.Instance.Get(type) : null;

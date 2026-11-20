@@ -17,6 +17,10 @@ public class PlayerStatsUI : MonoBehaviour
     public Transform EnergyCoreTargetTransform => energyCoreIcon != null ? energyCoreIcon.transform : (energyCoresText != null ? energyCoresText.transform : transform);
 
     private int displayedEnergy = 0;
+    private float _prevAtk = -1f;
+    private float _prevHp = -1f;
+    private float _prevMaxHp = -1f;
+    private float _prevDef = -1f;
 
     private void Awake()
     {
@@ -79,26 +83,68 @@ public class PlayerStatsUI : MonoBehaviour
             return;
         }
 
+        float curAtk = Player.Instance.PlayerATK;
+        float curHp = Player.Instance.CurrentHP;
+        float curMaxHp = Player.Instance.MaxHealth;
+        float curDef = Player.Instance.CurrentDEF;
+        int curEnergy = Player.Instance.EnergyCores;
+
+        // 1. Cập nhật ATK kèm hiệu ứng nảy số (Punch Scale) và đổi màu thông minh
         if (atkText != null)
         {
-            atkText.text = $"ATK: {Mathf.RoundToInt(Player.Instance.PlayerATK)}";
+            atkText.text = $"ATK: {Mathf.RoundToInt(curAtk)}";
+            if (_prevAtk >= 0 && Mathf.Abs(curAtk - _prevAtk) > 0.01f)
+            {
+                atkText.DOKill();
+                atkText.transform.DOKill();
+                atkText.transform.localScale = Vector3.one;
+                atkText.transform.DOPunchScale(Vector3.one * 0.18f, 0.25f, 5, 0.5f);
+                Color flashColor = curAtk > _prevAtk ? new Color(0.2f, 1f, 0.4f) : new Color(1f, 0.35f, 0.35f);
+                atkText.color = flashColor;
+                atkText.DOColor(Color.white, 0.4f);
+            }
+            _prevAtk = curAtk;
         }
 
+        // 2. Cập nhật HP kèm hiệu ứng nảy số
         if (hpText != null)
         {
-            atkText.DOKill();
-            hpText.text = $"HP: {Mathf.RoundToInt(Player.Instance.CurrentHP)}/{Mathf.RoundToInt(Player.Instance.MaxHealth)}";
+            hpText.text = $"HP: {Mathf.RoundToInt(curHp)}/{Mathf.RoundToInt(curMaxHp)}";
+            if (_prevHp >= 0 && (Mathf.Abs(curHp - _prevHp) > 0.01f || Mathf.Abs(curMaxHp - _prevMaxHp) > 0.01f))
+            {
+                hpText.DOKill();
+                hpText.transform.DOKill();
+                hpText.transform.localScale = Vector3.one;
+                hpText.transform.DOPunchScale(Vector3.one * 0.18f, 0.25f, 5, 0.5f);
+                Color flashColor = (curHp > _prevHp || curMaxHp > _prevMaxHp) ? new Color(0.2f, 1f, 0.4f) : new Color(1f, 0.35f, 0.35f);
+                hpText.color = flashColor;
+                hpText.DOColor(Color.white, 0.4f);
+            }
+            _prevHp = curHp;
+            _prevMaxHp = curMaxHp;
         }
 
+        // 3. Cập nhật DEF kèm hiệu ứng nảy số
         if (defText != null)
         {
-            float defVal = Player.Instance.CurrentDEF;
-            defText.text = $"DEF: {Mathf.RoundToInt(defVal)}";
+            defText.text = $"DEF: {Mathf.RoundToInt(curDef)}";
+            if (_prevDef >= 0 && Mathf.Abs(curDef - _prevDef) > 0.01f)
+            {
+                defText.DOKill();
+                defText.transform.DOKill();
+                defText.transform.localScale = Vector3.one;
+                defText.transform.DOPunchScale(Vector3.one * 0.18f, 0.25f, 5, 0.5f);
+                Color flashColor = curDef > _prevDef ? new Color(0.3f, 0.8f, 1f) : new Color(1f, 0.4f, 0.4f);
+                defText.color = flashColor;
+                defText.DOColor(Color.white, 0.4f);
+            }
+            _prevDef = curDef;
         }
 
-        if (energyCoresText != null)
+        // 4. Cập nhật số lõi năng lượng
+        if (energyCoresText != null && displayedEnergy != curEnergy)
         {
-            energyCoresText.text = energyCoreIcon != null ? $"{Player.Instance.EnergyCores}" : $"COIN: {Player.Instance.EnergyCores}";
+            UpdateEnergyUI(curEnergy);
         }
     }
 
@@ -128,7 +174,7 @@ public class PlayerStatsUI : MonoBehaviour
         {
             // NHẬN NĂNG LƯỢNG: Nảy số nhanh và mượt trong 0.2s
             int oldVal = displayedEnergy;
-            displayedEnergy = newAmount; // Set đích ngay để Update() không bị loop lại
+            displayedEnergy = newAmount;
             energyCoresText.transform.DOScale(Vector3.one * 1.2f, 0.12f).OnComplete(() =>
             {
                 energyCoresText.transform.DOScale(Vector3.one, 0.12f);
@@ -165,4 +211,3 @@ public class PlayerStatsUI : MonoBehaviour
         energyCoreIcon.DOColor(Color.white, 0.35f).SetEase(Ease.OutQuad);
     }
 }
-

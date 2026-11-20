@@ -185,3 +185,5 @@ MonoBehaviour:
   baseFreezeDuration: 2
   activeRadius: 4
   visualRenderer: {fileID: 71781800460182675}
+  boltDelay: 0.08
+  strikePrefab: {fileID: 7800100330425031423, guid: 8a18922cf88f410aa4ae3ad968b8d3cd, type: 3}

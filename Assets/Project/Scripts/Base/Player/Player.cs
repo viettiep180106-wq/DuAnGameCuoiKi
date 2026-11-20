@@ -77,6 +77,8 @@ public class Player : BaseCharacter
     public bool HasImmunityCrowdControl { get; set; } = false;
     public int WoodArmorTier { get; set; } = 0;
     public bool HasUsedEmergencyHeal { get; set; } = false;
+    [SerializeField] private WoodArmorVisual woodArmorVisualPrefab;
+    private WoodArmorVisual woodArmorVisual;
 
     [Header("Turn-based Debuffs & Status Effects (GDD)")]
     public List<ActiveRoundEffect> ActiveRoundEffects = new List<ActiveRoundEffect>();
@@ -93,6 +95,7 @@ public class Player : BaseCharacter
     public event Action<int> OnEnergyCoresChanged;
 
     [Header("Shield Visual HUD")]
+    [SerializeField] private ShieldSpriteVisual metalShieldVisual;
     private GameObject _activeShieldVisualObj;
     private TMPro.TextMeshPro _shieldHpText;
 
@@ -220,6 +223,15 @@ public class Player : BaseCharacter
         AddShield(amount, null);
     }
 
+    internal bool HasMetalShieldVfx => metalShieldVisual && metalShieldVisual.IsReady;
+
+    internal void AddMetalShield(float amount, GameObject visualObj = null)
+    {
+        AddShield(amount, visualObj);
+        if (HasMetalShieldVfx)
+            metalShieldVisual.PlayGrant();
+    }
+
     public void TickRoundMetalShield()
     {
         if (MetalShieldTier == 2)
@@ -227,7 +239,7 @@ public class Player : BaseCharacter
             MetalShieldRoundCounter++;
             if (MetalShieldRoundCounter % 3 == 0)
             {
-                AddShield(MaxHP * 0.15f);
+                AddMetalShield(MaxHP * 0.15f);
             }
         }
         else if (MetalShieldTier >= 3)
@@ -235,7 +247,7 @@ public class Player : BaseCharacter
             MetalShieldRoundCounter++;
             if (MetalShieldRoundCounter % 2 == 0)
             {
-                AddShield(MaxHP * 0.25f);
+                AddMetalShield(MaxHP * 0.25f);
             }
         }
     }
@@ -247,6 +259,20 @@ public class Player : BaseCharacter
             HasImmunityCrowdControl = false; // Miễn nhiễm 1 hiệu ứng khống chế đầu tiên theo GDD Tier 3
             return;
         }
+
+        // Debuff: Khi bị trúng đòn 50% x2 hiệu ứng quái (1 Level)
+        if (InterWaveEventManager.Instance != null && InterWaveEventManager.Instance.HasActiveDebuff(BuffDebuffType.Debuff_TangHieuUngQuai))
+        {
+            if (UnityEngine.Random.value < 0.5f)
+            {
+                effectPayLoad.value *= 2f;
+                if (DamageTextManager.Instance != null)
+                {
+                    DamageTextManager.Instance.SpawnCustomText("[X2 HIỆU ỨNG QUÁI!]", Color.magenta, transform.position + Vector3.up * 1.8f, 1.3f);
+                }
+            }
+        }
+
         base.PlayEffect(effectPayLoad);
     }
 
@@ -260,12 +286,28 @@ public class Player : BaseCharacter
 
         HP = Mathf.Min(HP + amount, MaxHP);
         UpdateHPUI(MaxHP > 0 ? HP / MaxHP : 1f);
+        OnStatsUpdated?.Invoke();
 
         // Hiển thị Pop-up số máu hồi phục màu xanh lá rực rỡ
         if (DamageTextManager.Instance != null && amount > 0)
         {
             DamageTextManager.Instance.SpawnCustomText($"+{Mathf.RoundToInt(amount)} HP", new Color(0.2f, 1f, 0.35f), transform.position + Vector3.up * 1.8f, 1.4f);
         }
+    }
+
+    internal bool TryPlayWoodArmorVisual(WoodArmorVisual.Kind kind)
+    {
+        if (!woodArmorVisualPrefab || !woodArmorVisualPrefab.IsConfigured)
+            return false;
+
+        if (!woodArmorVisual)
+        {
+            woodArmorVisual = Instantiate(woodArmorVisualPrefab, transform.position, Quaternion.identity);
+            woodArmorVisual.transform.SetParent(transform, true);
+        }
+
+        woodArmorVisual.Play(kind);
+        return true;
     }
 
     private PlayerAnimationController animController;
@@ -357,6 +399,18 @@ public class Player : BaseCharacter
     {
         bool isCrit = UnityEngine.Random.value < critRate;
         float multiplier = isCrit ? (1f + critDmg) : 1f;
+
+        // Debuff: Mỗi khi có chí mạng người chơi tự mất đi 5% lõi năng lượng (1 Level)
+        if (isCrit && InterWaveEventManager.Instance != null && InterWaveEventManager.Instance.HasActiveDebuff(BuffDebuffType.Debuff_MatLoiKhiCrit))
+        {
+            int loss = Mathf.Max(1, Mathf.RoundToInt(energyCores * 0.05f));
+            TrySpendEnergy(loss);
+            if (DamageTextManager.Instance != null)
+            {
+                DamageTextManager.Instance.SpawnCustomText($"-{loss} LÕI (CRIT DEBUFF)", new Color(1f, 0.4f, 0.4f), transform.position + Vector3.up * 2.2f, 1.3f);
+            }
+        }
+
         return (isCrit, multiplier);
     }
 
@@ -369,6 +423,7 @@ public class Player : BaseCharacter
         {
             energyCores -= amount;
             OnEnergyCoresChanged?.Invoke(energyCores);
+            OnStatsUpdated?.Invoke();
             return true;
         }
         return false;
@@ -378,6 +433,7 @@ public class Player : BaseCharacter
     {
         energyCores += amount;
         OnEnergyCoresChanged?.Invoke(energyCores);
+        OnStatsUpdated?.Invoke();
     }
 
     public override void TakeDamage(float damage)
@@ -409,14 +465,30 @@ public class Player : BaseCharacter
         float elementMultiplier = ElementalHelper.GetMultiplier(attackerElement, currentElement);
         float finalDamage = Mathf.Max(1f, (rawDamage * elementMultiplier) - defense);
 
+        // Phản đòn từ Buff Passive (Shield25_Reflect & Reflect100)
+        if (InterWaveEventManager.Instance != null)
+        {
+            if (InterWaveEventManager.Instance.HasActiveBuff(BuffDebuffType.Buff_Passive_Shield25_Reflect) && CurrentShield > 0)
+            {
+                TryReflectDamageToEnemy(rawDamage * 0.5f);
+            }
+            if (InterWaveEventManager.Instance.HasActiveBuff(BuffDebuffType.Buff_Passive_Reflect100) && UnityEngine.Random.value < 0.5f)
+            {
+                TryReflectDamageToEnemy(rawDamage);
+            }
+        }
+
         // 1. Khiên Kim Cang (Shield) hấp thụ sát thương trước HP (trừ khi đòn đánh bỏ qua khiên - ignoreShield)
         if (!ignoreShield && CurrentShield > 0)
         {
+            bool showImpact = HasMetalShieldVfx && metalShieldVisual.IsProtecting;
             float absorbed = Mathf.Min(CurrentShield, finalDamage);
             CurrentShield -= absorbed;
             finalDamage -= absorbed;
             UpdateShieldVisualAndText();
             OnShieldChanged?.Invoke(CurrentShield);
+            if (showImpact)
+                metalShieldVisual.PlayImpact(CurrentShield <= 0f);
 
             if (DamageTextManager.Instance != null && absorbed > 0)
             {
@@ -450,19 +522,51 @@ public class Player : BaseCharacter
         // 3. Mộc Giáp Hồi Sinh: Mỗi khi nhận sát thương, tự động hồi lại % HP tối đa
         if (WoodArmorTier >= 1 && HP > 0)
         {
+            float hpBeforeWoodHeal = HP;
             float healPercent = WoodArmorTier switch
             {
-                1 => 0.03f,
-                2 => 0.05f,
-                _ => 0.08f
+                1 => 0.05f,
+                2 => 0.075f,
+                _ => 0.1f
             };
             Heal(MaxHP * healPercent);
 
             // Tier 3: Nếu HP < 30%, lập tức hồi phục 20% HP tối đa (1 lần/trận)
-            if (WoodArmorTier >= 3 && !HasUsedEmergencyHeal && HP < (MaxHP * 0.3f))
+            bool emergencyHeal = WoodArmorTier >= 3 && !HasUsedEmergencyHeal && HP < (MaxHP * 0.3f);
+            if (emergencyHeal)
             {
                 HasUsedEmergencyHeal = true;
                 Heal(MaxHP * 0.20f);
+            }
+
+            if (HP > hpBeforeWoodHeal)
+            {
+                TryPlayWoodArmorVisual(emergencyHeal ? WoodArmorVisual.Kind.EmergencyHeal : WoodArmorVisual.Kind.HealOnHit);
+            }
+            WoodArmorTier = 0;
+        }
+    }
+
+    private void TryReflectDamageToEnemy(float reflectDmg)
+    {
+        if (reflectDmg <= 0) return;
+        if (EnemyController.instance != null)
+        {
+            var enemies = EnemyController.instance.GetOrderedEnemiesForTurn();
+            if (enemies != null)
+            {
+                for (int i = 0; i < enemies.Count; i++)
+                {
+                    if (enemies[i] != null && enemies[i].gameObject.activeInHierarchy && enemies[i].CurrentHP > 0)
+                    {
+                        enemies[i].TakeDamageFromPlayer(reflectDmg, false, ElementType.Metal, true);
+                        if (DamageTextManager.Instance != null)
+                        {
+                            DamageTextManager.Instance.SpawnCustomText($"[PHẢN {Mathf.RoundToInt(reflectDmg)} ST]", Color.cyan, transform.position + Vector3.up * 2.2f, 1.3f);
+                        }
+                        return;
+                    }
+                }
             }
         }
     }
@@ -656,6 +760,8 @@ public class Player : BaseCharacter
 
     public override void Deid()
     {
+        if (woodArmorVisual)
+            woodArmorVisual.Stop();
         CleanUpAllEffect();
         ClearShield();
         if (animController != null)

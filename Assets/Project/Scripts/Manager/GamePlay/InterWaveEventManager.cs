@@ -29,17 +29,55 @@ public class InterWaveEventManager : MonoBehaviour
     public static event Action<BuffDebuffType, bool> OnBuffDebuffApplied;
     public static event Action OnBuffDebuffReset;
 
-    // Danh sách Buff và Debuff tồn tại xuyên suốt toàn bộ Level
+    // Danh sách Buff tồn tại xuyên suốt toàn bộ Level (Cường Hóa, Passive Buffs, Rare Buffs)
     private readonly List<BuffDebuffType> _activeBuffsInLevel = new List<BuffDebuffType>();
+    // Danh sách Debuff tồn tại xuyên suốt toàn bộ Level (Theo yêu cầu GDD & người chơi: Toàn bộ debuff kéo dài 1 Level)
     private readonly List<BuffDebuffType> _activeDebuffsInLevel = new List<BuffDebuffType>();
 
     public IReadOnlyList<BuffDebuffType> ActiveBuffsInLevel => _activeBuffsInLevel;
     public IReadOnlyList<BuffDebuffType> ActiveDebuffsInLevel => _activeDebuffsInLevel;
 
+    [Header("Passive & Debuff Cooldowns (2 Round Cooldown)")]
+    public int DoubleSkillCooldown = 0;
+    public int DoubleStoneEffectCooldown = 0;
+    public int KhoaSkillPassiveCooldown = 0;
+    public int XoaPassiveCooldown = 0;
+
+    public bool HasActiveBuff(BuffDebuffType buff) => _activeBuffsInLevel.Contains(buff);
+    public bool HasActiveDebuff(BuffDebuffType debuff) => _activeDebuffsInLevel.Contains(debuff);
+
+    public bool CanTriggerDoubleSkill() => HasActiveBuff(BuffDebuffType.Buff_Passive_DoubleSkill) && DoubleSkillCooldown == 0;
+    public void ConsumeDoubleSkill() { DoubleSkillCooldown = 2; }
+
+    public bool CanTriggerDoubleStoneEffect() => HasActiveBuff(BuffDebuffType.Buff_Passive_DoubleStoneEffect) && DoubleStoneEffectCooldown == 0;
+    public void ConsumeDoubleStoneEffect() { DoubleStoneEffectCooldown = 2; }
+
+    public bool CanTriggerKhoaSkillPassive() => HasActiveDebuff(BuffDebuffType.Debuff_KhoaSkillPassive) && KhoaSkillPassiveCooldown == 0;
+    public void ConsumeKhoaSkillPassive() { KhoaSkillPassiveCooldown = 2; }
+
+    public bool CanTriggerXoaPassive() => HasActiveDebuff(BuffDebuffType.Debuff_XoaPassive) && XoaPassiveCooldown == 0;
+    public void ConsumeXoaPassive() { XoaPassiveCooldown = 2; }
+
+    /// <summary>
+    /// Kiểm tra xem buff có phải là buff tức thời 1 lần (Hồi máu, Hồi lõi, Reset CD) hay không
+    /// Theo yêu cầu: Các buff tức thời này không đưa vào thanh buff_debuff_container
+    /// </summary>
+    public static bool IsInstantBuff(BuffDebuffType type)
+    {
+        return type == BuffDebuffType.Buff_TaiTao_Energy
+            || type == BuffDebuffType.Buff_TaiTao_HealHP
+            || type == BuffDebuffType.Buff_TaiTao_HealHP20
+            || type == BuffDebuffType.Buff_LamMoiSkillActive;
+    }
+
     public void ResetLevelBuffsDebuffs()
     {
         _activeBuffsInLevel.Clear();
         _activeDebuffsInLevel.Clear();
+        DoubleSkillCooldown = 0;
+        DoubleStoneEffectCooldown = 0;
+        KhoaSkillPassiveCooldown = 0;
+        XoaPassiveCooldown = 0;
         OnBuffDebuffReset?.Invoke();
     }
 
@@ -47,6 +85,58 @@ public class InterWaveEventManager : MonoBehaviour
     {
         if (_instance == null) _instance = this;
         else if (_instance != this) { Destroy(gameObject); return; }
+    }
+
+    private void Start()
+    {
+        if (CombatTurnManager.Instance != null)
+        {
+            CombatTurnManager.Instance.OnRoundEnded += HandleRoundEnded;
+            CombatTurnManager.Instance.OnTurnStateChanged += HandleTurnStateChanged;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (CombatTurnManager.Instance != null)
+        {
+            CombatTurnManager.Instance.OnRoundEnded -= HandleRoundEnded;
+            CombatTurnManager.Instance.OnTurnStateChanged -= HandleTurnStateChanged;
+        }
+    }
+
+    private void HandleRoundEnded()
+    {
+        // Giảm cooldown 2 Round của các buff passive và debuff khi kết thúc mỗi round
+        if (DoubleSkillCooldown > 0)
+        {
+            DoubleSkillCooldown--;
+        }
+        if (DoubleStoneEffectCooldown > 0)
+        {
+            DoubleStoneEffectCooldown--;
+        }
+        if (KhoaSkillPassiveCooldown > 0)
+        {
+            KhoaSkillPassiveCooldown--;
+        }
+        if (XoaPassiveCooldown > 0)
+        {
+            XoaPassiveCooldown--;
+        }
+    }
+
+    private void HandleTurnStateChanged(CombatTurnState state)
+    {
+        // Toàn bộ Debuff là xuyên suốt 1 Level (10 Wave), KHÔNG tự động revert khi kết thúc 1 Wave!
+    }
+
+    /// <summary>
+    /// Giữ lại hàm tương thích ngược. Debuff chỉ được reset khi toàn bộ Level kết thúc qua ResetLevelBuffsDebuffs()
+    /// </summary>
+    public void RevertWaveScopedDebuffs()
+    {
+        // Không revert giữa các wave theo yêu cầu: Toàn bộ debuff kéo dài 1 Level
     }
 
     /// <summary>
@@ -62,6 +152,7 @@ public class InterWaveEventManager : MonoBehaviour
 
         if (eventType == StepEventType.RandomEvent)
         {
+            // Tạm thời bỏ hoạt động Cá Cược (BeastBetting) do chưa có UI theo yêu cầu của user
             StepEventType[] possibleEvents = new StepEventType[] {
                 StepEventType.RuneStone_Gacha,
                 StepEventType.RuneStone_Roll,
@@ -90,10 +181,13 @@ public class InterWaveEventManager : MonoBehaviour
     {
         if (eventType == StepEventType.RandomEvent)
         {
-            // 50% Phiến đá cổ, 50% Cá cược theo bảng GDD
-            eventType = (UnityEngine.Random.value < 0.5f) 
-                ? StepEventType.RuneStone_Gacha 
-                : StepEventType.BeastBetting;
+            StepEventType[] possibleEvents = new StepEventType[] {
+                StepEventType.RuneStone_Gacha,
+                StepEventType.RuneStone_Roll,
+                StepEventType.RuneStone_Chest,
+                StepEventType.RuneStone_Altar
+            };
+            eventType = possibleEvents[UnityEngine.Random.Range(0, possibleEvents.Length)];
         }
 
         switch (eventType)
@@ -151,10 +245,8 @@ public class InterWaveEventManager : MonoBehaviour
     // --- HOẠT ĐỘNG 1.1: GACHA VÒNG QUAY (SC_09 -> SC_14) ---
     private IEnumerator RunRuneGachaRoutine()
     {
-        // Trừ 25 lõi năng lượng mở phiến đá
         if (Player.Instance != null) Player.Instance.TrySpendEnergy(25);
 
-        // Đẩy thoại mở đầu
         DialogueManager.Instance?.AddDirectDialogue("Pháp Sư", "Ui da! Cái gì cấn chân trẫm thế này?! Một phiến đá rune cổ phát sáng lập lòe!", true);
         yield return new WaitForSeconds(1.4f);
 
@@ -168,7 +260,7 @@ public class InterWaveEventManager : MonoBehaviour
         bool isBuff = UnityEngine.Random.value < 0.5f;
         if (isBuff)
         {
-            BuffDebuffType buff = GetRandomBuff();
+            BuffDebuffType buff = GetRandomBuff(false); // GDD: Gacha vòng quay chỉ gồm Buff Thường & Debuff
             ApplyBuffEffect(buff);
             DialogueManager.Instance?.AddDirectDialogue("Thánh Vật", $"Keng keng keng! Nổ hũ cực phẩm! Trúng ô kim cương: nhận ngay [{GetBuffName(buff)}]!", false);
             yield return new WaitForSeconds(1.4f);
@@ -194,23 +286,11 @@ public class InterWaveEventManager : MonoBehaviour
         DialogueManager.Instance?.AddDirectDialogue("Pháp Sư", "Để trẫm thẩm định nhân phẩm xem nào! Nếu bài phèn thì bỏ thêm 5 lõi đổi lượt săn buff Hiếm!", true);
         yield return new WaitForSeconds(1.4f);
 
-        bool isBuff = UnityEngine.Random.value < 0.75f; // Tỉ lệ roll ra buff cao hơn
-        if (isBuff)
-        {
-            BuffDebuffType buff = GetRandomBuff();
-            ApplyBuffEffect(buff);
-            DialogueManager.Instance?.AddDirectDialogue("Thánh Vật", $"Lật bài thần thánh! Ra ngay thẻ bài SSR lấp lánh: bạn nhận được [{GetBuffName(buff)}]!", false);
-            yield return new WaitForSeconds(1.4f);
-            DialogueManager.Instance?.AddDirectDialogue("Pháp Sư", "Haha đúng là tay thơm có số! Thẻ xịn thế này wave sau quái chỉ có nước khóc thét!", true);
-        }
-        else
-        {
-            BuffDebuffType debuff = GetRandomDebuff();
-            ApplyDebuffEffect(debuff);
-            DialogueManager.Instance?.AddDirectDialogue("Thánh Vật", $"Ối dồi ôi bài rác dính bẫy rồi! Rút nhầm thẻ Nguyền Rủa cổ đại: [{GetBuffName(debuff)}]!", false);
-            yield return new WaitForSeconds(1.4f);
-            DialogueManager.Instance?.AddDirectDialogue("Pháp Sư", "Trời ơi đất hỡi! Tưởng bớ được buff hiếm ai dè bốc trúng cục nợ cay xé lòng!", true);
-        }
+        BuffDebuffType buff = GetRandomBuff(true);
+        ApplyBuffEffect(buff);
+        DialogueManager.Instance?.AddDirectDialogue("Thánh Vật", $"Lật bài thần thánh! Ra ngay thẻ bài lấp lánh: bạn nhận được [{GetBuffName(buff)}]!", false);
+        yield return new WaitForSeconds(1.4f);
+        DialogueManager.Instance?.AddDirectDialogue("Pháp Sư", "Haha đúng là tay thơm có số! Thẻ xịn thế này wave sau quái chỉ có nước khóc thét!", true);
         yield return new WaitForSeconds(1.4f);
     }
 
@@ -226,7 +306,7 @@ public class InterWaveEventManager : MonoBehaviour
         bool isBuff = UnityEngine.Random.value < 0.5f;
         if (isBuff)
         {
-            BuffDebuffType buff = GetRandomBuff();
+            BuffDebuffType buff = GetRandomBuff(true);
             ApplyBuffEffect(buff);
             DialogueManager.Instance?.AddDirectDialogue("Thánh Vật", $"Chọn đúng phong thư định mệnh rồi! Kho báu tỏa sáng, nhận ngay: [{GetBuffName(buff)}]!", false);
             yield return new WaitForSeconds(1.4f);
@@ -255,7 +335,7 @@ public class InterWaveEventManager : MonoBehaviour
         bool isBuff = UnityEngine.Random.value < 0.6f;
         if (isBuff)
         {
-            BuffDebuffType buff = GetRandomBuff();
+            BuffDebuffType buff = GetRandomBuff(true);
             ApplyBuffEffect(buff);
             DialogueManager.Instance?.AddDirectDialogue("Thánh Vật", $"Trời xanh thấu tỏ lòng thành! Cột sáng thiên giới giáng hạ Lời Chúc Phúc: [{GetBuffName(buff)}]!", false);
             yield return new WaitForSeconds(1.4f);
@@ -286,7 +366,7 @@ public class InterWaveEventManager : MonoBehaviour
         bool isWin = UnityEngine.Random.value < 0.5f;
         if (isWin)
         {
-            BuffDebuffType buff = GetRandomBuff();
+            BuffDebuffType buff = GetRandomBuff(true);
             ApplyBuffEffect(buff);
             DialogueManager.Instance?.AddDirectDialogue("Thánh Vật", $"Hú hét vang dội! Cửa rồng lửa thắng áp đảo! Bạn trúng cược đậm, húp trọn siêu phẩm: [{GetBuffName(buff)}]!", false);
             yield return new WaitForSeconds(1.4f);
@@ -313,41 +393,15 @@ public class InterWaveEventManager : MonoBehaviour
         yield return new WaitForSeconds(1.4f);
     }
 
-    public BuffDebuffType GetRandomBuff()
+    public BuffDebuffType GetRandomBuff(bool allowRare = true)
     {
         if (BuffDebuffDatabase.Instance != null)
         {
-            var info = BuffDebuffDatabase.Instance.GetRandomBuff(true);
+            var info = BuffDebuffDatabase.Instance.GetRandomBuff(allowRare);
             if (info != null) return info.type;
         }
 
-        bool isRare = UnityEngine.Random.value < 0.05f; // 5% Buff Hiếm
-        if (isRare)
-        {
-            BuffDebuffType[] rareBuffs = new BuffDebuffType[] {
-                BuffDebuffType.Buff_Hiem_StackAtkCrit,
-                BuffDebuffType.Buff_Hiem_DoubleNextWave,
-                BuffDebuffType.Buff_Hiem_DmgToHeal,
-                BuffDebuffType.Buff_Hiem_VampireDouble
-            };
-            return rareBuffs[UnityEngine.Random.Range(0, rareBuffs.Length)];
-        }
-        else
-        {
-            BuffDebuffType[] normalBuffs = new BuffDebuffType[] {
-                BuffDebuffType.Buff_CuongHoa_Atk,
-                BuffDebuffType.Buff_CuongHoa_Def,
-                BuffDebuffType.Buff_CuongHoa_MaxHP,
-                BuffDebuffType.Buff_CuongHoa_Crit,
-                BuffDebuffType.Buff_TaiTao_Energy,
-                BuffDebuffType.Buff_TaiTao_HealHP,
-                BuffDebuffType.Buff_Passive_Shield50,
-                BuffDebuffType.Buff_Passive_DoubleSkill,
-                BuffDebuffType.Buff_Passive_Reflect100,
-                BuffDebuffType.Buff_LamMoiSkillActive
-            };
-            return normalBuffs[UnityEngine.Random.Range(0, normalBuffs.Length)];
-        }
+        return BuffDebuffType.Buff_CuongHoa_Atk;
     }
 
     public BuffDebuffType GetRandomDebuff()
@@ -358,21 +412,32 @@ public class InterWaveEventManager : MonoBehaviour
             if (info != null) return info.type;
         }
 
-        BuffDebuffType[] debuffs = new BuffDebuffType[] {
-            BuffDebuffType.Debuff_GiamAtk,
-            BuffDebuffType.Debuff_GiamMaxHP,
-            BuffDebuffType.Debuff_TangHieuUngQuai,
-            BuffDebuffType.Debuff_MatLoiKhiCrit,
-            BuffDebuffType.Debuff_KhoaSkillActive,
-            BuffDebuffType.Debuff_XoaPassive
+        return BuffDebuffType.Debuff_GiamAtk;
+    }
+
+    public List<BuffDebuffType> GetThreeRollCards()
+    {
+        if (BuffDebuffDatabase.Instance != null)
+        {
+            return BuffDebuffDatabase.Instance.GetThreeRollCards();
+        }
+
+        return new List<BuffDebuffType>
+        {
+            BuffDebuffType.Buff_CuongHoa_Atk,
+            BuffDebuffType.Buff_CuongHoa_Def,
+            BuffDebuffType.Buff_CuongHoa_MaxHP
         };
-        return debuffs[UnityEngine.Random.Range(0, debuffs.Length)];
     }
 
     public void ApplyBuffEffect(BuffDebuffType buff)
     {
-        _activeBuffsInLevel.Add(buff);
-        OnBuffDebuffApplied?.Invoke(buff, true);
+        bool isInstant = IsInstantBuff(buff);
+        if (!isInstant)
+        {
+            _activeBuffsInLevel.Add(buff);
+            OnBuffDebuffApplied?.Invoke(buff, true);
+        }
 
         if (Player.Instance != null)
         {
@@ -396,14 +461,43 @@ public class InterWaveEventManager : MonoBehaviour
 
                 case BuffDebuffType.Buff_TaiTao_Energy:
                     Player.Instance.AddEnergy(20);
+                    if (DamageTextManager.Instance != null)
+                    {
+                        DamageTextManager.Instance.SpawnCustomText("+20 LÕI NĂNG LƯỢNG", new Color(0.2f, 0.9f, 1f), Player.Instance.transform.position + Vector3.up * 2f, 1.4f);
+                    }
                     break;
 
                 case BuffDebuffType.Buff_TaiTao_HealHP:
                     Player.Instance.Heal(Player.Instance.MaxHealth * 0.1f);
                     break;
+
+                case BuffDebuffType.Buff_TaiTao_HealHP20:
+                    Player.Instance.Heal(Player.Instance.MaxHealth * 0.2f);
+                    break;
+
+                case BuffDebuffType.Buff_Passive_Shield50:
+                    Player.Instance.AddShield(Player.Instance.MaxHealth * 0.5f);
+                    break;
+
+                case BuffDebuffType.Buff_Passive_Shield25_Reflect:
+                    Player.Instance.AddShield(Player.Instance.MaxHealth * 0.25f);
+                    break;
+
+                case BuffDebuffType.Buff_LamMoiSkillActive:
+                    var activeSkills = FindObjectsByType<SkillActive>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+                    if (activeSkills != null && activeSkills.Length > 0)
+                    {
+                        var randSkill = activeSkills[UnityEngine.Random.Range(0, activeSkills.Length)];
+                        if (randSkill != null) randSkill.ResetCooldownInstant();
+                    }
+                    if (DamageTextManager.Instance != null)
+                    {
+                        DamageTextManager.Instance.SpawnCustomText("LÀM MỚI KỸ NĂNG!", new Color(1f, 0.85f, 0.2f), Player.Instance.transform.position + Vector3.up * 2f, 1.4f);
+                    }
+                    break;
             }
 
-            PlayerStatsUI statsUI = FindFirstObjectByType<PlayerStatsUI>();
+            PlayerStatsUI statsUI = PlayerStatsUI.Instance != null ? PlayerStatsUI.Instance : FindFirstObjectByType<PlayerStatsUI>();
             if (statsUI != null) statsUI.UpdateStatsUI();
         }
     }
@@ -425,12 +519,17 @@ public class InterWaveEventManager : MonoBehaviour
                     Player.Instance.ModifyMaxHP(0.9f);
                     break;
 
-                case BuffDebuffType.Debuff_MatLoiKhiCrit:
-                    Player.Instance.TrySpendEnergy(5);
+                case BuffDebuffType.Debuff_KhoaSkillActive:
+                    var activeSkills = FindObjectsByType<SkillActive>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+                    if (activeSkills != null && activeSkills.Length > 0)
+                    {
+                        var randSkill = activeSkills[UnityEngine.Random.Range(0, activeSkills.Length)];
+                        if (randSkill != null) randSkill.SetLocked(true);
+                    }
                     break;
             }
 
-            PlayerStatsUI statsUI = FindFirstObjectByType<PlayerStatsUI>();
+            PlayerStatsUI statsUI = PlayerStatsUI.Instance != null ? PlayerStatsUI.Instance : FindFirstObjectByType<PlayerStatsUI>();
             if (statsUI != null) statsUI.UpdateStatsUI();
         }
     }
@@ -446,31 +545,6 @@ public class InterWaveEventManager : MonoBehaviour
             }
         }
 
-        return b switch
-        {
-            BuffDebuffType.Buff_CuongHoa_Atk => "+10% Sát Thương (Toàn Level)",
-            BuffDebuffType.Buff_CuongHoa_Def => "+20% Giáp (Toàn Level)",
-            BuffDebuffType.Buff_CuongHoa_MaxHP => "+10% Giới Hạn Máu (Toàn Level)",
-            BuffDebuffType.Buff_CuongHoa_Crit => "+5% Tỉ Lệ CM & +10% ST CM",
-            BuffDebuffType.Buff_TaiTao_Energy => "+20 Lõi Năng Lượng",
-            BuffDebuffType.Buff_TaiTao_HealHP => "Hồi Phục 10% Máu",
-            BuffDebuffType.Buff_Passive_Shield50 => "Lá Chắn Hộ Thể 50% HP (Toàn Level)",
-            BuffDebuffType.Buff_Passive_Shield25_Reflect => "Lá Chắn 25% HP & Phản 50% ST",
-            BuffDebuffType.Buff_Passive_Reflect100 => "50% Phản 100% Sát Thương",
-            BuffDebuffType.Buff_Passive_DoubleSkill => "Nhân Đôi Kỹ Năng Active",
-            BuffDebuffType.Buff_Passive_DoubleStoneEffect => "x2 Hiệu Quả Kỹ Năng Đá",
-            BuffDebuffType.Buff_LamMoiSkillActive => "Làm Mới 1 Skill Active",
-            BuffDebuffType.Buff_Hiem_StackAtkCrit => "BUFF HIẾM: Tăng Tiến ATK & Chí Mạng",
-            BuffDebuffType.Buff_Hiem_DoubleNextWave => "BUFF HIẾM: Tích Lũy & x2 Buff Wave Sau",
-            BuffDebuffType.Buff_Hiem_DmgToHeal => "BUFF HIẾM: Chuyển 50% ST Thành Hồi Máu",
-            BuffDebuffType.Buff_Hiem_VampireDouble => "BUFF HIẾM: Huyết Kỹ Cuồng Nộ",
-            BuffDebuffType.Debuff_GiamAtk => "DEBUFF: Giảm 10% Sát Thương",
-            BuffDebuffType.Debuff_GiamMaxHP => "DEBUFF: Giảm 10% Giới Hạn Máu",
-            BuffDebuffType.Debuff_TangHieuUngQuai => "DEBUFF: Tăng Hiệu Ứng Bất Lợi Của Quái",
-            BuffDebuffType.Debuff_MatLoiKhiCrit => "DEBUFF: Mất 5% Lõi Năng Lượng Khi Chí Mạng",
-            BuffDebuffType.Debuff_KhoaSkillActive => "DEBUFF: Khóa 1 Kỹ Năng Active",
-            BuffDebuffType.Debuff_XoaPassive => "DEBUFF: Xóa 1 Kỹ Năng Passive",
-            _ => "Hiệu Ứng Nguyên Tố"
-        };
+        return b.ToString();
     }
 }

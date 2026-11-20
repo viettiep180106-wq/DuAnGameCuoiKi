@@ -118,6 +118,17 @@ public class SkillPassive : MonoBehaviour, IPoolable
 
         float raw = factor * playerAtk * baseSkillDamageRatio * critMul;
 
+        // Buff Passive: x2 hiệu quả đá nguyên tố (CD: 2 Round)
+        if (InterWaveEventManager.Instance != null && InterWaveEventManager.Instance.CanTriggerDoubleStoneEffect())
+        {
+            raw *= 2f;
+            InterWaveEventManager.Instance.ConsumeDoubleStoneEffect();
+            if (DamageTextManager.Instance != null && Player.Instance != null)
+            {
+                DamageTextManager.Instance.SpawnCustomText("[X2 HIỆU QUẢ ĐÁ!]", new Color(0.3f, 1f, 0.5f), Player.Instance.transform.position + Vector3.up * 1.9f, 1.3f);
+            }
+        }
+
         return (raw, isCrit);
     }
 

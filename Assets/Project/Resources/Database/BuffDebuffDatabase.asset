@@ -13,119 +13,171 @@ MonoBehaviour:
   m_Name: BuffDebuffDatabase
   m_EditorClassIdentifier: Assembly-CSharp::BuffDebuffDatabase
   entries:
-  - type: 8
-    displayName: "Nh\xE2n \u0110\xF4i K\u1EF9 N\u0103ng"
-    description: "1 skill active ng\u1EABu nhi\xEAn s\u1EBD \u0111\u01B0\u1EE3c d\xF9ng
-      2 l\u1EA7n li\xEAn ti\u1EBFp."
-    icon: {fileID: 21300000, guid: 429756424a5357a47ac32fe76f3082e1, type: 3}
-    category: 0
-  - type: 10
-    displayName: "Ph\u1EA3n \u0110\xF2n To\xE0n Di\u1EC7n"
-    description: "50% ph\u1EA3n 100% s\xE1t th\u01B0\u01A1ng nh\u1EADn v\xE0o qu\xE1i."
-    icon: {fileID: 21300000, guid: 1e1f0530349e3d64293f1404145f4f7e, type: 3}
-    category: 0
-  - type: 14
-    displayName: "Chuy\u1EC3n H\xF3a Huy\u1EBFt L\u1EF1c"
-    description: "Chuy\u1EC3n 50% s\xE1t th\u01B0\u01A1ng k\u1EF9 b\u1EA3n th\xE2n
-      g\xE2y ra th\xE0nh h\u1ED3i HP."
-    icon: {fileID: 21300000, guid: 59cc8bac6ad5be94c9c31e5b1919e903, type: 3}
-    category: 1
-  - type: 15
-    displayName: "Huy\u1EBFt K\u1EF9 Cu\u1ED3ng N\u1ED9"
-    description: "Ch\u1ECDn 1 skill active d\xF9ng 2 l\u1EA7n li\xEAn ti\u1EBFp +10%
-      h\xFAt m\xE1u v\xE0 x2 ST \u1EDF l\u1EA7n d\xF9ng li\xEAn ti\u1EBFp th\u1EE9
-      2."
-    icon: {fileID: 21300000, guid: 5d43b6552c856f346842eadb65079cbb, type: 3}
-    category: 1
-  - type: 19
-    displayName: "Y\u1EBFu Nh\u01B0\u1EE3c C\u01A1 Th\u1EC3"
-    description: "Khi b\u1ECB tr\xFAng \u0111\xF2n c\xF3 t\u1EC9 l\u1EC7 50% x2 hi\u1EC7u
-      qu\u1EA3 t\u1EEB hi\u1EC7u \u1EE9ng b\u1EA5t l\u1EE3i c\u1EE7a qu\xE1i."
-    icon: {fileID: 21300000, guid: 682501c65bebe5c41b2a4a0bf454a925, type: 3}
-    category: 2
-  - type: 21
-    displayName: "Ni\xEAm \u1EA4n K\u1EF9 N\u0103ng"
-    description: "Kh\xF3a 1 skill active ng\u1EABu nhi\xEAn."
-    icon: {fileID: 21300000, guid: 77d90a79526de8e4ba1d1bb86e845f1d, type: 3}
-    category: 2
-  - type: 11
-    displayName: "H\u1ED3i T\xE2m Chuy\u1EC3n \xDD"
-    description: "L\xE0m m\u1EDBi 1 skill active ng\u1EABu nhi\xEAn."
-    icon: {fileID: 21300000, guid: 054e8141411e02446a32168b6a608623, type: 3}
-    category: 0
-  - type: 13
-    displayName: "T\xEDch L\u0169y S\u1EE9c M\u1EA1nh"
-    description: "T\xEDch l\u0169y l\u1EA1i c\xE1c buff \u1EDF wave n\xE0y v\xE0
-      x2 ch\u1EC9 s\u1ED1 buff \u1EDF wave sau."
-    icon: {fileID: 21300000, guid: 1a3a4596ba180334b96b87336e5d48e5, type: 3}
-    category: 1
-  - type: 2
-    displayName: "C\u01B0\u1EDDng H\xF3a Sinh L\u1EF1c"
-    description: "T\u0103ng 10% gi\u1EDBi h\u1EA1n HP."
-    icon: {fileID: 21300000, guid: 910d3f56e89336f4490aef1c7e9c5562, type: 3}
-    category: 0
   - type: 0
     displayName: "C\u01B0\u1EDDng H\xF3a C\xF4ng K\xEDch"
-    description: "T\u0103ng 10% t\u1EA5n c\xF4ng."
+    description: "T\u0103ng 10% t\u1EA5n c\xF4ng (Hi\u1EC7u l\u1EF1c: 1 Level)."
     icon: {fileID: 21300000, guid: 0f0d6f8e4e0e8bb458eb484961695d93, type: 3}
     category: 0
+    subCategory: 0
   - type: 1
     displayName: "C\u01B0\u1EDDng H\xF3a Ph\xF2ng Th\u1EE7"
-    description: "T\u0103ng 20% DEF."
+    description: "T\u0103ng 20% DEF (Hi\u1EC7u l\u1EF1c: 1 Level)."
     icon: {fileID: 21300000, guid: b072aabf83dea9c4f955e2bb9bb41b96, type: 3}
     category: 0
+    subCategory: 0
+  - type: 2
+    displayName: "C\u01B0\u1EDDng H\xF3a Sinh L\u1EF1c"
+    description: "T\u0103ng 10% gi\u1EDBi h\u1EA1n HP (Hi\u1EC7u l\u1EF1c: 1 Level)."
+    icon: {fileID: 21300000, guid: 910d3f56e89336f4490aef1c7e9c5562, type: 3}
+    category: 0
+    subCategory: 0
   - type: 3
     displayName: "C\u01B0\u1EDDng H\xF3a Ch\xED M\u1EA1ng"
-    description: "T\u0103ng 5% t\u1EC9 l\u1EC7 CM, 10% ST ch\xED m\u1EA1ng."
+    description: "T\u0103ng 5% t\u1EC9 l\u1EC7 CM, +10% ST ch\xED m\u1EA1ng (Hi\u1EC7u
+      l\u1EF1c: 1 Level)."
     icon: {fileID: 21300000, guid: 5d5ca364117e2b643abb3c382434a7aa, type: 3}
     category: 0
-  - type: 12
-    displayName: "Chi\u1EBFn \xDD D\xE2ng Tr\xE0o"
-    description: "T\u0103ng 5% ATK, t\u1EC9 l\u1EC7 CM, ST ch\xED m\u1EA1ng sau m\u1ED7i
-      l\u1EA7n tung ra \u0111\xF2n \u0111\xE1nh."
-    icon: {fileID: 21300000, guid: bcb8296eeace997488679f88007bcae0, type: 3}
-    category: 1
-  - type: 18
-    displayName: "Suy Gi\u1EA3m C\xF4ng K\xEDch"
-    description: "Gi\u1EA3m 10% ATK."
-    icon: {fileID: 21300000, guid: 7462db41ab8413343999b6a3c23e5ee2, type: 3}
-    category: 2
-  - type: 17
-    displayName: "Suy Gi\u1EA3m Sinh L\u1EF1c"
-    description: "Gi\u1EA3m 10% gi\u1EDBi h\u1EA1n HP."
-    icon: {fileID: 21300000, guid: 7b3de19df4b5fb349aff25a8af94a20f, type: 3}
-    category: 2
-  - type: 5
-    displayName: "H\u1ED3i Ph\u1EE5c Sinh L\u1EF1c"
-    description: "H\u1ED3i 10% HP."
-    icon: {fileID: 21300000, guid: 239f4ac329a40114f87d30ee9079d8b1, type: 3}
-    category: 0
+    subCategory: 0
   - type: 4
     displayName: "H\u1ED3i N\u1EA1p N\u0103ng L\u01B0\u1EE3ng"
-    description: "H\u1ED3i 20 l\xF5i n\u0103ng l\u01B0\u1EE3ng."
+    description: "H\u1ED3i ngay 20 l\xF5i n\u0103ng l\u01B0\u1EE3ng."
     icon: {fileID: 21300000, guid: 2f0ae242b9019384389a8a0d6bd592d5, type: 3}
     category: 0
-  - type: 20
-    displayName: "Qu\xE1 T\u1EA3i N\u0103ng L\u01B0\u1EE3ng"
-    description: "M\u1ED7i khi c\xF3 ch\xED m\u1EA1ng ng\u01B0\u1EDDi ch\u01A1i s\u1EBD
-      t\u1EF1 m\u1EA5t \u0111i 5% l\xF5i n\u0103ng l\u01B0\u1EE3ng."
-    icon: {fileID: 21300000, guid: 49f8356181bc59f4587893aef616a7d2, type: 3}
-    category: 2
+    subCategory: 1
+  - type: 5
+    displayName: "H\u1ED3i Ph\u1EE5c Sinh L\u1EF1c"
+    description: "H\u1ED3i ph\u1EE5c 10% l\u01B0\u1EE3ng m\xE1u t\u1ED1i \u0111a."
+    icon: {fileID: 21300000, guid: 239f4ac329a40114f87d30ee9079d8b1, type: 3}
+    category: 0
+    subCategory: 1
   - type: 6
+    displayName: "\u0110\u1EA1i H\u1ED3i Sinh L\u1EF1c"
+    description: "H\u1ED3i ph\u1EE5c 20% l\u01B0\u1EE3ng m\xE1u t\u1ED1i \u0111a."
+    icon: {fileID: 21300000, guid: 239f4ac329a40114f87d30ee9079d8b1, type: 3}
+    category: 0
+    subCategory: 1
+  - type: 7
     displayName: "H\u1ED9 Thu\u1EABn Ki\xEAn C\u1ED1"
     description: "T\u1EA1o 1 l\xE1 ch\u1EAFn m\xE1u \u1EA3o b\u1EB1ng 50% HP b\u1EA3n
       th\xE2n."
     icon: {fileID: 21300000, guid: 086eadc1ea1dbfa4b9e9dfb6b7e1bd04, type: 3}
     category: 0
-  - type: 7
+    subCategory: 2
+  - type: 8
     displayName: "H\u1ED9 Thu\u1EABn Ph\u1EA3n Ch\u1EA5n"
-    description: "T\u1EA1o 1 l\xE1 ch\u1EAFn m\xE1u \u1EA3o b\u1EB1ng 25% HP b\u1EA3n
-      th\xE2n v\xE0 ph\u1EA3n l\u1EA1i 50% ST nh\u1EADn v\xE0o trong th\u1EDDi gian
-      l\xE1 ch\u1EAFn t\u1ED3n t\u1EA1i."
+    description: "T\u1EA1o l\xE1 ch\u1EAFn 25% HP b\u1EA3n th\xE2n v\xE0 ph\u1EA3n
+      l\u1EA1i 50% ST nh\u1EADn v\xE0o khi khi\xEAn t\u1ED3n t\u1EA1i."
     icon: {fileID: 21300000, guid: 5b5d62c4bcac62d46bce36597fa2250e, type: 3}
     category: 0
+    subCategory: 2
+  - type: 11
+    displayName: "Ph\u1EA3n \u0110\xF2n To\xE0n Di\u1EC7n"
+    description: "50% c\u01A1 h\u1ED9i ph\u1EA3n 100% s\xE1t th\u01B0\u01A1ng nh\u1EADn
+      v\xE0o v\u1EC1 k\u1EBB t\u1EA5n c\xF4ng."
+    icon: {fileID: 21300000, guid: 1e1f0530349e3d64293f1404145f4f7e, type: 3}
+    category: 0
+    subCategory: 2
+  - type: 9
+    displayName: "Nh\xE2n \u0110\xF4i K\u1EF9 N\u0103ng"
+    description: "1 k\u1EF9 n\u0103ng ng\u1EABu nhi\xEAn k\xEDch ho\u1EA1t 2 l\u1EA7n
+      li\xEAn ti\u1EBFp (CD: 2 Round)."
+    icon: {fileID: 21300000, guid: 429756424a5357a47ac32fe76f3082e1, type: 3}
+    category: 0
+    subCategory: 2
+  - type: 10
+    displayName: "C\u1ED9ng H\u01B0\u1EDFng Nguy\xEAn T\u1ED1"
+    description: "x2 hi\u1EC7u qu\u1EA3 k\u1EF9 n\u0103ng \u0111\xE1 nguy\xEAn t\u1ED1
+      (CD: 2 Round)."
+    icon: {fileID: 21300000, guid: 429756424a5357a47ac32fe76f3082e1, type: 3}
+    category: 0
+    subCategory: 2
+  - type: 12
+    displayName: "H\u1ED3i T\xE2m Chuy\u1EC3n \xDD"
+    description: "L\xE0m m\u1EDBi 1 skill active ng\u1EABu nhi\xEAn."
+    icon: {fileID: 21300000, guid: 054e8141411e02446a32168b6a608623, type: 3}
+    category: 0
+    subCategory: 2
+  - type: 13
+    displayName: "Chi\u1EBFn \xDD D\xE2ng Tr\xE0o"
+    description: "T\u0103ng 5% ATK, t\u1EC9 l\u1EC7 CM, ST ch\xED m\u1EA1ng sau m\u1ED7i
+      l\u1EA7n tung \u0111\xF2n \u0111\xE1nh (1 Level)."
+    icon: {fileID: 21300000, guid: bcb8296eeace997488679f88007bcae0, type: 3}
+    category: 1
+    subCategory: 3
+  - type: 14
+    displayName: "T\xEDch L\u0169y S\u1EE9c M\u1EA1nh"
+    description: "T\xEDch l\u0169y l\u1EA1i c\xE1c buff \u1EDF wave n\xE0y v\xE0
+      x2 ch\u1EC9 s\u1ED1 buff \u1EDF wave sau."
+    icon: {fileID: 21300000, guid: 1a3a4596ba180334b96b87336e5d48e5, type: 3}
+    category: 1
+    subCategory: 3
+  - type: 15
+    displayName: "Chuy\u1EC3n H\xF3a Huy\u1EBFt L\u1EF1c"
+    description: "Chuy\u1EC3n 50% s\xE1t th\u01B0\u01A1ng k\u1EF9 b\u1EA3n th\xE2n
+      g\xE2y ra th\xE0nh h\u1ED3i HP (1 Level)."
+    icon: {fileID: 21300000, guid: 59cc8bac6ad5be94c9c31e5b1919e903, type: 3}
+    category: 1
+    subCategory: 3
   - type: 16
-    displayName: "T\u1ECBch Thu N\u1ED9i T\u1EA1i"
-    description: "X\xF3a 1 skill passive."
+    displayName: "Huy\u1EBFt K\u1EF9 Cu\u1ED3ng N\u1ED9"
+    description: "1 skill active d\xF9ng 2 l\u1EA7n li\xEAn ti\u1EBFp +10% h\xFAt
+      m\xE1u v\xE0 x2 ST \u1EDF l\u1EA7n d\xF9ng th\u1EE9 2."
+    icon: {fileID: 21300000, guid: 5d43b6552c856f346842eadb65079cbb, type: 3}
+    category: 1
+    subCategory: 3
+  - type: 19
+    displayName: "Suy Gi\u1EA3m C\xF4ng K\xEDch"
+    description: "Gi\u1EA3m 10% ATK (Hi\u1EC7u l\u1EF1c: 1 Level)."
+    icon: {fileID: 21300000, guid: 7462db41ab8413343999b6a3c23e5ee2, type: 3}
+    category: 2
+    subCategory: 4
+  - type: 18
+    displayName: "Suy Gi\u1EA3m Sinh L\u1EF1c"
+    description: "Gi\u1EA3m 10% gi\u1EDBi h\u1EA1n HP (Hi\u1EC7u l\u1EF1c: 1 Level)."
+    icon: {fileID: 21300000, guid: 7b3de19df4b5fb349aff25a8af94a20f, type: 3}
+    category: 2
+    subCategory: 4
+  - type: 20
+    displayName: "Y\u1EBFu Nh\u01B0\u1EE3c C\u01A1 Th\u1EC3"
+    description: "Khi b\u1ECB tr\xFAng \u0111\xF2n 50% x2 hi\u1EC7u \u1EE9ng b\u1EA5t
+      l\u1EE3i c\u1EE7a qu\xE1i (Hi\u1EC7u l\u1EF1c: 1 Level)."
+    icon: {fileID: 21300000, guid: 682501c65bebe5c41b2a4a0bf454a925, type: 3}
+    category: 2
+    subCategory: 4
+  - type: 21
+    displayName: "Qu\xE1 T\u1EA3i N\u0103ng L\u01B0\u1EE3ng"
+    description: "M\u1ED7i khi ch\xED m\u1EA1ng ng\u01B0\u1EDDi ch\u01A1i t\u1EF1
+      m\u1EA5t \u0111i 5% l\xF5i n\u0103ng l\u01B0\u1EE3ng (Hi\u1EC7u l\u1EF1c: 1
+      Level)."
+    icon: {fileID: 21300000, guid: 49f8356181bc59f4587893aef616a7d2, type: 3}
+    category: 2
+    subCategory: 4
+  - type: 22
+    displayName: "Ni\xEAm \u1EA4n Ch\u1EE7 \u0110\u1ED9ng"
+    description: "Kh\xF3a 1 skill active ng\u1EABu nhi\xEAn (Hi\u1EC7u l\u1EF1c:
+      1 Level)."
+    icon: {fileID: 21300000, guid: 77d90a79526de8e4ba1d1bb86e845f1d, type: 3}
+    category: 2
+    subCategory: 4
+  - type: 23
+    displayName: "Kh\xF3a K\u1EF9 N\u0103ng N\u1ED9i T\u1EA1i"
+    description: "Kh\xF4ng nh\u1EADn 1 skill passive khi match \u0111\xE1 trong 1
+      round (CD: 2 Round, Hi\u1EC7u l\u1EF1c: 1 Level)."
     icon: {fileID: 21300000, guid: 5ce50692968c92d4b875c4a3257a3543, type: 3}
     category: 2
+    subCategory: 4
+  - type: 24
+    displayName: "Phong H\xF3a Nguy\xEAn T\u1ED1"
+    description: "Gi\u1EA3m th\u1EDDi gian hi\u1EC7u l\u1EF1c \u0111\xE1 nguy\xEAn
+      t\u1ED1 (Hi\u1EC7u l\u1EF1c: 1 Level)."
+    icon: {fileID: 21300000, guid: 682501c65bebe5c41b2a4a0bf454a925, type: 3}
+    category: 2
+    subCategory: 4
+  - type: 17
+    displayName: "T\u1ECBch Thu N\u1ED9i T\u1EA1i"
+    description: "1 skill passive t\u1EA1o t\u1EEB match b\u1ECB t\u1ECBch thu t\u1EA1m
+      ho\xE3n, h\u1EBFt CD 2 Round t\u1EF1 \u0111\u1ED9ng thi tri\u1EC3n l\u1EA1i
+      (Hi\u1EC7u l\u1EF1c: 1 Level)."
+    icon: {fileID: 21300000, guid: 5ce50692968c92d4b875c4a3257a3543, type: 3}
+    category: 2
+    subCategory: 4

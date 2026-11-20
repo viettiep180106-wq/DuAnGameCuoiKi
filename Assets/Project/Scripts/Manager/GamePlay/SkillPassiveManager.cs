@@ -91,6 +91,14 @@ public class SkillPassiveManager : MonoBehaviour
         }
     }
 
+    public struct ConfiscatedPassiveData
+    {
+        public TypeStone stoneType;
+        public int matchCount;
+    }
+    private ConfiscatedPassiveData? _confiscatedPassive = null;
+    private bool _isExecutingConfiscated = false;
+
     private readonly Queue<QueuedMatchAttack> _pendingMatchAttacks = new Queue<QueuedMatchAttack>();
     private float _nextAttackFireTime = 0f;
     private const float ATTACK_FIRE_INTERVAL = 0.14f;
@@ -120,6 +128,46 @@ public class SkillPassiveManager : MonoBehaviour
         {
             GameObject loadoutObj = new GameObject("PlayerLoadoutManager", typeof(PlayerLoadoutManager));
             loadoutObj.transform.SetParent(transform.parent != null ? transform.parent : transform);
+        }
+
+        if (CombatTurnManager.Instance != null)
+        {
+            CombatTurnManager.Instance.OnPlayerTurnStarted -= HandlePlayerTurnStarted;
+            CombatTurnManager.Instance.OnPlayerTurnStarted += HandlePlayerTurnStarted;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (CombatTurnManager.Instance != null)
+        {
+            CombatTurnManager.Instance.OnPlayerTurnStarted -= HandlePlayerTurnStarted;
+        }
+    }
+
+    private void HandlePlayerTurnStarted()
+    {
+        // Khi hết cooldown 2 Round, kỹ năng nội tại bị tịch thu sẽ tự động được giải phóng và thi triển
+        if (_confiscatedPassive.HasValue && InterWaveEventManager.Instance != null && InterWaveEventManager.Instance.XoaPassiveCooldown == 0)
+        {
+            var data = _confiscatedPassive.Value;
+            _confiscatedPassive = null;
+
+            Player activePlayer = GetActivePlayer();
+            if (DamageTextManager.Instance != null && activePlayer != null)
+            {
+                DamageTextManager.Instance.SpawnCustomText("[GIẢI PHÓNG NỘI TẠI TỊCH THU!]", new Color(1f, 0.85f, 0.2f), activePlayer.transform.position + Vector3.up * 2.8f, 1.5f);
+            }
+
+            _isExecutingConfiscated = true;
+            try
+            {
+                ExecuteSingleAttack(data.stoneType, data.matchCount);
+            }
+            finally
+            {
+                _isExecutingConfiscated = false;
+            }
         }
     }
 
@@ -228,6 +276,7 @@ public class SkillPassiveManager : MonoBehaviour
     public void CancelPendingAttacks()
     {
         _pendingMatchAttacks.Clear();
+        _confiscatedPassive = null;
         DOTween.Kill("InstantMatchAttacks");
     }
 
@@ -242,6 +291,33 @@ public class SkillPassiveManager : MonoBehaviour
             }
 
             Player activePlayer = GetActivePlayer();
+
+            if (!_isExecutingConfiscated)
+            {
+                // 1. Debuff: Khóa Kỹ Năng Passive (Không nhận 1 skill passive khi match, CD 2 round, tồn tại 1 level)
+                if (InterWaveEventManager.Instance != null && InterWaveEventManager.Instance.CanTriggerKhoaSkillPassive())
+                {
+                    InterWaveEventManager.Instance.ConsumeKhoaSkillPassive();
+                    if (DamageTextManager.Instance != null && activePlayer != null)
+                    {
+                        DamageTextManager.Instance.SpawnCustomText("[KHÓA KỸ NĂNG NỘI TẠI!]", new Color(1f, 0.25f, 0.25f), activePlayer.transform.position + Vector3.up * 2.5f, 1.5f);
+                    }
+                    return; // Bị khóa, không sinh chiêu thức
+                }
+
+                // 2. Debuff: Tịch Thu Nội Tại (Kỹ năng bị tịch thu 1 lần, sau khi hết CD 2 round tự động dùng lại)
+                if (InterWaveEventManager.Instance != null && InterWaveEventManager.Instance.CanTriggerXoaPassive() && !_confiscatedPassive.HasValue)
+                {
+                    _confiscatedPassive = new ConfiscatedPassiveData { stoneType = stoneType, matchCount = matchCount };
+                    InterWaveEventManager.Instance.ConsumeXoaPassive();
+                    if (DamageTextManager.Instance != null && activePlayer != null)
+                    {
+                        DamageTextManager.Instance.SpawnCustomText("[TỊCH THU NỘI TẠI! CHỜ 2 ROUND]", new Color(1f, 0.55f, 0.1f), activePlayer.transform.position + Vector3.up * 2.5f, 1.5f);
+                    }
+                    return; // Tịch thu, hoãn thi triển đến khi hết CD
+                }
+            }
+
             if (activePlayer != null)
             {
                 activePlayer.PlayAttackAnimation();

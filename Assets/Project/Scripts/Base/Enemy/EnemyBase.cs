@@ -1064,6 +1064,20 @@ public class EnemyBase : BaseCharacter
         base.TakeDamage(rawDamage, isCrit, attackerElement);
         float damageTaken = hpBefore - HP;
 
+        // Buff Hiếm: Hút máu chuyển hóa và tăng tiến công kích/chí mạng
+        if (InterWaveEventManager.Instance != null && damageTaken > 0)
+        {
+            if (InterWaveEventManager.Instance.HasActiveBuff(BuffDebuffType.Buff_Hiem_DmgToHeal))
+            {
+                Player.Instance?.Heal(damageTaken * 0.5f);
+            }
+            if (InterWaveEventManager.Instance.HasActiveBuff(BuffDebuffType.Buff_Hiem_StackAtkCrit))
+            {
+                Player.Instance?.ModifyATK(1.05f);
+                Player.Instance?.ModifyCrit(0.05f, 0.05f);
+            }
+        }
+
         if (HP > 0 && damageTaken > 0 && animController != null)
         {
             animController.ActiveAnimation(TypeAnimationAtivity.isHit);

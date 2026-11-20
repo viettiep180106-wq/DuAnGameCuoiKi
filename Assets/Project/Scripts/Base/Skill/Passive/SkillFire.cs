@@ -13,6 +13,9 @@ public class SkillFire : SkillPassive
     [Header("Fire Bomb Settings")]
     public float splashRadius = 2.6f;
     public float flightSpeed = 24f;
+    [SerializeField] private Sprite emberSprite;
+    [SerializeField] private Sprite fireballSprite;
+    [SerializeField] private FireBombBurst burstPrefab;
 
     public SkillFire()
     {
@@ -34,7 +37,16 @@ public class SkillFire : SkillPassive
         {
             sr.sortingLayerName = "Default";
             sr.sortingOrder = 32;
-            sr.color = new Color(1f, 0.4f, 0.1f, 1f);
+            sr.enabled = true;
+            if (emberSprite && fireballSprite)
+            {
+                sr.sprite = emberSprite;
+                sr.color = Color.white;
+            }
+            else
+            {
+                sr.color = new Color(1f, 0.4f, 0.1f, 1f);
+            }
         }
 
         var ec = EnemyController.instance != null ? EnemyController.instance : FindFirstObjectByType<EnemyController>();
@@ -47,16 +59,29 @@ public class SkillFire : SkillPassive
             // Tốc độ bay nhanh gấp đôi, dứt khoát
             float duration = Mathf.Clamp(dist / flightSpeed, 0.08f, 0.22f);
 
-            transform.DOMove(target.position, duration)
-                .SetEase(Ease.InQuad)
-                .OnComplete(() => Explode(targetEnemy));
+            FlyTo(target.position, duration, Ease.InQuad, sr, () => Explode(targetEnemy));
         }
         else
         {
             // Không có quái: Bay nhanh về phía trước rồi tự hủy
-            transform.DOMove(transform.position + Vector3.right * 8f, 0.25f)
-                .SetEase(Ease.Linear)
-                .OnComplete(DespawnSelf);
+            FlyTo(transform.position + Vector3.right * 8f, 0.25f, Ease.Linear, sr, DespawnSelf);
+        }
+    }
+
+    private void FlyTo(Vector3 destination, float duration, Ease ease, SpriteRenderer renderer, TweenCallback onArrival)
+    {
+        Tween movement = transform.DOMove(destination, duration).SetEase(ease);
+        if (renderer && emberSprite && fireballSprite)
+        {
+            DOTween.Sequence()
+                .SetTarget(transform)
+                .Append(movement)
+                .InsertCallback(duration * 0.28f, () => renderer.sprite = fireballSprite)
+                .OnComplete(onArrival);
+        }
+        else
+        {
+            movement.OnComplete(onArrival);
         }
     }
 
@@ -116,9 +141,24 @@ public class SkillFire : SkillPassive
         }
 
         // Hiệu ứng nổ phình to kèm VFX Lửa rực rỡ
-        EnemyBase.SpawnSkillVFX(transform.position, ElementType.Fire);
         Camera.main?.transform.DOShakePosition(0.18f, new Vector3(0.25f, 0.25f, 0f), 10, 90f, false, true);
-        transform.DOScale(transform.localScale * 1.6f, 0.18f).OnComplete(DespawnSelf);
+        if (burstPrefab)
+        {
+            var pool = ObjectPoolingManager.Instance;
+            var burst = pool ? pool.Spawn(burstPrefab, transform.position, Quaternion.identity)
+                : Instantiate(burstPrefab, transform.position, Quaternion.identity);
+            burst.Play(splashRadius, pool);
+            var sr = GetComponentInChildren<SpriteRenderer>();
+            if (sr)
+                sr.enabled = false;
+            // Keep the original projectile lifetime so its trail can finish.
+            DOVirtual.DelayedCall(0.18f, DespawnSelf, ignoreTimeScale: false).SetTarget(transform);
+        }
+        else
+        {
+            EnemyBase.SpawnSkillVFX(transform.position, ElementType.Fire);
+            transform.DOScale(transform.localScale * 1.6f, 0.18f).OnComplete(DespawnSelf);
+        }
     }
 
     private void ApplyBurnDoT(EnemyBase enemy)
@@ -141,5 +181,11 @@ public class SkillFire : SkillPassive
         {
             ObjectPoolingManager.Instance.Despawn(gameObject);
         }
+    }
+
+    public override void OnDespawn()
+    {
+        transform.DOKill();
+        base.OnDespawn();
     }
 }

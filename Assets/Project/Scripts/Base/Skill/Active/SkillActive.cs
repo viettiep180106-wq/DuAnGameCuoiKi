@@ -36,6 +36,8 @@ public class SkillActive : MonoBehaviour
 
     public bool IsReady => isReady && !isLocked && isUnlocked;
     public bool IsUnlocked => isUnlocked;
+    public bool IsLocked => isLocked;
+    public void SetLock(bool locked) => SetLocked(locked);
 
     private void Awake()
     {
@@ -157,6 +159,41 @@ public class SkillActive : MonoBehaviour
 
         // Thực thi hiệu ứng kỹ năng theo loại
         ExecuteSkillEffect();
+
+        // Buff Passive: 1 skill active ngẫu nhiên dùng 2 lần liên tiếp (CD 2 rounds)
+        if (InterWaveEventManager.Instance != null && InterWaveEventManager.Instance.CanTriggerDoubleSkill())
+        {
+            InterWaveEventManager.Instance.ConsumeDoubleSkill();
+            DOVirtual.DelayedCall(0.35f, () =>
+            {
+                if (this != null)
+                {
+                    ExecuteSkillEffect();
+                    if (DamageTextManager.Instance != null && Player.Instance != null)
+                    {
+                        DamageTextManager.Instance.SpawnCustomText("[NHÂN ĐÔI SKILL!]", Color.yellow, Player.Instance.transform.position + Vector3.up * 2.1f, 1.4f);
+                    }
+                }
+            });
+        }
+        else if (InterWaveEventManager.Instance != null && InterWaveEventManager.Instance.HasActiveBuff(BuffDebuffType.Buff_Hiem_VampireDouble))
+        {
+            DOVirtual.DelayedCall(0.35f, () =>
+            {
+                if (this != null)
+                {
+                    ExecuteSkillEffect();
+                    if (Player.Instance != null)
+                    {
+                        Player.Instance.Heal(Player.Instance.MaxHealth * 0.1f);
+                    }
+                    if (DamageTextManager.Instance != null && Player.Instance != null)
+                    {
+                        DamageTextManager.Instance.SpawnCustomText("[HUYẾT KỸ CUỒNG NỘ!]", Color.red, Player.Instance.transform.position + Vector3.up * 2.1f, 1.4f);
+                    }
+                }
+            });
+        }
     }
 
     private void ExecuteSkillEffect()
@@ -323,9 +360,13 @@ public class SkillActive : MonoBehaviour
     public void SetLocked(bool locked)
     {
         isLocked = locked;
+        if (skillButton != null)
+        {
+            skillButton.interactable = !locked && isUnlocked;
+        }
         if (iconImage != null)
         {
-            iconImage.color = locked ? Color.gray : (isUnlocked ? Color.white : new Color(0.35f, 0.35f, 0.35f, 0.45f));
+            iconImage.color = locked ? new Color(0.6f, 0.2f, 0.2f, 0.7f) : (isUnlocked ? Color.white : new Color(0.35f, 0.35f, 0.35f, 0.45f));
         }
     }
 
