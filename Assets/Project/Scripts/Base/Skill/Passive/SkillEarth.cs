@@ -14,6 +14,8 @@ public class SkillEarth : SkillPassive
     [Header("Earth Cleave Settings")]
     public float slamHeight = 22.0f; // Điểm thả cao vút từ trên trời rơi xuống
     public float impactRadius = 2.5f;
+    [SerializeField] private EarthSlamVisual visualPrefab;
+    private EarthSlamVisual fallingVisual;
 
     public SkillEarth()
     {
@@ -74,6 +76,14 @@ public class SkillEarth : SkillPassive
         centerPos /= cleaveTargets.Count;
         centerPos.z = 985f; // Nổi bật ở phía trước quái (quái ở z=990)
 
+        if (visualPrefab && visualPrefab.IsConfigured)
+        {
+            var pool = ObjectPoolingManager.Instance;
+            fallingVisual = pool ? pool.Spawn(visualPrefab, centerPos, Quaternion.identity)
+                : Instantiate(visualPrefab, centerPos, Quaternion.identity);
+            fallingVisual.BeginFall(pool, slamHeight);
+        }
+
         // Tảng thiên thạch / khối địa chấn to lớn giáng xuống từ trên trời vào tâm hàng
         transform.localScale = Vector3.one * 2.5f;
         var sr = GetComponentInChildren<SpriteRenderer>();
@@ -82,20 +92,36 @@ public class SkillEarth : SkillPassive
             sr.drawMode = SpriteDrawMode.Simple;
             sr.sortingLayerName = "Default";
             sr.sortingOrder = 50;
-            sr.color = Color.white; // Giữ nguyên màu sắc chi tiết của khối nham thạch
+            sr.color = fallingVisual ? Color.clear : Color.white;
         }
 
         transform.position = centerPos + Vector3.up * slamHeight;
-        transform.DOMove(centerPos, 0.40f).SetEase(Ease.InExpo).OnComplete(() =>
+        var fall = transform.DOMove(centerPos, EarthSlamVisual.FallDuration).SetEase(Ease.InExpo);
+        if (fallingVisual)
+            fall.OnUpdate(() => { if (fallingVisual) fallingVisual.UpdateFall(fall.Elapsed()); });
+        fall.OnComplete(() =>
         {
             // Rung chấn mặt đất (khóa trục Z để không rung làm lệch camera frustum)
             if (Camera.main != null)
             {
                 Camera.main.transform.DOShakePosition(0.25f, new Vector3(0.35f, 0.35f, 0f), 14, 90f, false, true);
             }
-            EnemyBase.SpawnSkillVFX(centerPos, ElementType.Earth);
+            if (fallingVisual)
+            {
+                foreach (var enemy in cleaveTargets)
+                {
+                    if (enemy && enemy.gameObject.activeInHierarchy && enemy.CurrentHP > 0)
+                        fallingVisual.MarkTarget(enemy.transform.position);
+                }
+                fallingVisual.BeginImpact();
+                fallingVisual = null;
+            }
+            else
+            {
+                EnemyBase.SpawnSkillVFX(centerPos, ElementType.Earth);
+            }
             ApplyCleaveSlam(cleaveTargets);
-            DOVirtual.DelayedCall(0.45f, DespawnSelf);
+            DOVirtual.DelayedCall(0.45f, DespawnSelf).SetId(gameObject.GetInstanceID());
         });
     }
 
@@ -155,5 +181,16 @@ public class SkillEarth : SkillPassive
         {
             ObjectPoolingManager.Instance.Despawn(gameObject);
         }
+    }
+
+    public override void OnDespawn()
+    {
+        transform.DOKill();
+        if (fallingVisual)
+        {
+            fallingVisual.Release();
+            fallingVisual = null;
+        }
+        base.OnDespawn();
     }
 }

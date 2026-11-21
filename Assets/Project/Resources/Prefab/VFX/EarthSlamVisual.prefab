@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7905500033042503141
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7905500033042503142}
+  - component: {fileID: 7905500033042503143}
+  m_Layer: 0
+  m_Name: EarthSlamVisual
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7905500033042503142
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7905500033042503141}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7905500033042503143
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7905500033042503141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2ac3226351c4cebb9acdee44087fefa, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  boulderSize: 12
+  impactWidth: 17
+  particleSpread: 1
+  meteorSprite: {fileID: 21300000, guid: b3920aa847b14c31b3e818f13a0938bc, type: 3}
+  contactSprite: {fileID: 21300000, guid: dc2d9a7aacc846b7917af95dc01c113e, type: 3}
+  impactSprite: {fileID: 21300000, guid: 4f7023659c5b4377bf5adcb23f4127ad, type: 3}
+  burstSprite: {fileID: 21300000, guid: 8ff1e688609e46ac8e5e91746c87b1e5, type: 3}
+  fractureSprite: {fileID: 21300000, guid: fdb72ef387dc4797b497a62872014aac, type: 3}
+  fractureFlashSprite: {fileID: 21300000, guid: be8f6567ce4d44deabf11307d3b1ef3a, type: 3}
+  residueSprite: {fileID: 21300000, guid: 62c3c0c68b1841a095bd2972ec7e9dea, type: 3}
+  shardSprite: {fileID: 21300000, guid: acfe66ac4ff04839adde8fb39dd6e326, type: 3}
+  flashShader: {fileID: 4800000, guid: 0ed561602a8e2924792d73bb70a49175, type: 3}
+  smokeShader: {fileID: 4800000, guid: 8a1c834e39c92cf4998b8332e874d09a, type: 3}
+  particleTemplate: {fileID: 2100000, guid: cb8af0fc618147648e05bb9ef83a8719, type: 2}

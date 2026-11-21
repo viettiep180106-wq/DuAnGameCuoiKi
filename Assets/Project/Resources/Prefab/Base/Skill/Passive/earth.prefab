@@ -187,3 +187,4 @@ MonoBehaviour:
   target: {fileID: 0}
   slamHeight: 22
   impactRadius: 3
+  visualPrefab: {fileID: 7905500033042503143, guid: 3620ea5c92844cce8b94d52801fdb2e5, type: 3}
