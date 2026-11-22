@@ -62,6 +62,13 @@ public class EnemyDataSO : ScriptableObject
     [TextArea(2, 4)] public string passiveSkillDesc;
     [TextArea(2, 4)] public string normalAttackDesc;
 
+    [Header("----Attack Visuals----")]
+    public EnemyAttackVfxStyle normalAttackVfx;
+    public EnemyAttackVfxStyle activeSkillVfx;
+    [Tooltip("Offset from the caster sprite center, in fractions of its height. X points toward the target.")]
+    public Vector2 attackVfxMuzzleOffset;
+    [Min(0.1f)] public float attackVfxScale = 1f;
+
     [Header("----Prefab Reference (Optional)----")]
     public EnemyBase enemyPrefab;
 

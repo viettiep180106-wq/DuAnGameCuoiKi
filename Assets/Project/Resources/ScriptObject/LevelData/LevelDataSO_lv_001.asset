@@ -21,16 +21,16 @@ MonoBehaviour:
       stepDifficulty: 0
       formationType: 1
       listEnemy:
-      - name: 16
+      - name: 9
         Amount: 2
         row: 0
-      - name: 17
+      - name: 13
         Amount: 1
         row: 0
-      - name: 19
+      - name: 11
         Amount: 1
         row: 1
-      - name: 18
+      - name: 15
         Amount: 1
         row: 1
       eventType: 0

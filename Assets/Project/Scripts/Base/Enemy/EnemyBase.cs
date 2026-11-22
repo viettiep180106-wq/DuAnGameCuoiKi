@@ -99,6 +99,7 @@ public class EnemyBase : BaseCharacter
     private EnemyAnimationController animController;
     private float _nextAttackTime = 0f;
     private Player _cachedPlayer;
+    private EnemyAttackVfx _pendingAttackVfx;
 
     protected override void Awake()
     {
@@ -223,7 +224,8 @@ public class EnemyBase : BaseCharacter
         // PHÂN BIỆT DỰA VÀO HÌNH THÁI CỦA ĐÚNG CHIÊU THỨC ĐANG THI TRIỂN:
         EnemySkillActionType currentActionType = isSkill ? GetSkillActionType() : GetNormalAttackActionType();
         bool shouldDashToPlayer = (currentActionType == EnemySkillActionType.MeleeDash);
-
+        Attack(isSkill ? 2:1); // Animation
+        var attackVfx = EnemyAttackVfx.Begin(this, _cachedPlayer, isSkill);
         if (shouldDashToPlayer)
         {
             // === HÀNH ĐỘNG CẬN CHIẾN: Lao nhanh sang phía Player -> Đánh/Chiêu -> Lùi về ===
@@ -231,15 +233,7 @@ public class EnemyBase : BaseCharacter
             transform.DOMove(targetPos, 0.28f).SetEase(Ease.OutQuad);
             yield return YieldCaches.Wait030;
 
-            if (isSkill)
-            {
-                PerformCombatSkill(_cachedPlayer);
-                skillCooldownRound = maxSkillCooldownRound;
-            }
-            else
-            {
-                PerformNormalAttack(_cachedPlayer);
-            }
+            PerformTurnAttack(_cachedPlayer, isSkill, attackVfx);
 
             yield return YieldCaches.Wait032;
 
@@ -255,23 +249,38 @@ public class EnemyBase : BaseCharacter
             // - Toàn bộ chiêu Hỗ trợ (Hồi máu, Buff ATK/DEF, Hồi sinh đồng đội)
             // - Toàn bộ chiêu Pháp sư (Khóa ngọc Match-3, làm chậm, hút energy, địa chấn)
             // - Toàn bộ đòn đánh thường của quái Tầm xa (combatType == Ranged)
-            if (isSkill)
-            {
-                PerformCombatSkill(_cachedPlayer);
-                skillCooldownRound = maxSkillCooldownRound;
-            }
-            else
-            {
-                PerformNormalAttack(_cachedPlayer);
-            }
+            PerformTurnAttack(_cachedPlayer, isSkill, attackVfx);
 
             yield return YieldCaches.Wait045;
         }
     }
 
+    private void PerformTurnAttack(Player target, bool isSkill, EnemyAttackVfx attackVfx)
+    {
+        _pendingAttackVfx = attackVfx;
+        try
+        {
+            if (isSkill)
+            {
+                PerformCombatSkill(target);
+                skillCooldownRound = maxSkillCooldownRound;
+            }
+            else
+            {
+                PerformNormalAttack(target);
+            }
+        }
+        finally
+        {
+            _pendingAttackVfx = null;
+        }
+
+        if (attackVfx && !attackVfx.HasProjectile)
+            attackVfx.Impact(target);
+    }
+
     protected virtual void PerformNormalAttack(Player targetPlayer)
     {
-        Attack(); // Animation
 
         float atkDmg = currentAtk * (1f + atkBuffPercent);
         float ignoreDef = 0f;
@@ -326,7 +335,6 @@ public class EnemyBase : BaseCharacter
 
     protected virtual void PerformCombatSkill(Player targetPlayer)
     {
-        Attack(); // Animation
 
         // Hiển thị tên kỹ năng trên đầu quái theo chuẩn GDD
         string skillName = GetSkillDisplayName();
@@ -864,7 +872,14 @@ public class EnemyBase : BaseCharacter
             EnemyProjectile proj = projObj.GetComponent<EnemyProjectile>();
             if (proj != null)
             {
-                proj.Launch(finalDmg, currentElement, spawnPos, targetPos, 22.0f, ignoreDefPercent, ignoreShield);
+                const float speed = 22f;
+                proj.Launch(finalDmg, currentElement, spawnPos, targetPos, speed, ignoreDefPercent, ignoreShield);
+                if (_pendingAttackVfx && !_pendingAttackVfx.HasProjectile)
+                    proj.AttachAttackVfx(_pendingAttackVfx, targetPlayer, spawnPos, targetPos, speed);
+            }
+            else if (_pendingAttackVfx)
+            {
+                _pendingAttackVfx.CancelIfInFlight();
             }
         }
         else
@@ -952,11 +967,12 @@ public class EnemyBase : BaseCharacter
         UpdateHPUI(HP / MaxHP);
     }
 
-    public virtual void Attack()
+    public virtual void Attack(int t)
     {
+        TypeAnimationAtivity type = t == 1 ? TypeAnimationAtivity.isAttack_1 : TypeAnimationAtivity.isAttack_2;
         if (animController != null)
         {
-            animController.ActiveAnimation(TypeAnimationAtivity.isAttack_1);
+            animController.ActiveAnimation(type);
         }
     }
 

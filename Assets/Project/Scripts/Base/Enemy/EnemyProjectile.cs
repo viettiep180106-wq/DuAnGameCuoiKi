@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using DG.Tweening;
 
@@ -19,6 +18,10 @@ public class EnemyProjectile : MonoBehaviour, IPoolable
     private float _ignoreDefPercent = 0f;
     private bool _ignoreShield = false;
     private Tween _moveTween;
+    private EnemyAttackVfx _attackVfx;
+    private bool _hasCustomVisuals;
+    private bool _spriteWasEnabled;
+    private bool _trailWasEnabled;
 
     private void Awake()
     {
@@ -56,6 +59,7 @@ public class EnemyProjectile : MonoBehaviour, IPoolable
 
     public void OnDespawn()
     {
+        DetachAttackVfx();
         _moveTween?.Kill();
         _moveTween = null;
         if (_trailRenderer != null)
@@ -70,6 +74,7 @@ public class EnemyProjectile : MonoBehaviour, IPoolable
     /// </summary>
     public void Launch(float damage, ElementType element, Vector3 spawnPos, Vector3 targetPos, float speed = 5.0f, float ignoreDefPercent = 0f, bool ignoreShield = false)
     {
+        DetachAttackVfx();
         _damage = damage;
         _element = element;
         _ignoreDefPercent = ignoreDefPercent;
@@ -107,6 +112,52 @@ public class EnemyProjectile : MonoBehaviour, IPoolable
             .SetEase(Ease.Linear)
             .OnComplete(OnReachTarget);
     }
+
+    internal void AttachAttackVfx(EnemyAttackVfx effect, Player target, Vector3 spawnPos, Vector3 targetPos, float speed)
+    {
+        float duration = _moveTween.Duration();
+        float contactTime = duration;
+        var targetCollider = target.GetComponent<Collider2D>();
+        if (_collider && targetCollider && targetCollider.enabled && target.CompareTag("Player"))
+        {
+            Vector2 start = spawnPos;
+            Vector2 direction = ((Vector2)targetPos - start).normalized;
+            Vector2 nearEdge = targetCollider.ClosestPoint(start);
+            float travelToContact = Vector2.Dot(nearEdge - start, direction) - _collider.bounds.extents.x;
+            contactTime = Mathf.Clamp(travelToContact / speed, 0f, duration);
+        }
+        effect.BindProjectile(duration, contactTime);
+        _attackVfx = effect;
+        _hasCustomVisuals = true;
+        if (_visualRenderer)
+        {
+            _spriteWasEnabled = _visualRenderer.enabled;
+            _visualRenderer.enabled = false;
+        }
+        if (_trailRenderer)
+        {
+            _trailWasEnabled = _trailRenderer.enabled;
+            _trailRenderer.Clear();
+            _trailRenderer.enabled = false;
+        }
+    }
+
+    private void DetachAttackVfx()
+    {
+        if (!_hasCustomVisuals)
+            return;
+
+        if (_attackVfx)
+            _attackVfx.CancelIfInFlight();
+        _attackVfx = null;
+        _hasCustomVisuals = false;
+        if (_visualRenderer)
+            _visualRenderer.enabled = _spriteWasEnabled;
+        if (_trailRenderer)
+            _trailRenderer.enabled = _trailWasEnabled;
+    }
+
+    private void OnDisable() => DetachAttackVfx();
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -148,8 +199,11 @@ public class EnemyProjectile : MonoBehaviour, IPoolable
 
         if (player != null && player.CurrentHP > 0)
         {
+            bool customImpact = _attackVfx && _attackVfx.Impact(player);
+            _attackVfx = null;
             player.TakeDamage(_damage, false, _element, _ignoreDefPercent, _ignoreShield);
-            EnemyBase.SpawnSkillVFX(transform.position, _element);
+            if (!customImpact)
+                EnemyBase.SpawnSkillVFX(transform.position, _element);
             Camera.main?.transform.DOShakePosition(0.15f, new Vector3(0.2f, 0.2f, 0f), 10, 90f, false, true);
         }
 

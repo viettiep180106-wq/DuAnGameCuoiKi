@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c6599f4978f4affb6f3a2b2eb269bdd, type: 3}
+  m_Name: EnemyFireAttackArt
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAttackVfxArt
+  effectShader: {fileID: 4800000, guid: 6dc581fd5ad7edb45822970ce3cec1ae, type: 3}
+  smokeShader: {fileID: 4800000, guid: 023579c6c3af64149bd8388f7c28e052, type: 3}
+  advancedShader: {fileID: 4800000, guid: 745a929ed149a7e45a366c84311ac277, type: 3}
+  advancedAtlas: {fileID: 2800000, guid: ebc37decee624200a4848671ea9b6eb5, type: 3}
+  effects:
+  - {fileID: 21300000, guid: b27962298d4a4cdaaa785427392acfb5, type: 3}
+  - {fileID: 21300000, guid: 433c6411689c4585a05035ac4ac61db7, type: 3}
+  - {fileID: 21300000, guid: 428833cb157d4d50952c1546b92f4e9f, type: 3}
+  - {fileID: 21300000, guid: 6cd95772fc284bd499f5ff3da2b4bd92, type: 3}
+  - {fileID: 21300000, guid: 99020698e4ab4fcabf77ba4c527022a3, type: 3}
+  - {fileID: 21300000, guid: 4d372f92baf24937af7b9493a06473ce, type: 3}
+  - {fileID: 21300000, guid: 12169b5eadf34b628cb4d3b32bb52d4a, type: 3}
+  - {fileID: 21300000, guid: 8095cc6f9a4e4d1a9cd42914ef7265c5, type: 3}
+  - {fileID: 21300000, guid: fae299aaf1b94982a8291bb9f86ee427, type: 3}
+  - {fileID: 21300000, guid: 2832ec9775b84e498bb1bb7641210397, type: 3}
+  - {fileID: 21300000, guid: 6fc9f4e31ff84c2d897dd1b5bb3cbdfe, type: 3}
+  - {fileID: 21300000, guid: de097eade21141aab55ba85aa184b765, type: 3}
+  - {fileID: 21300000, guid: 3f561e79338f46ea8144d31a28425ce1, type: 3}
+  - {fileID: 21300000, guid: 2a8e82cf33194bb6a5ba8e254544bf00, type: 3}
+  - {fileID: 21300000, guid: 46d17ca7473d47aaa8dd639d3ac2be55, type: 3}
+  - {fileID: 21300000, guid: b421ba36e74048cc91f3efbe344cfc93, type: 3}
+  - {fileID: 21300000, guid: 3494320f372842cb9ec0e75190b8b722, type: 3}
+  - {fileID: 21300000, guid: c68bfd83aef54d94a1eb91fa57fb11dc, type: 3}
