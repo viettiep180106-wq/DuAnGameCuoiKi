@@ -40,4 +40,8 @@ MonoBehaviour:
     Cho\xE1ng"
   normalAttackDesc: "\u0110\u1EA5m th\xE9p n\u1EB7ng n\u1EC1 g\xE2y 100% ATK (24
     ST)"
+  normalAttackVfx: 57
+  activeSkillVfx: 58
+  attackVfxMuzzleOffset: {x: 0.32, y: 0.045}
+  attackVfxScale: 1.04
   enemyPrefab: {fileID: 1882513579769044336, guid: 65648ce68da82e144a3eb48776fe331f, type: 3}

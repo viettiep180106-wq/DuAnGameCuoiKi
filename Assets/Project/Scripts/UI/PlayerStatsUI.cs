@@ -109,16 +109,27 @@ public class PlayerStatsUI : MonoBehaviour
         // 2. Cập nhật HP kèm hiệu ứng nảy số
         if (hpText != null)
         {
-            hpText.text = $"HP: {Mathf.RoundToInt(curHp)}/{Mathf.RoundToInt(curMaxHp)}";
-            if (_prevHp >= 0 && (Mathf.Abs(curHp - _prevHp) > 0.01f || Mathf.Abs(curMaxHp - _prevMaxHp) > 0.01f))
+            if (curHp <= 0)
             {
                 hpText.DOKill();
                 hpText.transform.DOKill();
                 hpText.transform.localScale = Vector3.one;
-                hpText.transform.DOPunchScale(Vector3.one * 0.18f, 0.25f, 5, 0.5f);
-                Color flashColor = (curHp > _prevHp || curMaxHp > _prevMaxHp) ? new Color(0.2f, 1f, 0.4f) : new Color(1f, 0.35f, 0.35f);
-                hpText.color = flashColor;
-                hpText.DOColor(Color.white, 0.4f);
+                hpText.text = $"HP: 0/{Mathf.RoundToInt(curMaxHp)}";
+                hpText.color = new Color(1f, 0.35f, 0.35f);
+            }
+            else
+            {
+                hpText.text = $"HP: {Mathf.RoundToInt(curHp)}/{Mathf.RoundToInt(curMaxHp)}";
+                if (_prevHp >= 0 && (Mathf.Abs(curHp - _prevHp) > 0.01f || Mathf.Abs(curMaxHp - _prevMaxHp) > 0.01f))
+                {
+                    hpText.DOKill();
+                    hpText.transform.DOKill();
+                    hpText.transform.localScale = Vector3.one;
+                    hpText.transform.DOPunchScale(Vector3.one * 0.18f, 0.25f, 5, 0.5f);
+                    Color flashColor = (curHp > _prevHp || curMaxHp > _prevMaxHp) ? new Color(0.2f, 1f, 0.4f) : new Color(1f, 0.35f, 0.35f);
+                    hpText.color = flashColor;
+                    hpText.DOColor(Color.white, 0.4f);
+                }
             }
             _prevHp = curHp;
             _prevMaxHp = curMaxHp;

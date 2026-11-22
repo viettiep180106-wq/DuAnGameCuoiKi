@@ -266,7 +266,7 @@ public class CombatTurnManager : MonoBehaviour
                     Player player = CachedPlayer;
                     if (player != null && player.CurrentHP <= 0)
                     {
-                        SetState(CombatTurnState.BattleLost);
+                        EndBattle(false);
                         yield break;
                     }
                 }

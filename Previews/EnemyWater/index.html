@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Preview VFX · Enemy hệ Thủy</title>
+  <link rel="stylesheet" href="preview.css">
+  <script src="preview.js" defer></script>
+</head>
+<body>
+  <main class="workspace">
+    <header class="page-header">
+      <div>
+        <p class="section-name">Xem thử VFX</p>
+        <h1>Enemy hệ Thủy</h1>
+      </div>
+      <p class="scope">7 enemy · 14 đòn</p>
+    </header>
+    <div class="layout">
+      <nav class="roster" aria-label="Chọn enemy" id="roster"></nav>
+      <section class="panel" aria-labelledby="attack-name">
+        <div class="attack-header">
+          <div>
+            <p class="enemy-name" id="enemy-name"></p>
+            <h2 id="attack-name"></h2>
+          </div>
+          <div class="segmented" aria-label="Chọn loại đòn">
+            <button type="button" id="normal" aria-pressed="false">Đánh thường</button>
+            <button type="button" id="active" aria-pressed="true">Active</button>
+          </div>
+        </div>
+        <div class="viewport">
+          <canvas id="stage" width="1160" height="560" aria-label="Khung xem trước hiệu ứng đòn đánh"></canvas>
+          <div id="load-message" role="status">Đang tải sprite…</div>
+        </div>
+        <div class="controls">
+          <div class="transport">
+            <button class="primary" type="button" id="play">Phát</button>
+            <button type="button" id="restart" aria-label="Phát từ đầu" title="Phát từ đầu">↺</button>
+            <button type="button" id="back" aria-label="Lùi một khung" title="Lùi một khung">‹</button>
+            <button type="button" id="forward" aria-label="Tiến một khung" title="Tiến một khung">›</button>
+            <label for="speed" class="control-label">Tốc độ</label>
+            <select id="speed">
+              <option value=".25">0,25×</option><option value=".5" selected>0,5×</option><option value="1">1×</option>
+            </select>
+            <output id="timecode" for="timeline">0,00 s</output>
+          </div>
+          <div class="timeline">
+            <input type="range" id="timeline" min="0" max="1" step="0.001" value="0" aria-label="Vị trí trên dòng thời gian">
+            <div class="markers" id="markers" aria-label="Mốc đòn đánh"></div>
+          </div>
+          <div class="settings">
+            <label id="scenario-label" for="scenario">Tình huống
+              <select id="scenario" aria-label="Chọn tình huống mô phỏng"></select>
+            </label>
+            <label id="round-label" for="round">Mốc theo lượt
+              <select id="round" aria-label="Mốc theo lượt"></select>
+            </label>
+            <p class="event" id="event"></p>
+          </div>
+          <p class="description" id="description"></p>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

@@ -38,4 +38,8 @@ MonoBehaviour:
     35% m\u1ECDi s\xE1t th\u01B0\u01A1ng nh\u1EADn v\xE0o trong 2 Round"
   passiveSkillDesc: "T\u0103ng 10% DEF khi m\xE1u xu\u1ED1ng d\u01B0\u1EDBi 50%"
   normalAttackDesc: "\u0110\u1EADp b\xF9n qu\xE1nh g\xE2y 100% ATK (24 ST)"
+  normalAttackVfx: 29
+  activeSkillVfx: 30
+  attackVfxMuzzleOffset: {x: 0.28, y: 0.04}
+  attackVfxScale: 1
   enemyPrefab: {fileID: 1801157633968364853, guid: e6674c6f62c7bf3408ff2806b4328438, type: 3}

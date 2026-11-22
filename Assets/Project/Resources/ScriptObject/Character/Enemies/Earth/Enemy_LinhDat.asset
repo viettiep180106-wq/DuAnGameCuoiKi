@@ -39,4 +39,8 @@ MonoBehaviour:
   passiveSkillDesc: "Qu\xE1i \u0111\u1ED3ng minh \u0111\u1EE9ng sau L\xEDnh \u0110\u1EA5t
     nh\u1EADn th\xEAm 15% DEF"
   normalAttackDesc: "Ch\xE9m gi\xE1o \u0111\u1EA5t nung g\xE2y 100% ATK (18 ST)"
+  normalAttackVfx: 31
+  activeSkillVfx: 32
+  attackVfxMuzzleOffset: {x: 0.32, y: 0.08}
+  attackVfxScale: 1
   enemyPrefab: {fileID: 4644294457424441720, guid: fd90625736f89354da34d449cf08606e, type: 3}

@@ -32,20 +32,44 @@ public class EnemyController : MonoBehaviour
 
     public bool TryReviveDeadAlly(ElementType targetElement, float hpPercent)
     {
+        int targetIndex = -1;
+        // Ưu tiên 1: Quái cùng hệ tử trận
         for (int i = _deadEnemiesInWave.Count - 1; i >= 0; i--)
         {
             EnemyBase candidate = _deadEnemiesInWave[i];
             if (candidate != null && candidate.Element == targetElement && candidate.CurrentHP <= 0)
             {
-                _deadEnemiesInWave.RemoveAt(i);
-                float revHp = Mathf.Max(1f, candidate.MaxHealth * hpPercent);
-                candidate.ReviveWithHP(revHp);
-                RegisterEnemy(candidate);
-                numEnemy++;
-                Debug.Log($"<color=#00ff88>✦ [REVIVE] {candidate.type} đã được hồi sinh với {hpPercent * 100}% HP!</color>");
-                return true;
+                targetIndex = i;
+                break;
             }
         }
+
+        // Ưu tiên 2: Nếu không có quái cùng hệ, hồi sinh đồng minh bất kỳ vừa tử trận
+        if (targetIndex < 0)
+        {
+            for (int i = _deadEnemiesInWave.Count - 1; i >= 0; i--)
+            {
+                EnemyBase candidate = _deadEnemiesInWave[i];
+                if (candidate != null && candidate.CurrentHP <= 0)
+                {
+                    targetIndex = i;
+                    break;
+                }
+            }
+        }
+
+        if (targetIndex >= 0)
+        {
+            EnemyBase candidate = _deadEnemiesInWave[targetIndex];
+            _deadEnemiesInWave.RemoveAt(targetIndex);
+            float revHp = Mathf.Max(1f, candidate.MaxHealth * hpPercent);
+            candidate.ReviveWithHP(revHp);
+            RegisterEnemy(candidate);
+            numEnemy++;
+            Debug.Log($"<color=#00ff88>✦ [REVIVE] {candidate.type} đã được hồi sinh với {hpPercent * 100}% HP tại vị trí {candidate.FormationLocalPosition}!</color>");
+            return true;
+        }
+
         return false;
     }
 
@@ -179,9 +203,12 @@ public class EnemyController : MonoBehaviour
         EnemyBase prefab = GetEnemyPrefab(enemyType);
         if (prefab == null) return;
 
-        GameObject enemyObj = ObjectPoolingManager.Instance.Spawn(prefab.gameObject, Vector3.zero, Quaternion.identity);
+        GameObject enemyObj = ObjectPoolingManager.Instance.Spawn(prefab.gameObject, Vector3.zero, Quaternion.identity, transform);
         EnemyBase enemy = enemyObj.GetComponent<EnemyBase>();
-        enemy.transform.SetParent(transform);
+        if (enemy.DefaultScale != Vector3.zero)
+        {
+            enemy.transform.localScale = enemy.DefaultScale;
+        }
 
         // Đánh dấu quái Boss nếu thuộc Boss Wave hoặc hệ quái Boss
         bool isCurrentWaveBoss = GameManager.instance != null && GameManager.instance.CurrentStep == GameManager.instance.TotalSteps;
@@ -236,10 +263,37 @@ public class EnemyController : MonoBehaviour
         float baseY = 2.5f; // Nâng cao vị trí đứng của quái, tách biệt hoàn toàn khỏi player stat bar
         if (assignedRow == EnemyRow.Front)
         {
-            // Hàng trước (2 quái): Khoảng cách Y giữa 2 quái đúng bằng 5 units (+2.5f và -2.5f)
-            bool frontSlot = _spawnedFrontCount < 2;
-            posX = frontSlot? 2.5f : 7.5f;
-            posY = frontSlot? ((baseY + 2.5f)*_spawnedFrontCount) : (- 2.5f);
+            // Hàng trước (2 quái): Kiểm tra slot trống để triệu hồi hoặc sinh quái chuẩn xác
+            Vector3 slot0 = new Vector3(2.5f, 0f, 0f);
+            Vector3 slot1 = new Vector3(2.5f, baseY + 2.5f, 0f); // (2.5f, 5.0f, 0f)
+
+            bool isSlot0Occupied = false;
+            bool isSlot1Occupied = false;
+            for (int i = 0; i < _livingEnemies.Count; i++)
+            {
+                var le = _livingEnemies[i];
+                if (le != null && le != enemy && le.CurrentHP > 0)
+                {
+                    if (Vector3.Distance(le.transform.localPosition, slot0) < 1.0f) isSlot0Occupied = true;
+                    if (Vector3.Distance(le.transform.localPosition, slot1) < 1.0f) isSlot1Occupied = true;
+                }
+            }
+
+            if (!isSlot0Occupied)
+            {
+                posX = slot0.x;
+                posY = slot0.y;
+            }
+            else if (!isSlot1Occupied)
+            {
+                posX = slot1.x;
+                posY = slot1.y;
+            }
+            else
+            {
+                posX = 2.5f;
+                posY = baseY - 2.5f; // 0f
+            }
             _spawnedFrontCount++;
         }
         else
@@ -265,6 +319,7 @@ public class EnemyController : MonoBehaviour
         }
 
         enemy.transform.localPosition = new Vector3(posX, posY, 0f);
+        enemy.FormationLocalPosition = enemy.transform.localPosition;
 
         // Quay mặt sang TRÁI (hướng về phía Player) và phân lớp Layer 2.5D theo trục Y
         if (enemy.TryGetComponent<SpriteRenderer>(out var sr))

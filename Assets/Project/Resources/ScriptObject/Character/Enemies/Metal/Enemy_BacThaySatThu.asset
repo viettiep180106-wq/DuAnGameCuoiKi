@@ -40,4 +40,8 @@ MonoBehaviour:
   passiveSkillDesc: "Khi HP xu\u1ED1ng d\u01B0\u1EDBi 30%, t\u0103ng 30% T\u1EC9
     l\u1EC7 ch\xED m\u1EA1ng"
   normalAttackDesc: "Phi dao g\u0103m \u0111\u1ED9c g\xE2y 100% ATK (130 ST)"
+  normalAttackVfx: 67
+  activeSkillVfx: 68
+  attackVfxMuzzleOffset: {x: 0.24, y: 0.085}
+  attackVfxScale: 1.03
   enemyPrefab: {fileID: 670008476120766730, guid: 129a6593b1fb7ea499b8843b83d53b2e, type: 3}

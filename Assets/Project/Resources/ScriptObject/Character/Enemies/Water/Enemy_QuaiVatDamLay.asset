@@ -41,4 +41,8 @@ MonoBehaviour:
     t\u1EF1 h\u1ED3i ph\u1EE5c 5% Max HP m\u1ED7i Round"
   normalAttackDesc: "Qu\u1EA5t x\xFAc tu c\u1EADn chi\u1EBFn g\xE2y 100% ATK (80
     ST)"
+  normalAttackVfx: 23
+  activeSkillVfx: 24
+  attackVfxMuzzleOffset: {x: 0.28, y: 0.09}
+  attackVfxScale: 1.1
   enemyPrefab: {fileID: 1515644298281565634, guid: 1bf97326df64ba74aa2c7cba7ea60143, type: 3}

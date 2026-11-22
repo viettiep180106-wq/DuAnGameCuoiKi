@@ -406,7 +406,9 @@ public class BoardController : MonoBehaviour
     /// <summary>
     /// Khóa ngẫu nhiên một số viên đá trên bàn cờ Match-3 (Kỹ năng của quái Pháp sư)
     /// </summary>
-    public void LockRandomStones(int count, int rounds = 1)
+    public void LockRandomStones(int count, int rounds = 1) => LockRandomStones(count, rounds, null);
+
+    internal void LockRandomStones(int count, int rounds, Action<StoneBase> onLocked)
     {
         if (grid == null) return;
         _unlockedStonesBuffer.Clear();
@@ -430,20 +432,25 @@ public class BoardController : MonoBehaviour
             StoneBase chosen = _unlockedStonesBuffer[randIdx];
             chosen.LockStone(rounds);
             _unlockedStonesBuffer.RemoveAt(randIdx);
+            onLocked?.Invoke(chosen);
         }
     }
 
     /// <summary>
     /// Đóng băng một hàng đá trên bàn cờ Match-3 (Kỹ năng của Tinh Linh Băng Giá)
     /// </summary>
-    public void FreezeRow(int rowIndex, int rounds = 2)
+    public void FreezeRow(int rowIndex, int rounds = 2) => FreezeRow(rowIndex, rounds, null);
+
+    internal void FreezeRow(int rowIndex, int rounds, Action<StoneBase> onFrozen)
     {
         if (grid == null || rowIndex < 0 || rowIndex >= rows) return;
         for (int x = 0; x < cols; x++)
         {
             if (x < grid.Count && rowIndex < grid[x].Count && grid[x][rowIndex] != null && grid[x][rowIndex].GetStone() != null)
             {
-                grid[x][rowIndex].GetStone().FreezeStone(rounds);
+                StoneBase stone = grid[x][rowIndex].GetStone();
+                stone.FreezeStone(rounds);
+                onFrozen?.Invoke(stone);
             }
         }
     }

@@ -1,0 +1,19 @@
+:root {
+  background: #131822;
+  color: #e6eef9;
+  --line: #394658;
+  --muted: #aabace;
+  --focus: #89e8f7;
+}
+.panel, button, select { background: #1b2330; }
+.segmented, .viewport { background: #151e2b; }
+.enemy-name, .event { color: #9ae9f8; }
+.enemy-option[aria-current="true"], .segmented [aria-pressed="true"] {
+  background: #243e51; border-color: #75a5bf; color: #edfbff;
+}
+button:hover, select:hover { background: #2a3848; border-color: #7e9eb6; }
+.transport .primary { background: #8ee4f4; border-color: #8ee4f4; color: #11222c; }
+.transport .primary:hover { background: #b2effb; }
+input[type="range"] { accent-color: #8ee4f4; }
+.markers .current { border-color: #6eabba; color: #effdff; }
+.settings { flex-wrap: wrap; }

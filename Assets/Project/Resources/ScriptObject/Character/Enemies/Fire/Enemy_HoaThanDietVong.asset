@@ -29,7 +29,7 @@ MonoBehaviour:
   scale: 1.8
   isBoss: 1
   attackRange: 4
-  normalAttackActionType: 2
+  normalAttackActionType: 0
   activeSkillActionType: 2
   activeSkillName: "M\u01B0a Sao B\u0103ng T\u1ED1i Th\u01B0\u1EE3ng"
   skillMultiplier: 3

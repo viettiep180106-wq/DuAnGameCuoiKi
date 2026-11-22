@@ -40,4 +40,8 @@ MonoBehaviour:
     th\u01B0\u1EDDng g\xE2y hi\u1EC7u \u1EE9ng DoT r\xFAt 2% Max HP Player/Round
     trong 2 Round"
   normalAttackDesc: "Ph\xF3ng b\xF9a ch\xFA t\u1EA7m xa g\xE2y 100% ATK (80 ST)"
+  normalAttackVfx: 53
+  activeSkillVfx: 54
+  attackVfxMuzzleOffset: {x: 0.34, y: 0.07}
+  attackVfxScale: 1.05
   enemyPrefab: {fileID: 465351594984202505, guid: cc7d7bf8714422e46844a7b8d9972b81, type: 3}

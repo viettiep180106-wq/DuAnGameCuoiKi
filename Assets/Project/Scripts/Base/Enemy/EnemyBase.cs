@@ -100,16 +100,40 @@ public class EnemyBase : BaseCharacter
     private float _nextAttackTime = 0f;
     private Player _cachedPlayer;
     private EnemyAttackVfx _pendingAttackVfx;
+    private Vector3 _defaultScale = Vector3.zero;
+    [HideInInspector] public Vector3 FormationLocalPosition = Vector3.zero;
+
+    public Vector3 DefaultScale
+    {
+        get
+        {
+            if (_defaultScale == Vector3.zero)
+            {
+                _defaultScale = transform.localScale;
+            }
+            return _defaultScale;
+        }
+        set => _defaultScale = value;
+    }
 
     protected override void Awake()
     {
         base.Awake();
         animController = GetComponent<EnemyAnimationController>();
+        if (_defaultScale == Vector3.zero)
+        {
+            _defaultScale = transform.localScale;
+        }
     }
 
     public override void OnSpawn()
     {
         base.OnSpawn();
+        if (DefaultScale != Vector3.zero)
+        {
+            transform.localScale = DefaultScale;
+        }
+
         if (spriteRenderer != null)
         {
             spriteRenderer.color = Color.white;
@@ -258,6 +282,7 @@ public class EnemyBase : BaseCharacter
     private void PerformTurnAttack(Player target, bool isSkill, EnemyAttackVfx attackVfx)
     {
         _pendingAttackVfx = attackVfx;
+        if (attackVfx) attackVfx.BeforeGameplay();
         try
         {
             if (isSkill)
@@ -275,8 +300,12 @@ public class EnemyBase : BaseCharacter
             _pendingAttackVfx = null;
         }
 
-        if (attackVfx && !attackVfx.HasProjectile)
-            attackVfx.Impact(target);
+        if (attackVfx)
+        {
+            attackVfx.AfterGameplay();
+            if (!attackVfx.HasProjectile)
+                attackVfx.Impact(target);
+        }
     }
 
     protected virtual void PerformNormalAttack(Player targetPlayer)
@@ -306,6 +335,7 @@ public class EnemyBase : BaseCharacter
         else if (type == EnemyType.PhapSuBuaChu)
         {
             targetPlayer.ApplyRoundDoT(Effect.DoT, 0.02f, 2, ElementType.Wood, "ĐỘC MỘC");
+            if (_pendingAttackVfx) _pendingAttackVfx.WoodPoisonApplied();
         }
         // Passive: Cung Thủ Ám có 15% tỉ lệ gây độc nhẹ 1% HP
         else if (type == EnemyType.CungThuAm)
@@ -313,6 +343,7 @@ public class EnemyBase : BaseCharacter
             if (UnityEngine.Random.value <= 0.15f)
             {
                 targetPlayer.ApplyRoundDoT(Effect.DoT, 0.01f, 2, ElementType.Wood, "ĐỘC TỐ");
+                if (_pendingAttackVfx) _pendingAttackVfx.WoodPoisonApplied();
             }
         }
 
@@ -488,12 +519,13 @@ public class EnemyBase : BaseCharacter
 
     protected void ExecutePenetrationAttack(Player targetPlayer, float multiplier, float ignoreDefPercent, bool ignoreShield)
     {
-        SpawnSkillVFX(transform.position, currentElement);
+        bool customMetalVfx = _pendingAttackVfx && _pendingAttackVfx.HasCustomMetal;
+        if (!customMetalVfx) SpawnSkillVFX(transform.position, currentElement);
         float skillDmg = currentAtk * multiplier;
         if (combatType == EnemyCombatType.Melee)
         {
             targetPlayer.TakeDamage(skillDmg, false, currentElement, ignoreDefPercent, ignoreShield);
-            SpawnSkillVFX(targetPlayer.transform.position, currentElement);
+            if (!customMetalVfx) SpawnSkillVFX(targetPlayer.transform.position, currentElement);
             Camera.main?.transform.DOShakePosition(0.2f, new Vector3(0.25f, 0.25f, 0f), 10, 90f, false, true);
         }
         else
@@ -504,12 +536,13 @@ public class EnemyBase : BaseCharacter
 
     protected void ExecuteDamageWithDoT(Player targetPlayer, float multiplier, Effect dotType, float hpPercentPerRound, int rounds, string dotName)
     {
-        SpawnSkillVFX(transform.position, currentElement);
+        bool customMetalVfx = _pendingAttackVfx && _pendingAttackVfx.HasCustomMetal;
+        if (!customMetalVfx) SpawnSkillVFX(transform.position, currentElement);
         float skillDmg = currentAtk * multiplier;
         if (combatType == EnemyCombatType.Melee)
         {
             targetPlayer.TakeDamage(skillDmg, false, currentElement);
-            SpawnSkillVFX(targetPlayer.transform.position, currentElement);
+            if (!customMetalVfx) SpawnSkillVFX(targetPlayer.transform.position, currentElement);
             Camera.main?.transform.DOShakePosition(0.2f, new Vector3(0.25f, 0.25f, 0f), 10, 90f, false, true);
         }
         else
@@ -552,7 +585,7 @@ public class EnemyBase : BaseCharacter
         if (BoardController.instance == null) return;
         if (freezeBottomRow)
         {
-            BoardController.instance.FreezeRow(0, rounds);
+            BoardController.instance.FreezeRow(0, rounds, _pendingAttackVfx ? _pendingAttackVfx.BoardCellEffect : null);
             if (DamageTextManager.Instance != null)
             {
                 DamageTextManager.Instance.SpawnCustomText("[ĐÓNG BĂNG HÀNG NGŨ]", new Color(0.4f, 0.8f, 1f), transform.position + Vector3.up * 2.2f, 1.4f);
@@ -560,7 +593,7 @@ public class EnemyBase : BaseCharacter
         }
         else if (count > 0)
         {
-            BoardController.instance.LockRandomStones(count, rounds);
+            BoardController.instance.LockRandomStones(count, rounds, _pendingAttackVfx ? _pendingAttackVfx.BoardCellEffect : null);
             if (DamageTextManager.Instance != null)
             {
                 DamageTextManager.Instance.SpawnCustomText($"[PHONG ẤN {count} NGỌC]", new Color(0.95f, 0.25f, 0.25f), transform.position + Vector3.up * 2.2f, 1.5f);
@@ -596,12 +629,14 @@ public class EnemyBase : BaseCharacter
             reflectBuffRounds = 2;
         }
 
-        SpawnSkillVFX(transform.position, currentElement);
+        if (!_pendingAttackVfx || !_pendingAttackVfx.HasCustomArmor)
+            SpawnSkillVFX(transform.position, currentElement);
     }
 
     protected void ExecuteTeamSupport(int maxReviveTargets, float reviveHpPercent, float healPercentLiving, float buffAtkPct, float buffDefPct, float shieldAlliesPct, int effectRounds)
     {
-        SpawnSkillVFX(transform.position, currentElement);
+        if (!_pendingAttackVfx || !_pendingAttackVfx.HasCustomTeamSupport || !EnemyController.instance)
+            SpawnSkillVFX(transform.position, currentElement);
 
         // 1. Hồi sinh đồng minh
         if (maxReviveTargets > 0 && EnemyController.instance != null)
@@ -722,6 +757,7 @@ public class EnemyBase : BaseCharacter
             currentShield = MaxHealth * 0.10f;
             maxShieldGranted = currentShield;
             shieldRounds = 1;
+            EnemyEarthArmorVfx.ShowBossShield(this);
             if (DamageTextManager.Instance != null)
             {
                 DamageTextManager.Instance.SpawnCustomText("+900 KHIÊN", new Color(1f, 0.85f, 0.2f), transform.position + Vector3.up * 1.5f, 1.2f);
@@ -730,7 +766,10 @@ public class EnemyBase : BaseCharacter
         // Passive Quái Vật Đầm Lầy: Khi HP < 50%, tự hồi phục 5% Max HP mỗi Round
         else if (type == EnemyType.QuaiVatDamLay && HP < MaxHealth * 0.5f)
         {
+            float hpBefore = HP;
             Health(MaxHealth * 0.05f);
+            if (HP > hpBefore)
+                EnemyWaterStatusVfx.ShowHeal(this);
         }
         // Passive Cổ Thụ Ngàn Năm: Cứ sau 3 Round tự động triệu hồi 2 Bọ Rác (Hàng trước)
         else if (type == EnemyType.CoThuNganNam && (roundCounterForPassive % 3 == 0) && EnemyController.instance != null)
@@ -738,7 +777,11 @@ public class EnemyBase : BaseCharacter
             if (EnemyController.instance.GetLivingEnemyCount() < 5)
             {
                 
+                var team = EnemyController.instance.LivingEnemies;
+                int beforeSpawn = team.Count;
                 EnemyController.instance.Spawn(EnemyType.BoRac,0, EnemyRow.Front);
+                if (team.Count > beforeSpawn)
+                    EnemyWoodStatusVfx.ShowSummon(this, team[team.Count - 1]);
                 if (DamageTextManager.Instance != null)
                 {
                     DamageTextManager.Instance.SpawnCustomText("[TRIỆU HỒI BỌ RÁC]", new Color(0.4f, 1f, 0.4f), transform.position + Vector3.up * 2f, 1.4f);
@@ -915,8 +958,11 @@ public class EnemyBase : BaseCharacter
             colorOrigin = Color.white;
         }
 
-        // Nâng base scale lên 9.5f để quái (PPU = 200, scale 0.85) có chiều cao thế giới đạt ~5.0 units ngang bằng Player (5.15 units)
-        transform.localScale = Vector3.one * (9.5f * scale);
+        // Giữ nguyên cơ chế scale mặc định của Prefab, bỏ scale kích thước theo cấp độ/rank quái
+        if (DefaultScale != Vector3.zero)
+        {
+            transform.localScale = DefaultScale;
+        }
         UpdateHPUI(1f);
     }
 
@@ -955,16 +1001,42 @@ public class EnemyBase : BaseCharacter
             colorOrigin = Color.white;
         }
 
-        transform.localScale = Vector3.one * (9.5f * so.scale);
+        // Giữ nguyên cơ chế scale mặc định của Prefab, bỏ scale kích thước theo cấp độ/rank quái
+        if (DefaultScale != Vector3.zero)
+        {
+            transform.localScale = DefaultScale;
+        }
         UpdateHPUI(1f);
     }
 
     public void ReviveWithHP(float hp)
     {
+        transform.DOKill();
+        if (FormationLocalPosition != Vector3.zero)
+        {
+            transform.localPosition = FormationLocalPosition;
+        }
+
         HP = Mathf.Clamp(hp, 1f, MaxHP);
         isRevived = true;
         gameObject.SetActive(true);
         UpdateHPUI(HP / MaxHP);
+
+        if (animController != null)
+        {
+            animController.ActiveAnimation(TypeAnimationAtivity.isIdel);
+        }
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.color = Color.white;
+            spriteRenderer.flipX = true;
+        }
+
+        SpawnSkillVFX(transform.position, ElementType.Wood);
+        if (DamageTextManager.Instance != null)
+        {
+            DamageTextManager.Instance.SpawnCustomText("[HỒI SINH!]", new Color(0.2f, 1f, 0.4f), transform.position + Vector3.up * 1.5f, 1.4f);
+        }
     }
 
     public virtual void Attack(int t)
@@ -1036,6 +1108,11 @@ public class EnemyBase : BaseCharacter
         // 1. Áp dụng Giảm Sát Thương % từ Kỹ Năng Tank (nếu có)
         if (damageReductionPercent > 0f)
         {
+            if (rawDamage > 0f)
+            {
+                EnemyEarthArmorVfx.OnReduction(this);
+                EnemyMetalStatusVfx.OnArmorHit(this, shieldHit:false);
+            }
             rawDamage *= (1f - Mathf.Clamp01(damageReductionPercent));
         }
 
@@ -1054,6 +1131,13 @@ public class EnemyBase : BaseCharacter
                 currentShield = 0f;
             }
 
+            if (currentShield < shieldBefore)
+            {
+                EnemyEarthArmorVfx.OnShieldHit(this, currentShield <= 0f);
+                EnemyWoodStatusVfx.OnShieldHit(this, currentShield <= 0f);
+                EnemyMetalStatusVfx.OnArmorHit(this, shieldHit:true, broke:currentShield <= 0f);
+            }
+
             // Cơ chế nổ khiên của Hạt Nham Thạch (khi khiên vỡ phản lại 150% giá trị khiên thành ST cho Player)
             if (shieldBefore > 0f && currentShield <= 0f && shieldExplodeMultiplierOnBreak > 0f)
             {
@@ -1062,7 +1146,8 @@ public class EnemyBase : BaseCharacter
                 if (p != null)
                 {
                     p.TakeDamage(explodeDamage, false, ElementType.Fire);
-                    SpawnSkillVFX(p.transform.position, ElementType.Fire);
+                    if (!EnemyEarthReactionVfx.TryPlayLavaTravel(this, p))
+                        SpawnSkillVFX(p.transform.position, ElementType.Fire);
                     if (DamageTextManager.Instance != null)
                     {
                         DamageTextManager.Instance.SpawnCustomText($"[BÙNG NỔ KHIÊN! -{Mathf.RoundToInt(explodeDamage)}]", Color.yellow, p.transform.position + Vector3.up * 1.5f, 1.4f);
@@ -1113,6 +1198,8 @@ public class EnemyBase : BaseCharacter
             if (player != null)
             {
                 player.TakeDamage(reflected, false, currentElement);
+                EnemyEarthReactionVfx.PlayThorns(this, player);
+                EnemyMetalCounterVfx.Play(this, player);
             }
         }
     }

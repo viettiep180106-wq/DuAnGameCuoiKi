@@ -506,6 +506,8 @@ public class Player : BaseCharacter
             else
             {
                 HP = 0;
+                UpdateHPUI(0f);
+                OnStatsUpdated?.Invoke();
                 Deid();
                 return;
             }
@@ -760,6 +762,10 @@ public class Player : BaseCharacter
 
     public override void Deid()
     {
+        HP = 0;
+        UpdateHPUI(0f);
+        OnStatsUpdated?.Invoke();
+
         if (woodArmorVisual)
             woodArmorVisual.Stop();
         CleanUpAllEffect();

@@ -41,4 +41,8 @@ MonoBehaviour:
     c\xE1c k\u1EF9 n\u0103ng h\u1EC7 H\u1ECFa"
   normalAttackDesc: "Ph\xF3ng l\u1ED1c b\u0103ng gi\xE1 t\u1EA7m xa g\xE2y 100% ATK
     (90 ST)"
+  normalAttackVfx: 25
+  activeSkillVfx: 26
+  attackVfxMuzzleOffset: {x: 0.34, y: 0.09}
+  attackVfxScale: 1.04
   enemyPrefab: {fileID: 2947869914279332571, guid: 9294392c245739c4a8e0c3ed2a57e7d7, type: 3}

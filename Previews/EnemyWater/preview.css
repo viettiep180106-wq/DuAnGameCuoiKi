@@ -1,0 +1,71 @@
+:root {
+  color-scheme: dark;
+  font: 15px/1.5 "Segoe UI", system-ui, sans-serif;
+  background: #0b131b;
+  color: #edf5f7;
+  --muted: #9ab2c0;
+  --line: #273c4a;
+  --focus: #80e7e5;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; }
+[hidden] { display: none !important; }
+.workspace { width: min(1500px, 100%); margin: auto; padding: 26px 30px 38px; }
+.page-header { display: flex; justify-content: space-between; align-items: end; margin: 0 0 20px; }
+.section-name, .enemy-name { margin: 0; color: #86dad9; font-size: 12px; font-weight: 650; }
+h1 { font-size: clamp(28px, 4vw, 46px); margin: 1px 0 0; line-height: 1.15; letter-spacing: -.04em; }
+.scope { color: var(--muted); margin: 0 0 3px; }
+.layout { display: grid; grid-template-columns: 205px minmax(0, 1fr); gap: 18px; align-items: start; }
+.roster { display: grid; gap: 7px; }
+button, select { font: inherit; color: inherit; border: 1px solid var(--line); border-radius: 8px; background: #14232f; }
+button { cursor: pointer; }
+button:hover, select:hover { border-color: #5c8594; background: #1c3442; }
+button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.enemy-option { display: flex; align-items: center; gap: 10px; text-align: left; min-height: 55px; padding: 6px 9px; font-size: 13px; }
+.enemy-option[aria-current="true"] { border-color: #6cd8d4; background: #17383e; color: #f5ffff; }
+.enemy-option img { width: 38px; height: 38px; object-fit: contain; object-position: center; flex: none; transform: scaleX(-1); }
+.panel { border: 1px solid var(--line); overflow: hidden; border-radius: 13px; background: #101d27; }
+.attack-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 20px; min-height: 76px; }
+.attack-header h2 { margin: 3px 0 0; line-height: 1.22; font-size: clamp(18px, 3vw, 27px); letter-spacing: -.018em; }
+.segmented { display: flex; gap: 3px; background: #0c161e; border: 1px solid var(--line); border-radius: 9px; padding: 3px; flex: none; }
+.segmented button { font-size: 13px; padding: 6px 10px; background: transparent; border-color: transparent; }
+.segmented [aria-pressed="true"] { background: #244754; color: #dcffff; }
+.viewport { position: relative; background: #0a1822; border-block: 1px solid var(--line); }
+canvas { display: block; width: 100%; height: auto; aspect-ratio: 1160 / 560; }
+#load-message { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); }
+.controls { padding: 13px 20px 16px; }
+.transport { display: flex; align-items: center; gap: 7px; }
+.transport button, select { padding: 5px 10px; min-height: 34px; }
+.transport .primary { padding-inline: 14px; background: #7ce1dd; color: #0a2428; border-color: #7ce1dd; font-weight: 700; min-width: 74px; }
+.transport .primary:hover { background: #a4efeb; }
+.control-label { color: var(--muted); font-size: 13px; margin-left: 7px; }
+output { margin-left: auto; font-variant-numeric: tabular-nums; color: #c0dbe5; }
+.timeline { margin-top: 11px; }
+input[type="range"] { width: 100%; margin: 0; accent-color: #7ce1dd; cursor: ew-resize; }
+.markers { display: flex; justify-content: space-between; gap: 4px; margin: 4px 0 11px; }
+.markers button { flex: 1; color: #b6cad5; padding: 4px 6px; font-size: 12px; }
+.markers .current { border-color: #60b9bc; color: #e7ffff; }
+.settings { display: flex; gap: 10px 14px; flex-wrap: wrap; align-items: center; border-top: 1px solid var(--line); padding-top: 12px; }
+.settings label { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 12px; }
+.settings select { font-size: 13px; }
+.event { margin: 0; color: #86dbd8; font-size: 13px; flex: 1 1 215px; }
+.description { margin: 10px 0 0; color: var(--muted); font-size: 13px; }
+
+@media (max-width: 860px) {
+  .workspace { padding: 16px; }
+  .layout { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .roster { display: flex; overflow-x: auto; padding: 2px 2px 5px; }
+  .enemy-option { flex: 0 0 auto; min-height: 42px; }
+  .enemy-option img { width: 27px; height: 28px; }
+}
+
+@media (max-width: 480px) {
+  .workspace { padding: 12px; }
+  .attack-header, .controls { padding-inline: 10px; }
+  .attack-header { align-items: start; }
+  .attack-header h2 { font-size: 17px; }
+  .segmented button { padding-inline: 6px; font-size: 11px; }
+  .scope { font-size: 12px; }
+  .markers button { font-size: 11px; }
+}
