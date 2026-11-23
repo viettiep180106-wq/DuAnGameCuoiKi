@@ -48,10 +48,9 @@ public class StoneBase : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, 
         if (item != null) item.DOKill();
     }
 
-    public void FinishTask()
-    {
-        StartCoroutine(PalyMatch());
-    }
+    public void FinishTask() => FinishTask(false);
+
+    internal void FinishTask(bool playedBoardVfx) => StartCoroutine(PlayMatch(playedBoardVfx));
 
     public bool isLocked { get; private set; } = false;
     public bool isFrozen { get; private set; } = false;
@@ -139,10 +138,15 @@ public class StoneBase : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, 
         }
     }
 
-    public IEnumerator PalyMatch()
+    public IEnumerator PalyMatch() => PlayMatch(false);
+
+    private IEnumerator PlayMatch(bool playedBoardVfx)
     {
-        // Kích hoạt hiệu ứng nổ ngọc đúng màu hệ
-        OnStoneMatched?.Invoke(transform.position, nameStone);
+        var world = transform.position;
+        OnStoneMatched?.Invoke(world, nameStone);
+        var fallback = MatchParticleManager.Instance;
+        if (!playedBoardVfx && fallback && fallback.isActiveAndEnabled)
+            fallback.PlayMatchEffect(world, nameStone);
 
         if (item != null)
         {

@@ -48,6 +48,8 @@ public class BoardController : MonoBehaviour
     [Header("----Container Layering----")]
     [SerializeField] private RectTransform slotsContainer;
     [SerializeField] private RectTransform stonesContainer;
+    private readonly MatchStoneVfxGraph matchVfxGraph = new();
+    private MatchStoneVfx matchVfx;
 
     private void Awake()
     {  
@@ -152,6 +154,7 @@ public class BoardController : MonoBehaviour
     private void OnDisable()
     {
         OnSwapStone -= Trans;
+        if (matchVfx) matchVfx.Clear();
     }
 
     public void LoadPrefabFromResource()
@@ -207,6 +210,7 @@ public class BoardController : MonoBehaviour
 
     public void ClearOldBoard()
     {
+        if (matchVfx) matchVfx.Clear();
         if (grid != null)
         {
             for (int x = 0; x < grid.Count; x++)
@@ -558,9 +562,12 @@ public class BoardController : MonoBehaviour
         return stone;
     }
 
-    public IEnumerator MatchAllBoard()
+    public IEnumerator MatchAllBoard() => MatchAllBoard(null);
+
+    private IEnumerator MatchAllBoard(Vector2Int? origin)
     {
         HashSet<Vector2Int> listMatch = new HashSet<Vector2Int>();
+        matchVfxGraph.Clear();
         for (int x = 0; x < cols; x++)
         {
             for (int y = 0; y < rows; y++)
@@ -578,6 +585,7 @@ public class BoardController : MonoBehaviour
                             listMatch.Add(new Vector2Int(x, y));
                             listMatch.Add(new Vector2Int(x + 1, y));
                             listMatch.Add(new Vector2Int(x + 2, y));
+                            matchVfxGraph.AddRun(new Vector2Int(x, y), Vector2Int.right, 3);
                         }
                     }
                 }
@@ -592,6 +600,7 @@ public class BoardController : MonoBehaviour
                             listMatch.Add(new Vector2Int(x, y));
                             listMatch.Add(new Vector2Int(x, y + 1));
                             listMatch.Add(new Vector2Int(x, y + 2));
+                            matchVfxGraph.AddRun(new Vector2Int(x, y), Vector2Int.up, 3);
                         }
                     }
                 }
@@ -619,12 +628,20 @@ public class BoardController : MonoBehaviour
             }
         }
 
+        if (!matchVfx) matchVfx = MatchStoneVfx.Create(center);
+        bool playedBoardVfx = false;
+        if (matchVfx)
+        {
+            matchVfxGraph.Resolve(listMatch, origin);
+            playedBoardVfx = matchVfx.TryPlay(matchVfxGraph, grid);
+        }
+
         foreach (Vector2Int e in listMatch)
         {
             SlotStoneBase slot = grid[e.x][e.y];
             if (slot.GetStone() != null)
             {
-                slot.GetStone().FinishTask();
+                slot.GetStone().FinishTask(playedBoardVfx);
                 slot.SetStone(null);
             }
         }
@@ -748,13 +765,14 @@ public class BoardController : MonoBehaviour
 
         yield return new WaitForSeconds(0.35f);
 
-        if (CheckMatch(stone.nameStone, IndexB.x, IndexB.y) || CheckMatch(stoneB.nameStone, Index.x, Index.y))
+        bool firstStoneMatched = CheckMatch(stone.nameStone, IndexB.x, IndexB.y);
+        if (firstStoneMatched || CheckMatch(stoneB.nameStone, Index.x, Index.y))
         {
             if (CombatTurnManager.Instance != null)
             {
                 CombatTurnManager.Instance.TryConsumeMatchEnergy();
             }
-            StartCoroutine(MatchAllBoard());
+            StartCoroutine(MatchAllBoard(firstStoneMatched ? IndexB : Index));
         }
         else
         {

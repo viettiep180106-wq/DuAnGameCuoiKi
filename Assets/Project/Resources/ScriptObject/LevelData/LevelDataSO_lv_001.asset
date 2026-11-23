@@ -21,21 +21,18 @@ MonoBehaviour:
       stepDifficulty: 0
       formationType: 1
       listEnemy:
-      - name: 30
+      - name: 16
+        Amount: 2
+        row: 0
+      - name: 17
         Amount: 1
         row: 0
-      - name: 32
+      - name: 19
         Amount: 1
         row: 1
-      - name: 36
+      - name: 18
         Amount: 1
         row: 1
-      - name: 35
-        Amount: 1
-        row: 1
-      - name: 34
-        Amount: 1
-        row: 0
       eventType: 0
       waveEnergyReward: 18
     - step: 2

@@ -15,14 +15,9 @@ public class MatchParticleManager : MonoBehaviour
         CreateRuntimeParticleSystemIfNeeded();
     }
 
-    private void OnEnable()
+    private void OnDestroy()
     {
-        StoneBase.OnStoneMatched += PlayMatchEffect;
-    }
-
-    private void OnDisable()
-    {
-        StoneBase.OnStoneMatched -= PlayMatchEffect;
+        if (Instance == this) Instance = null;
     }
 
     private void CreateRuntimeParticleSystemIfNeeded()

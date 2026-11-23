@@ -20,4 +20,4 @@ MonoBehaviour:
   critRate: 0.1
   critDmg: 1
   speed: 0.8
-  initialEnergyCores: 50
+  initialEnergyCores: 1000
