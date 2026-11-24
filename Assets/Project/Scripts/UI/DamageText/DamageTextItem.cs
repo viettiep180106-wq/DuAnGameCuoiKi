@@ -9,6 +9,12 @@ public class DamageTextItem : MonoBehaviour, IPoolable
     private void Awake()
     {
         if (textComponent == null) textComponent = GetComponentInChildren<TMP_Text>();
+        if (textComponent != null)
+        {
+            textComponent.outlineWidth = 0.25f;
+            textComponent.outlineColor = Color.black;
+            textComponent.fontStyle = FontStyles.Bold;
+        }
     }
 
     public void OnSpawn()

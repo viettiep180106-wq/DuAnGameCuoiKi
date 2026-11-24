@@ -255,71 +255,102 @@ public class EnemyController : MonoBehaviour
         }
 
         RegisterEnemy(enemy);
-        enemy.row = assignedRow;
 
-        // Định vị đội hình 2 hàng bên PHẢI: nâng cao tọa độ Y ngang tầm Player, mỗi quái cùng hàng cách nhau đúng 5 units
-        float posX;
-        float posY;
-        float baseY = 2.5f; // Nâng cao vị trí đứng của quái, tách biệt hoàn toàn khỏi player stat bar
+        // Định vị đội hình 2 hàng bên PHẢI:
+        // - Trục tâm đội hình nâng lên baseY = 5.0f (tăng 2.5 đơn vị, đối xứng chuẩn với Player)
+        // - Khoảng cách delta Y = 6.0f (tăng từ 5.0 theo phản hồi)
+        float baseY = 2.5f;
+        float deltaY = 6.5f;
+
+        // 2 Slot Hàng trước (Front Row):
+        Vector3 slotF0 = new Vector3(2f, baseY - deltaY * 0.5f, 0f); // (2f, 2.0f, 0f)
+        Vector3 slotF1 = new Vector3(2f, baseY + deltaY * 0.5f, 0f); // (2f, 8.0f, 0f)
+
+        // 3 Slot Hàng sau (Back Row):
+        Vector3 slotB1 = new Vector3(10f, baseY, 0f);                 // (8f, 5.0f, 0f) - Ưu tiên tâm giữa
+        Vector3 slotB0 = new Vector3(10f, baseY + deltaY, 0f);        // (8f, 11.0f, 0f) - Trên
+        Vector3 slotB2 = new Vector3(10f, baseY - deltaY, 0f);        // (8f, -1.0f, 0f) - Dưới
+
+        // Kiểm tra xem các slot đã bị chiếm giữ bởi quái đang sống chưa
+        bool isF0Occupied = IsSlotOccupied(slotF0, enemy);
+        bool isF1Occupied = IsSlotOccupied(slotF1, enemy);
+        bool isB1Occupied = IsSlotOccupied(slotB1, enemy);
+        bool isB0Occupied = IsSlotOccupied(slotB0, enemy);
+        bool isB2Occupied = IsSlotOccupied(slotB2, enemy);
+
+        Vector3 chosenPos;
+        EnemyRow actualRow = assignedRow;
+
         if (assignedRow == EnemyRow.Front)
         {
-            // Hàng trước (2 quái): Kiểm tra slot trống để triệu hồi hoặc sinh quái chuẩn xác
-            Vector3 slot0 = new Vector3(2.5f, 0f, 0f);
-            Vector3 slot1 = new Vector3(2.5f, baseY + 2.5f, 0f); // (2.5f, 5.0f, 0f)
-
-            bool isSlot0Occupied = false;
-            bool isSlot1Occupied = false;
-            for (int i = 0; i < _livingEnemies.Count; i++)
+            // Ưu tiên điền hàng trước
+            if (!isF0Occupied)
             {
-                var le = _livingEnemies[i];
-                if (le != null && le != enemy && le.CurrentHP > 0)
-                {
-                    if (Vector3.Distance(le.transform.localPosition, slot0) < 1.0f) isSlot0Occupied = true;
-                    if (Vector3.Distance(le.transform.localPosition, slot1) < 1.0f) isSlot1Occupied = true;
-                }
+                chosenPos = slotF0;
             }
-
-            if (!isSlot0Occupied)
+            else if (!isF1Occupied)
             {
-                posX = slot0.x;
-                posY = slot0.y;
+                chosenPos = slotF1;
             }
-            else if (!isSlot1Occupied)
+            // Nếu hàng trước đã đầy (vượt quá 2 quái) -> Tự động tràn sang hàng sau
+            else if (!isB1Occupied)
             {
-                posX = slot1.x;
-                posY = slot1.y;
+                chosenPos = slotB1;
+                actualRow = EnemyRow.Back;
+            }
+            else if (!isB0Occupied)
+            {
+                chosenPos = slotB0;
+                actualRow = EnemyRow.Back;
+            }
+            else if (!isB2Occupied)
+            {
+                chosenPos = slotB2;
+                actualRow = EnemyRow.Back;
             }
             else
             {
-                posX = 2.5f;
-                posY = baseY - 2.5f; // 0f
+                chosenPos = new Vector3(10.0f, baseY, 0f);
+                actualRow = EnemyRow.Back;
             }
             _spawnedFrontCount++;
         }
         else
         {
-            // Hàng sau (3 quái): Thế cánh cung, khoảng cách Y giữa mỗi quái liền kề đúng bằng 5 units (+5f, 0f, -5f)
-            int backSlot = _spawnedBackCount % 3;
-            if (backSlot == 0)
+            // Ưu tiên điền hàng sau: Ưu tiên slot tâm B1 -> B0 -> B2
+            if (!isB1Occupied)
             {
-                posX = 7.5f;
-                posY = baseY + 5.0f;
+                chosenPos = slotB1;
             }
-            else if (backSlot == 1)
+            else if (!isB0Occupied)
             {
-                posX = 7.5f;
-                posY = baseY;
+                chosenPos = slotB0;
+            }
+            else if (!isB2Occupied)
+            {
+                chosenPos = slotB2;
+            }
+            // Nếu hàng sau đã đầy (vượt quá 3 quái) -> Tự động tràn về hàng trước
+            else if (!isF0Occupied)
+            {
+                chosenPos = slotF0;
+                actualRow = EnemyRow.Front;
+            }
+            else if (!isF1Occupied)
+            {
+                chosenPos = slotF1;
+                actualRow = EnemyRow.Front;
             }
             else
             {
-                posX = 7.5f;
-                posY = baseY - 5.0f;
+                chosenPos = new Vector3(10.0f, baseY, 0f);
             }
             _spawnedBackCount++;
         }
 
-        enemy.transform.localPosition = new Vector3(posX, posY, 0f);
-        enemy.FormationLocalPosition = enemy.transform.localPosition;
+        enemy.row = actualRow;
+        enemy.transform.localPosition = chosenPos;
+        enemy.FormationLocalPosition = chosenPos;
 
         // Quay mặt sang TRÁI (hướng về phía Player) và phân lớp Layer 2.5D theo trục Y
         if (enemy.TryGetComponent<SpriteRenderer>(out var sr))
@@ -330,6 +361,26 @@ public class EnemyController : MonoBehaviour
         }
 
         // Quái đứng cố định trên mặt đất trong suốt trận đấu, không di chuyển/drift vào Player
+    }
+
+    /// <summary>
+    /// Kiểm tra xem một slot tọa độ trong đội hình đã có quái đang sống chiếm giữ hay chưa
+    /// </summary>
+    private bool IsSlotOccupied(Vector3 slot, EnemyBase currentEnemy)
+    {
+        for (int i = 0; i < _livingEnemies.Count; i++)
+        {
+            var le = _livingEnemies[i];
+            if (le != null && le != currentEnemy && le.gameObject.activeInHierarchy && le.CurrentHP > 0)
+            {
+                Vector3 checkPos = le.FormationLocalPosition != Vector3.zero ? le.FormationLocalPosition : le.transform.localPosition;
+                if (Vector3.Distance(checkPos, slot) < 1.0f)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public void StartActive()

@@ -16,6 +16,7 @@ public class DoTEffect : BaseEffect
     {
         if (character == null || character.spriteRenderer == null) yield break;
 
+        EnemyStatusVfx.Show(character, EnemyStatusAnimation.Kind.Burn);
         float timer = 0;
         float tick = payLoad.tickRate > 0 ? payLoad.tickRate : 1f;
 
@@ -38,13 +39,18 @@ public class DoTEffect : BaseEffect
                 });
             }
 
+            float hpBefore = character.CurrentHP;
             character.TakeDamage(payLoad.value);
+            if (character.CurrentHP < hpBefore) EnemyStatusVfx.BurnTick(character);
         }
+
+        EnemyStatusVfx.Finish(character, EnemyStatusAnimation.Kind.Burn);
     }
 
     public override void RemoveEffect()
     {
         StopAllCoroutines();
+        EnemyStatusVfx.Finish(character, EnemyStatusAnimation.Kind.Burn);
         if (character != null && character.spriteRenderer != null)
         {
             character.spriteRenderer.DOKill();

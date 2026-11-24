@@ -23,9 +23,8 @@ internal sealed class EnemyFireStatusVfx : MonoBehaviour
             return false;
 
         float value = blueFire ? 0.03f : 0.02f;
-        var state = target.ActiveRoundEffects.Find(effect => effect.EffectType == Effect.DoT
-            && effect.RoundsRemaining > 0 && effect.Value >= value);
-        if (state == null)
+        var state = target.FindRoundEffect(Effect.DoT, ElementType.Fire);
+        if (state == null || state.RoundsRemaining <= 0 || state.Value < value)
             return false;
 
         var presenter = GetOrCreate(target, art);

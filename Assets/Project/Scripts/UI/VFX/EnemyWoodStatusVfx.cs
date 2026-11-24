@@ -42,8 +42,8 @@ internal sealed class EnemyWoodStatusVfx : MonoBehaviour
     internal static void ShowPoison(EnemyAtlasVfxArt art, Player actor, bool curse)
     {
         if (!Application.isPlaying || !actor || actor.CurrentHP <= 0 || !actor.gameObject.activeInHierarchy) return;
-        ActiveRoundEffect effect = actor.ActiveRoundEffects.Find(item => item.EffectType == Effect.DoT && item.RoundsRemaining > 0);
-        if (effect == null) return;
+        ActiveRoundEffect effect = actor.FindRoundEffect(Effect.DoT, ElementType.Wood);
+        if (effect == null || effect.RoundsRemaining <= 0) return;
         var fx = Prepare(art, actor);
         fx.player = actor;
         fx.curse = curse || (ReferenceEquals(fx.poison, effect) && fx.curse);

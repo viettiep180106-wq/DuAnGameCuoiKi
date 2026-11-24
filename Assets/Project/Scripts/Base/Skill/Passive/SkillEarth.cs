@@ -150,7 +150,10 @@ public class SkillEarth : SkillPassive
                 // Giảm DEF
                 if (defReductionPercent > 0f)
                 {
-                    eb.currentDef = Mathf.Max(0f, eb.currentDef * (1f - defReductionPercent));
+                    float defenseBefore = eb.currentDef;
+                    eb.currentDef = Mathf.Max(0f, defenseBefore * (1f - defReductionPercent));
+                    if (eb.currentDef < defenseBefore)
+                        EnemyStatusVfx.Show(eb, EnemyStatusAnimation.Kind.DefenseDown);
                 }
 
                 // Tỷ lệ Choáng (Stun)

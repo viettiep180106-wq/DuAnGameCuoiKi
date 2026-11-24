@@ -21,6 +21,9 @@ public class CombatBackgroundScroller : MonoBehaviour
     [Tooltip("Tốc độ mặc định nếu chưa khởi tạo Player hoặc trong test scene (đã nhân 2 theo yêu cầu).")]
     [SerializeField] private float _fallbackSpeed = 3.2f;
 
+    [Tooltip("Tốc độ cuộn nền nhanh trong giai đoạn chuyển wave (Pre-Wave / Marching 3.0s).")]
+    [SerializeField] private float _marchingSpeed = 10.0f;
+
     [Header("Looping & Boundary Settings")]
     [Tooltip("Chiều rộng của sprite nền để ghép nối vòng lặp vô hạn không kẽ hở.")]
     [SerializeField] private float _backgroundWidth = 20.0f;
@@ -238,6 +241,12 @@ public class CombatBackgroundScroller : MonoBehaviour
 
     private float GetCurrentSpeed()
     {
+        // Giai đoạn hành tiến chuyển Wave (Pre-Wave 3.0s): Dùng tốc độ lướt nhanh riêng biệt
+        if (_isMarchingActive)
+        {
+            return _marchingSpeed * _speedMultiplier;
+        }
+
         if (_cachedPlayer == null)
         {
             _cachedPlayer = Player.Instance;

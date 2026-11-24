@@ -69,6 +69,59 @@ public class EnemySkillMechanicsTests
         Assert.AreEqual(0, _player.ActiveRoundEffects.Count);
     }
 
+    [TestCase(true)]
+    [TestCase(false)]
+    public void RoundDamage_BurnAndPoisonKeepTheirOwnNameAndDuration(bool poisonFirst)
+    {
+        if (poisonFirst)
+            _player.ApplyRoundDoT(Effect.DoT, 0.02f, 2, ElementType.Wood, "ĐỘC MỘC");
+        _player.ApplyRoundDoT(Effect.DoT, 0.03f, 3, ElementType.Fire, "THIÊU ĐỐT TỐI THƯỢNG");
+        if (!poisonFirst)
+            _player.ApplyRoundDoT(Effect.DoT, 0.02f, 2, ElementType.Wood, "ĐỘC MỘC");
+
+        Assert.That(_player.ActiveRoundEffects, Has.Count.EqualTo(2));
+        var burn = _player.ActiveRoundEffects.Find(effect => effect.Element == ElementType.Fire);
+        var poison = _player.ActiveRoundEffects.Find(effect => effect.Element == ElementType.Wood);
+        Assert.That(burn.DisplayName, Is.EqualTo("THIÊU ĐỐT TỐI THƯỢNG"));
+        Assert.That(poison.DisplayName, Is.EqualTo("ĐỘC MỘC"));
+
+        _player.TickRoundEffects();
+        Assert.That(_player.CurrentHP, Is.EqualTo(475f).Within(0.01f));
+        Assert.That(burn.RoundsRemaining, Is.EqualTo(2));
+        Assert.That(poison.RoundsRemaining, Is.EqualTo(1));
+
+        _player.TickRoundEffects();
+        Assert.That(_player.CurrentHP, Is.EqualTo(450f).Within(0.01f));
+        Assert.That(_player.ActiveRoundEffects, Is.EqualTo(new[] { burn }));
+
+        _player.TickRoundEffects();
+        Assert.That(_player.CurrentHP, Is.EqualTo(435f).Within(0.01f));
+        Assert.That(_player.ActiveRoundEffects, Is.Empty);
+    }
+
+    [Test]
+    public void RoundDamage_ReapplicationKeepsStrongestOfEachTypeAndBleedStillTicks()
+    {
+        _player.ApplyRoundDoT(Effect.DoT, 0.02f, 2, ElementType.Fire, "THIÊU ĐỐT");
+        _player.ApplyRoundDoT(Effect.DoT, 0.03f, 3, ElementType.Fire, "THIÊU ĐỐT TỐI THƯỢNG");
+        _player.ApplyRoundDoT(Effect.DoT, 0.02f, 2, ElementType.Fire, "THIÊU ĐỐT");
+        _player.ApplyRoundDoT(Effect.DoT, 0.02f, 2, ElementType.Wood, "ĐỘC MỘC");
+        _player.ApplyRoundDoT(Effect.DoT, 0.01f, 2, ElementType.Wood, "ĐỘC TỐ");
+        _player.ApplyRoundDoT(Effect.Bleed, 0.02f, 3, ElementType.Metal, "CHẢY MÁU");
+
+        Assert.That(_player.ActiveRoundEffects, Has.Count.EqualTo(3));
+        var burn = _player.ActiveRoundEffects.Find(effect => effect.Element == ElementType.Fire);
+        var poison = _player.ActiveRoundEffects.Find(effect => effect.Element == ElementType.Wood);
+        var bleed = _player.ActiveRoundEffects.Find(effect => effect.EffectType == Effect.Bleed);
+        Assert.That(burn.DisplayName, Is.EqualTo("THIÊU ĐỐT TỐI THƯỢNG"));
+        Assert.That(poison.DisplayName, Is.EqualTo("ĐỘC MỘC"));
+        Assert.That(bleed.DisplayName, Is.EqualTo("CHẢY MÁU"));
+
+        _player.TickRoundEffects();
+        Assert.That(_player.CurrentHP, Is.EqualTo(465f).Within(0.01f));
+        Assert.That(bleed.RoundsRemaining, Is.EqualTo(2));
+    }
+
     [Test]
     public void PenetrationAttack_IgnoresSpecifiedDEFPercent()
     {
@@ -161,8 +214,17 @@ public class EnemySkillMechanicsTests
 
         float playerHpBefore = _player.CurrentHP;
 
-        // Act: Đánh vỡ hoàn toàn khiên của quái (nhận 250 sát thương vào khiên 200)
-        enemy.TakeDamage(250f, false, ElementType.Water);
+        // Edit Mode does not run Player.Awake for the test object.
+        Player previousPlayer = Player.Instance;
+        try
+        {
+            Player.Instance = _player;
+            enemy.TakeDamage(250f, false, ElementType.Water);
+        }
+        finally
+        {
+            Player.Instance = previousPlayer;
+        }
 
         // Assert: Khiên vỡ về 0, kích hoạt nổ khiên 200 * 1.5 = 300 sát thương lên Player
         Assert.AreEqual(0f, enemy.currentShield);

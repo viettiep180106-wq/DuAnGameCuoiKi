@@ -312,8 +312,8 @@ public class Player : BaseCharacter
 
     private PlayerAnimationController animController;
 
-    public readonly Vector3 CombatPosition = new Vector3(-16.0f, 2.5f, 0f);
-    public readonly Vector3 MarchingPosition = new Vector3(-5.693f, 2.5f, 0f);
+    public readonly Vector3 CombatPosition = new Vector3(-20.0f, 5.0f, 0f);
+    public readonly Vector3 MarchingPosition = new Vector3(-5.693f, 5.0f, 0f);
 
     public void AlignToCombatPosition(float duration = 0f, Action onComplete = null)
     {
@@ -573,14 +573,22 @@ public class Player : BaseCharacter
         }
     }
 
+    internal ActiveRoundEffect FindRoundEffect(Effect effectType, ElementType element)
+    {
+        return ActiveRoundEffects.Find(effect => effect.EffectType == effectType
+            && (effectType != Effect.DoT || effect.Element == element));
+    }
+
     public void ApplyRoundDoT(Effect effectType, float hpPercentPerRound, int rounds, ElementType element, string displayName = "")
     {
         if (HP <= 0 || rounds <= 0) return;
 
-        var existing = ActiveRoundEffects.Find(e => e.EffectType == effectType);
+        var existing = FindRoundEffect(effectType, element);
         if (existing != null)
         {
             existing.RoundsRemaining = Mathf.Max(existing.RoundsRemaining, rounds);
+            if (effectType == Effect.DoT && hpPercentPerRound > existing.Value && !string.IsNullOrEmpty(displayName))
+                existing.DisplayName = displayName;
             existing.Value = Mathf.Max(existing.Value, hpPercentPerRound);
         }
         else
@@ -599,6 +607,7 @@ public class Player : BaseCharacter
         {
             Color labelColor = effectType switch
             {
+                Effect.DoT when element == ElementType.Wood => new Color(0.65f, 0.35f, 0.95f),
                 Effect.DoT => new Color(1f, 0.45f, 0.1f),
                 Effect.Bleed => new Color(0.9f, 0.15f, 0.15f),
                 _ => new Color(0.6f, 0.2f, 0.9f)
@@ -682,6 +691,7 @@ public class Player : BaseCharacter
         if (HP <= 0) return;
 
         // 1. Tick các hiệu ứng DoT (Thiêu đốt, Chảy máu, Độc tố)
+        float labelHeight = 0.8f;
         for (int i = ActiveRoundEffects.Count - 1; i >= 0; i--)
         {
             var effect = ActiveRoundEffects[i];
@@ -693,6 +703,7 @@ public class Player : BaseCharacter
 
             Color dotColor = effect.EffectType switch
             {
+                Effect.DoT when effect.Element == ElementType.Wood => new Color(0.65f, 0.35f, 0.95f),
                 Effect.DoT => new Color(1f, 0.4f, 0.1f),
                 Effect.Bleed => new Color(0.9f, 0.1f, 0.1f),
                 _ => new Color(0.6f, 0.2f, 0.9f)
@@ -700,7 +711,9 @@ public class Player : BaseCharacter
 
             if (DamageTextManager.Instance != null)
             {
-                DamageTextManager.Instance.SpawnCustomText($"-{Mathf.RoundToInt(dotDamage)} {effect.DisplayName}", dotColor, transform.position + Vector3.up * 0.8f, 1.3f);
+                DamageTextManager.Instance.SpawnCustomText($"-{Mathf.RoundToInt(dotDamage)} {effect.DisplayName}", dotColor,
+                    transform.position + Vector3.up * labelHeight, 1.3f);
+                labelHeight += 1.8f;
             }
 
             if (HP <= 0)

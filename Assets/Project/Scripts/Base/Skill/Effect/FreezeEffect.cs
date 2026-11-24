@@ -11,11 +11,14 @@ public class FreezeEffect : BaseEffect
         character.moveTwen.timeScale = 1- payLoad.slowRate;
         character.spriteRenderer.DOColor(new Color(0.5f,0.8f,1f),0.2f);
         character.TakeDamage(payLoad.value);
+        if (character.CurrentHP <= 0f) return;
+        EnemyStatusVfx.Show(character, EnemyStatusAnimation.Kind.Freeze);
         DOVirtual.DelayedCall(payLoad.duration,RemoveEffect,false).SetId(this.gameObject.GetInstanceID() + "Freeze");
         
     }
     public override void RemoveEffect()
     {
+        EnemyStatusVfx.Finish(character, EnemyStatusAnimation.Kind.Freeze);
         DOTween.Kill(this.gameObject.GetInstanceID() + "Freeze");
         if(character!= null && character.moveTwen != null){
             character.moveTwen.timeScale = 1f;

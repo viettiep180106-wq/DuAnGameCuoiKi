@@ -16,16 +16,20 @@ public class StunEffect : BaseEffect
         if(character.moveTwen.IsActive() && character.moveTwen != null)
         {
             character.moveTwen.Pause();
+            EnemyStatusVfx.Show(character, EnemyStatusAnimation.Kind.Stun);
         }
+        else EnemyStatusVfx.Finish(character, EnemyStatusAnimation.Kind.Stun);
         yield return new WaitForSeconds(duration);
         if(character.moveTwen.IsActive() && character.moveTwen != null)
         {
             character.moveTwen.Play();
         }
+        EnemyStatusVfx.Finish(character, EnemyStatusAnimation.Kind.Stun);
     }
     public override void RemoveEffect()
     {
         StopAllCoroutines();
+        EnemyStatusVfx.Finish(character, EnemyStatusAnimation.Kind.Stun);
         if(character != null)
         {
             if(character.moveTwen != null)

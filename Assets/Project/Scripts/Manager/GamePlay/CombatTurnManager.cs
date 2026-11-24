@@ -346,6 +346,12 @@ public class CombatTurnManager : MonoBehaviour
 
         SetState(CombatTurnState.PlayerTurn);
 
+        // Hiển thị Banner Đỏ chuyển Round và thông báo lượt người chơi từ Round 2 trở đi
+        if (_currentRound >= 2 && RoundNotificationBannerUI.Instance != null)
+        {
+            RoundNotificationBannerUI.Instance.ShowRoundBanner(_currentRound);
+        }
+
         // Mở khóa lại bàn cờ Match-3 cho lượt của người chơi
         if (BoardController.instance != null)
         {
