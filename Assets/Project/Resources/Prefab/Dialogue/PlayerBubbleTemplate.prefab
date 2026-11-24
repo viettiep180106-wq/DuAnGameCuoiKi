@@ -146,8 +146,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: (Loi thoai cua phap su...)
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 1e6d6829cf23ac44e9719dca652e20ae, type: 2}
-  m_sharedMaterial: {fileID: 5762283310305567969, guid: 1e6d6829cf23ac44e9719dca652e20ae, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 4d8e6acac410c1b4287ee5eb3930ea06, type: 2}
+  m_sharedMaterial: {fileID: 7001680229830792301, guid: 4d8e6acac410c1b4287ee5eb3930ea06, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -402,8 +402,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "Ph\xE1p S\u01B0"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 1e6d6829cf23ac44e9719dca652e20ae, type: 2}
-  m_sharedMaterial: {fileID: 5762283310305567969, guid: 1e6d6829cf23ac44e9719dca652e20ae, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 4d8e6acac410c1b4287ee5eb3930ea06, type: 2}
+  m_sharedMaterial: {fileID: 7001680229830792301, guid: 4d8e6acac410c1b4287ee5eb3930ea06, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

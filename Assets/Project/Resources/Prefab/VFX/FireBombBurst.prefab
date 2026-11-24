@@ -9899,3 +9899,4 @@ MonoBehaviour:
   smokeSprite: {fileID: 21300000, guid: 37b04a4ffa624dc8aca76d7703b2eb31, type: 3}
   sparks: {fileID: 5733069751818801538}
   smoke: {fileID: 3057263428010599848}
+  visualScale: 4

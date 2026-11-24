@@ -49,10 +49,17 @@ public class RoundNotificationBannerUI : MonoBehaviour
     [SerializeField] private TMP_Text roundTitleText;
     [SerializeField] private TMP_Text roundSubText;
 
+    [Header("Font Settings")]
+    [SerializeField] private TMP_FontAsset bannerFont;
+
     [Header("Color Theme")]
     [SerializeField] private Color bannerColor = new Color(0.72f, 0.11f, 0.11f, 0.95f); // Đỏ son chiến trận
     [SerializeField] private Color titleGoldColor = new Color(1f, 0.88f, 0.25f, 1f);     // Vàng hoàng kim
     [SerializeField] private Color subTextColor = new Color(0.95f, 0.95f, 1f, 0.9f);
+
+    [Header("Duration Settings")]
+    [Tooltip("Tổng thời gian hiển thị banner (mặc định 2.5s theo yêu cầu)")]
+    [SerializeField] private float totalDisplayDuration = 2.5f;
 
     private void Awake()
     {
@@ -112,7 +119,7 @@ public class RoundNotificationBannerUI : MonoBehaviour
     }
 
     /// <summary>
-    /// Hiển thị Banner Đỏ thông báo chuyển Round và bắt đầu lượt người chơi
+    /// Hiển thị Banner Đỏ thông báo chuyển Round và bắt đầu lượt người chơi (Kéo dài 2.5s theo chuẩn GDD)
     /// </summary>
     public void ShowRoundBanner(int roundNumber, Action onComplete = null)
     {
@@ -138,31 +145,40 @@ public class RoundNotificationBannerUI : MonoBehaviour
             bannerCanvasGroup.blocksRaycasts = false;
         }
 
-        // Scale pop-in nhẹ nhàng
-        bannerRect.localScale = Vector3.one * 0.75f;
-        bannerRect.DOScale(Vector3.one * 1.05f, 0.18f).SetEase(Ease.OutBack).OnComplete(() =>
+        // Pha 1: Pop-in uy lực (0.35s)
+        bannerRect.localScale = Vector3.one * 0.80f;
+        bannerRect.DOScale(Vector3.one * 1.06f, 0.22f).SetEase(Ease.OutBack).OnComplete(() =>
         {
-            bannerRect.DOScale(Vector3.one, 0.10f);
+            bannerRect.DOScale(Vector3.one, 0.13f);
         });
 
         if (bannerCanvasGroup != null)
         {
-            bannerCanvasGroup.DOFade(1f, 0.15f);
+            bannerCanvasGroup.DOFade(1f, 0.20f);
         }
 
-        // Giữ 0.3s rồi Fade-out mượt mà
-        DOVirtual.DelayedCall(0.42f, () =>
+        // Pha 2: Hiệu ứng thở nhẹ ánh kim trong giai đoạn giữ banner (1.75s)
+        DOVirtual.DelayedCall(0.35f, () =>
+        {
+            bannerRect.DOScale(Vector3.one * 1.03f, 0.85f).SetLoops(2, LoopType.Yoyo).SetEase(Ease.InOutSine);
+        });
+
+        // Pha 3: Duy trì đủ 2.1s rồi Fade-out mượt mà trong 0.4s (Tổng thời lượng đúng 2.5s)
+        float holdDuration = Mathf.Max(1.0f, totalDisplayDuration - 0.4f);
+        DOVirtual.DelayedCall(holdDuration, () =>
         {
             if (bannerCanvasGroup != null)
             {
-                bannerCanvasGroup.DOFade(0f, 0.22f).OnComplete(() =>
+                bannerCanvasGroup.DOFade(0f, 0.40f).OnComplete(() =>
                 {
+                    bannerRect.DOKill();
                     bannerRect.localScale = Vector3.one;
                     onComplete?.Invoke();
                 });
             }
             else
             {
+                bannerRect.DOKill();
                 bannerRect.localScale = Vector3.one;
                 onComplete?.Invoke();
             }
@@ -172,6 +188,17 @@ public class RoundNotificationBannerUI : MonoBehaviour
     private void EnsureRuntimeHierarchyIfNeeded()
     {
         EnsureComponentsExist();
+
+        if (bannerFont == null)
+        {
+            bannerFont = Resources.Load<TMP_FontAsset>("Fonts/Nunito_Black_SDF");
+#if UNITY_EDITOR
+            if (bannerFont == null)
+            {
+                bannerFont = UnityEditor.AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/Project/Fonts/Nunito_Black_SDF.asset");
+            }
+#endif
+        }
 
         if (bannerBackground == null)
         {
@@ -185,19 +212,24 @@ public class RoundNotificationBannerUI : MonoBehaviour
             GameObject titleObj = new GameObject("Title", typeof(RectTransform), typeof(TextMeshProUGUI));
             titleObj.transform.SetParent(transform, false);
             var rt = titleObj.GetComponent<RectTransform>();
-            rt.anchorMin = new Vector2(0f, 0.45f);
+            rt.anchorMin = new Vector2(0f, 0.42f);
             rt.anchorMax = new Vector2(1f, 1f);
             rt.sizeDelta = Vector2.zero;
             rt.anchoredPosition = Vector2.zero;
 
             var tmp = titleObj.GetComponent<TextMeshProUGUI>();
+            if (bannerFont != null) tmp.font = bannerFont;
             tmp.fontSize = 32;
             tmp.fontStyle = FontStyles.Bold;
             tmp.color = titleGoldColor;
-            tmp.outlineWidth = 0.25f;
+            tmp.outlineWidth = 0.16f;
             tmp.outlineColor = Color.black;
             tmp.alignment = TextAlignmentOptions.Center;
             roundTitleText = tmp;
+        }
+        else if (bannerFont != null && roundTitleText.font != bannerFont)
+        {
+            roundTitleText.font = bannerFont;
         }
 
         // Tạo SubText nếu chưa có
@@ -207,18 +239,23 @@ public class RoundNotificationBannerUI : MonoBehaviour
             subObj.transform.SetParent(transform, false);
             var rt = subObj.GetComponent<RectTransform>();
             rt.anchorMin = new Vector2(0f, 0f);
-            rt.anchorMax = new Vector2(1f, 0.45f);
+            rt.anchorMax = new Vector2(1f, 0.42f);
             rt.sizeDelta = Vector2.zero;
             rt.anchoredPosition = Vector2.zero;
 
             var tmp = subObj.GetComponent<TextMeshProUGUI>();
+            if (bannerFont != null) tmp.font = bannerFont;
             tmp.fontSize = 20;
             tmp.fontStyle = FontStyles.Normal;
             tmp.color = subTextColor;
-            tmp.outlineWidth = 0.22f;
+            tmp.outlineWidth = 0.14f;
             tmp.outlineColor = Color.black;
             tmp.alignment = TextAlignmentOptions.Center;
             roundSubText = tmp;
+        }
+        else if (bannerFont != null && roundSubText.font != bannerFont)
+        {
+            roundSubText.font = bannerFont;
         }
     }
 }
