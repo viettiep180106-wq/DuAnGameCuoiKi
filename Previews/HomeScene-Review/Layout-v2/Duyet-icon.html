@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HomeScene · Duyệt bố cục và icon</title>
+<style>
+* { box-sizing: border-box }
+body { margin: 0; background: #eef2e9; color: #28362c; font: 16px system-ui,sans-serif }
+main { max-width: 1060px; margin: auto; padding: 24px }
+h1 { margin: 0 0 16px; font-size: clamp(24px,5vw,36px) }
+label { display: block; margin-bottom: 6px; font-weight: 600 }
+.controls { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px }
+button, select { background: #fff9ec; color: #392a20; border: 1px solid #a28a70; border-radius: 8px; padding: 9px 12px; font: inherit }
+button:disabled { opacity: .42 }
+.screens { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; align-items: start }
+figure { min-width: 0; margin: 0 }
+figcaption { margin-bottom: 8px; font-weight: 650 }
+.screen { position: relative; isolation: isolate; aspect-ratio: 768 / 1376; overflow: hidden; background: #ddeacc; border-radius: 9px; container-type: inline-size }
+.screen > img { position: absolute; inset: 0; width: 100%; height: 100%; display: block }
+.hud { position: absolute; inset: 0 0 auto; height: 7.16%; background: url('../start-main.png') 0 0 / 100% auto no-repeat }
+.dock { position: absolute; inset: auto 0 0; height: 10%; display: grid; grid-template-columns: repeat(5,1fr); gap: 1%; padding: 1% 1.2%; border: .55cqw solid #533328; border-radius: 3cqw 3cqw 0 0; background: linear-gradient(#b47a4d,#795037); box-shadow: inset 0 .55cqw #e1a470 }
+.tab { display: grid; position: relative; place-items: center; min-width: 0; padding: 0; overflow: hidden; border: .35cqw solid transparent; border-radius: 2cqw; background: transparent; color: white; cursor: pointer }
+.tab[aria-current="page"] { background: #f5af19; color: #452a20; border-color: #ffebaf; box-shadow: inset 0 -.65cqw #c67a12 }
+.tab:focus-visible { outline: .6cqw solid #fff1af; outline-offset: -.6cqw }
+.tab span:last-child { font-size: 2.15cqw; font-weight: 750; align-self: start; white-space: nowrap }
+.icon { display: block; width: 12.6cqw; height: 12.6cqw; background: url('../start-main.png') 0 0 / 794.07% 1422.03% no-repeat }
+.content-icons { position: absolute; inset: 0; pointer-events: none }
+.content-icon { position: absolute; display: block; border-radius: 20% }
+.content-icon > span { display: block; width: 100%; height: 100%; background-repeat: no-repeat }
+.screen > .popup-backdrop { z-index: -1 }
+.popup .hud { filter: brightness(.32) saturate(.7) }
+.popup #mockup { clip-path: inset(10.2% 3% 24.5% 3% round 2cqw) }
+[hidden] { display: none !important }
+@media (max-width: 560px) { main { padding: 12px } .screens { gap: 8px } button,select { padding: 6px } }
+.export main { width: 100vw; max-width: none; padding: 0 }
+.export main > :not(.screens), .export .screens > :first-child, .export figcaption { display: none }
+.export .screens { display: block }
+.export .screen { border-radius: 0 }
+</style>
+</head>
+<body>
+<main>
+<h1>HomeScene · Duyệt bố cục và icon</h1>
+<label for="scene">Màn hình</label>
+<div class="controls">
+<button id="prev" type="button">Trước</button>
+<select id="scene"></select>
+<button id="next" type="button">Tiếp</button>
+</div>
+<div class="screens">
+<figure>
+<figcaption>Ảnh bố cục gốc</figcaption>
+<div class="screen"><img id="reference" alt="Ảnh bố cục gốc"></div>
+</figure>
+<figure>
+<figcaption id="version">Mockup có icon dùng chung</figcaption>
+<div id="preview" class="screen">
+<img id="popup-backdrop" class="popup-backdrop" alt="" hidden>
+<img id="mockup" alt="Mockup giao diện">
+<div id="content-icons" class="content-icons" aria-hidden="true"></div>
+<div id="hud" class="hud" role="img" aria-label="HUD chung gồm avatar, xu, kim cương và thể lực"></div>
+<nav id="dock" class="dock" aria-label="Điều hướng HomeScene"></nav>
+</div>
+</figure>
+</div>
+</main>
+<script>
+const scenes = [
+  ["Trang chủ", "start-main", "start_main", 2],
+  ["Popup tân thủ", "start-iap", "start_iap_popup", 2],
+  ["Gói nạp và tiền tệ", "shop-currency", "shop_currency", 0],
+  ["Gacha", "shop-gacha", "shop_gacha", 0],
+  ["Nhân vật", "upgrade-character", "upgrade_character", 1],
+  ["Trang phục", "upgrade-costume", "upgrade_costume", 1],
+  ["Mua pet", "upgrade-pet-buy", "upgrade_pet_buy", 1],
+  ["Vườn thú và đổi slot", "upgrade-pet-garden", "upgrade_pet_garden", 1],
+  ["Skill Stone", "upgrade-skill-stone", "upgrade_skill_stone", 1],
+  ["Tháp Ngũ Hành", "dungeon-tower", "phoban_tower", 3],
+  ["Đấu trường", "dungeon-arena", "phoban_arena", 3],
+  ["Nhiệm vụ", "achievement-missions", "achievement_missions", 4],
+  ["Xếp hạng vùng", "achievement-ranking", "achievement_ranking", 4],
+];
+
+// Each tab uses the same crop from the approved Start artwork on every screen.
+const tabs = [
+  { label: "Cửa hàng", first: 2, box: [49, 1538, 126, 110], outline: "13,1 88,1 100,44 96,57 94,68 99,73 99,97 1,100 1,87 9,80 8,52 0,42" },
+  { label: "Nâng cấp", first: 4, box: [228, 1533, 113, 119], outline: "2,18 49,1 96,16 99,43 92,73 70,91 49,100 25,86 9,68 3,44" },
+  { label: "Trang chủ", first: 0, box: [392, 1523, 150, 123], outline: "9,82 10,59 18,51 10,44 17,38 21,7 38,7 45,18 50,0 61,5 79,24 80,7 89,8 90,39 99,51 90,63 90,77 100,85 100,96 6,100 0,91" },
+  { label: "Phó bản", first: 9, box: [596, 1534, 118, 117], outline: "5,7 85,4 90,17 88,26 91,46 89,61 94,70 99,90 98,100 3,97 4,83 2,65 6,48 5,31" },
+  { label: "Thành tựu", first: 11, box: [754, 1536, 144, 112], outline: "13,10 81,4 87,11 95,16 98,32 87,53 97,59 100,74 93,86 70,92 68,100 30,100 28,91 10,86 0,72 3,55 11,48 4,39 4,25" },
+];
+
+const select = document.querySelector("#scene");
+const reference = document.querySelector("#reference");
+const mockup = document.querySelector("#mockup");
+const caption = document.querySelector("#version");
+const hud = document.querySelector("#hud");
+const dock = document.querySelector("#dock");
+const preview = document.querySelector("#preview");
+const popupBackdrop = document.querySelector("#popup-backdrop");
+const contentIcons = document.querySelector("#content-icons");
+const prev = document.querySelector("#prev");
+const next = document.querySelector("#next");
+
+// Source and destination boxes use the same 320 × 573 review grid.
+const artwork = {
+  gift: ["../start-main.png", 10, 59, 40, 37],
+  festival: ["../start-main.png", 9, 118, 43, 32],
+  pass: ["../start-main.png", 5, 176, 47, 33],
+  wheel: ["../start-main.png", 269, 56, 42, 42],
+  pig: ["../start-main.png", 264, 115, 47, 39],
+  collapse: ["../start-main.png", 280, 186, 29, 30],
+  coin: ["../start-main.png", 88, 7, 26, 27],
+  gem: ["../start-main.png", 171, 8, 23, 25],
+  energy: ["../start-main.png", 246, 7, 22, 27],
+  fox: ["upgrade-pet-buy.png", 23, 226, 53, 36],
+  metal: ["../upgrade-skill-stone.png", 41, 129, 30, 28],
+  wood: ["../upgrade-skill-stone.png", 96, 127, 28, 31],
+  water: ["../upgrade-skill-stone.png", 148, 128, 28, 30],
+  fire: ["../upgrade-skill-stone.png", 199, 129, 28, 29],
+  earth: ["../upgrade-skill-stone.png", 253, 129, 26, 30],
+};
+const elements = [
+  ["metal", "#704b2c"],
+  ["wood", "#246343"],
+  ["water", "#54382d"],
+  ["fire", "#6b3d31"],
+  ["earth", "#69503a"],
+];
+const silhouettes = {
+  coin: "ellipse(46% 48% at 50% 49%)",
+  gem: "polygon(27% 3%,66% 4%,94% 32%,83% 78%,31% 99%,7% 74%,4% 38%)",
+  energy: "polygon(26% 4%,98% 4%,72% 37%,98% 38%,10% 99%,22% 66%,0% 66%,10% 46%)",
+};
+const contentByScene = {
+  0: [
+    ["gift", 10, 54, 30, 27, "#473021"],
+    ["festival", 10, 101, 30, 25, "#473021"],
+    ["pass", 10, 146, 31, 23, "#473021"],
+    ["wheel", 280, 53, 30, 30, "#473021"],
+    ["pig", 280, 101, 30, 25, "#473021"],
+    ["collapse", 283, 148, 25, 25, "#473021"],
+  ],
+  1: [
+    ["gem", 181, 234, 36, 35, "#fbe3ad"],
+    ["coin", 180, 282, 40, 35, "#fbe3ad"],
+  ],
+  7: [["fox", 23, 111, 32, 27, "#6e4495"]],
+  8: [
+    ["metal", 15, 85, 12, 14, "#593a27"],
+    ["wood", 75, 85, 12, 14, "#2d8157"],
+    ["water", 135, 85, 12, 14, "#593a27"],
+    ["fire", 195, 85, 12, 14, "#593a27"],
+    ["earth", 255, 85, 12, 14, "#593a27"],
+  ],
+  9: [
+    ...elements.map(([name, color], index) => [name, 22 + 61 * index, 96, 33, 31, color]),
+    ["energy", 151, 396, 9, 10, "#9c382a"],
+  ],
+};
+
+function drawContentIcons(index) {
+  const placements = contentByScene[index] || [];
+  contentIcons.replaceChildren(...placements.map(([name, x, y, width, height, color]) => {
+    const [src, sx, sy, sw, sh] = artwork[name];
+    const icon = document.createElement("span");
+    icon.className = "content-icon";
+    const graphic = document.createElement("span");
+    Object.assign(icon.style, {
+      left: `${x / 3.2}%`,
+      top: `${100 * y / 573}%`,
+      width: `${width / 3.2}%`,
+      height: `${100 * height / 573}%`,
+      backgroundColor: color,
+    });
+    Object.assign(graphic.style, {
+      backgroundImage: `url('${src}')`,
+      backgroundSize: `${32000 / sw}% ${57300 / sh}%`,
+      backgroundPosition: `${100 * sx / (320 - sw)}% ${100 * sy / (573 - sh)}%`,
+      clipPath: silhouettes[name] || "inset(0 round 18%)",
+    });
+    icon.append(graphic);
+    return icon;
+  }));
+}
+
+scenes.forEach(([name], index) => select.add(new Option(`${String(index + 1).padStart(2, "0")} · ${name}`, index)));
+const buttons = tabs.map(({ label, first, box: [x, y, width, height], outline }) => {
+  const tab = document.createElement("button");
+  tab.type = "button";
+  tab.className = "tab";
+  tab.addEventListener("click", () => show(first));
+  const icon = document.createElement("span");
+  icon.className = "icon";
+  icon.setAttribute("aria-hidden", "true");
+  icon.style.width = `${82 * width / 937}cqw`;
+  icon.style.height = `${82 * height / 937}cqw`;
+  icon.style.backgroundSize = `${100 * 937 / width}% ${100 * 1678 / height}%`;
+  icon.style.backgroundPosition = `${100 * x / (937 - width)}% ${100 * y / (1678 - height)}%`;
+  icon.style.clipPath = `polygon(${outline.split(" ").map(point => point.split(",").map(value => value + "%").join(" ")).join(", ")})`;
+  const text = document.createElement("span");
+  text.textContent = label;
+  tab.append(icon, text);
+  dock.append(tab);
+  return tab;
+});
+
+function show(index) {
+  const [name, file, ref, active] = scenes[index];
+  select.value = index;
+  reference.src = `Tham-chieu/scene${String(index + 1).padStart(2, "0")}_${ref}.png`;
+  mockup.onerror = () => {
+    mockup.onerror = null;
+    mockup.src = `../${file}.png`;
+    contentIcons.replaceChildren();
+    caption.textContent = "Bản trước · đã đồng nhất HUD và dock";
+  };
+  mockup.src = `${file}.png`;
+  drawContentIcons(index);
+  mockup.alt = name;
+  caption.textContent = "Bản sửa · HUD và dock dùng chung";
+  buttons.forEach((button, tab) => {
+    if (tab === active) button.setAttribute("aria-current", "page");
+    else button.removeAttribute("aria-current");
+  });
+  const isPopup = index === 1;
+  preview.classList.toggle("popup", isPopup);
+  popupBackdrop.hidden = !isPopup;
+  if (isPopup) popupBackdrop.src = reference.src;
+  dock.hidden = isPopup;
+  prev.disabled = index === 0;
+  next.disabled = index === scenes.length - 1;
+}
+
+select.addEventListener("change", () => show(Number(select.value)));
+prev.addEventListener("click", () => show(Number(select.value) - 1));
+next.addEventListener("click", () => show(Number(select.value) + 1));
+const parameters = new URLSearchParams(location.search);
+document.body.classList.toggle("export", parameters.has("export"));
+const requested = Number(parameters.get("scene"));
+show(Number.isInteger(requested) && requested >= 1 && requested <= scenes.length ? requested - 1 : 0);
+</script>
+</body>
+</html>
