@@ -12,13 +12,15 @@ public class DialogueDatabaseSO : ScriptableObject
         {
             if (_instance == null)
             {
-                _instance = Resources.Load<DialogueDatabaseSO>("Database/DialogueDatabase");
-#if UNITY_EDITOR
-                if (_instance == null)
+                var mgr = GameDataManager.Instance;
+                if (mgr != null && mgr.DialogueDatabase != null)
                 {
-                    _instance = UnityEditor.AssetDatabase.LoadAssetAtPath<DialogueDatabaseSO>("Assets/Project/Resources/Database/DialogueDatabase.asset");
+                    _instance = mgr.DialogueDatabase;
                 }
-#endif
+                else
+                {
+                    _instance = Resources.Load<DialogueDatabaseSO>("Database/DialogueDatabase");
+                }
             }
             return _instance;
         }

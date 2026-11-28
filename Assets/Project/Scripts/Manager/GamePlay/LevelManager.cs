@@ -21,6 +21,12 @@ public class LevelManager : MonoBehaviour
     private void Awake()
     {
         instance = this;
+        var mgr = GameDataManager.Instance;
+        if (mgr != null && mgr.CurrentLevelData != null)
+        {
+            levelData = mgr.CurrentLevelData;
+        }
+
         if (levelData == null)
         {
             levelData = Resources.Load<LevelDataSO>("ScriptObject/LevelData/LevelDataSO_lv_001");

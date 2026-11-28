@@ -219,8 +219,7 @@ public class SkillIce : SkillPassive
         enemy.TakeDamage(rawDmg, isCrit, GetElementType());
         if (useDefaultVfx)
             EnemyBase.SpawnSkillVFX(position, ElementType.Water);
-        if (Camera.main != null)
-            Camera.main.transform.DOShakePosition(0.12f, new Vector3(0.22f, 0.22f, 0f), 10, 90f, false, true);
+        TriggerCameraShake(0.12f, new Vector3(0.22f, 0.22f, 0f), 10);
         ApplyIceCrowdControl(enemy, slowChance, freezeChance);
         return true;
     }

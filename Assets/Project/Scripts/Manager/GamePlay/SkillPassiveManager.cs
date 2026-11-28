@@ -175,6 +175,13 @@ public class SkillPassiveManager : MonoBehaviour
     {
         if (_skillContainerPrefab != null) return;
 
+        var mgr = GameDataManager.Instance;
+        if (mgr != null && mgr.SkillContainerPrefab != null)
+        {
+            _skillContainerPrefab = mgr.SkillContainerPrefab;
+            return;
+        }
+
         _skillContainerPrefab = Resources.Load<GameObject>("Prefab/Base/Skill/SkillContainer");
 
         if (_skillContainerPrefab == null)
@@ -222,19 +229,24 @@ public class SkillPassiveManager : MonoBehaviour
         _nextAttackFireTime = Time.time + ATTACK_FIRE_INTERVAL;
     }
 
-    /// <summary>
-    /// Kích hoạt chuỗi đòn tấn công: Nếu quái đã trong tầm đánh thì bắn ngay, nếu chưa thì tích lũy vào hàng đợi
-    /// </summary>
-    public void ExecuteInstantMatchAttacks(HashSet<Vector2Int> listMatch, List<List<SlotStoneBase>> grid)
-    {
-        if (listMatch == null || grid == null) return;
-        if (GameManager.instance != null && !GameManager.instance.IsWaveCombatActive) return;
+    private readonly List<QueuedMatchAttack> _instantMatchBatchBuffer = new List<QueuedMatchAttack>(8);
 
-        // Nếu CombatTurnManager đang chạy: Chỉ cho phép tung chiêu trong lượt của người chơi
-        if (CombatTurnManager.Instance != null && !CombatTurnManager.Instance.IsPlayerTurn) return;
+    /// <summary>
+    /// Đọc bàn cờ và đóng gói danh sách đòn match (Zero-GC) trước khi các viên đá bị xóa khỏi grid.
+    /// Trả về tổng số viên đá được match trong lượt (dùng để kiểm tra điều kiện >= 6).
+    /// </summary>
+    public int PrepareMatchAttacks(HashSet<Vector2Int> listMatch, List<List<SlotStoneBase>> grid, List<QueuedMatchAttack> outBatch)
+    {
+        if (outBatch == null) return 0;
+        outBatch.Clear();
+
+        if (listMatch == null || grid == null) return 0;
+        if (GameManager.instance != null && !GameManager.instance.IsWaveCombatActive) return 0;
+        if (CombatTurnManager.Instance != null && !CombatTurnManager.Instance.IsPlayerTurn) return 0;
 
         _cachedMatchCounts.Clear();
         _matchOrderBuffer.Clear();
+        int totalMatchedStones = 0;
 
         foreach (Vector2Int coord in listMatch)
         {
@@ -245,6 +257,7 @@ public class SkillPassiveManager : MonoBehaviour
                 if (slot != null && slot.GetStone() != null)
                 {
                     TypeStone type = slot.GetStone().nameStone;
+                    totalMatchedStones++;
                     if (_cachedMatchCounts.ContainsKey(type))
                     {
                         _cachedMatchCounts[type]++;
@@ -258,15 +271,39 @@ public class SkillPassiveManager : MonoBehaviour
             }
         }
 
-        // Tấn công tức thì (Instant Attack) theo chuẩn GDD:
-        // - Bỏ hoàn toàn Action Queue delay
-        // - Tiêu hao đúng 5 Energy / 1 skill
         for (int i = 0; i < _matchOrderBuffer.Count; i++)
         {
             TypeStone type = _matchOrderBuffer[i];
-            int count = _cachedMatchCounts[type];
+            outBatch.Add(new QueuedMatchAttack(type, _cachedMatchCounts[type]));
+        }
 
-            ExecuteSingleAttack(type, count);
+        return totalMatchedStones;
+    }
+
+    /// <summary>
+    /// Thực thi toàn bộ các kỹ năng trong batch đã chuẩn bị trước đó (sau khi zoom camera xong).
+    /// </summary>
+    public void ExecutePreparedMatchBatch(List<QueuedMatchAttack> batch)
+    {
+        if (batch == null || batch.Count == 0) return;
+        if (GameManager.instance != null && !GameManager.instance.IsWaveCombatActive) return;
+        if (CombatTurnManager.Instance != null && !CombatTurnManager.Instance.IsPlayerTurn) return;
+
+        for (int i = 0; i < batch.Count; i++)
+        {
+            ExecuteSingleAttack(batch[i].StoneType, batch[i].MatchCount);
+        }
+    }
+
+    /// <summary>
+    /// Kích hoạt chuỗi đòn tấn công: Nếu quái đã trong tầm đánh thì bắn ngay, nếu chưa thì tích lũy vào hàng đợi
+    /// </summary>
+    public void ExecuteInstantMatchAttacks(HashSet<Vector2Int> listMatch, List<List<SlotStoneBase>> grid)
+    {
+        int total = PrepareMatchAttacks(listMatch, grid, _instantMatchBatchBuffer);
+        if (total > 0)
+        {
+            ExecutePreparedMatchBatch(_instantMatchBatchBuffer);
         }
     }
 

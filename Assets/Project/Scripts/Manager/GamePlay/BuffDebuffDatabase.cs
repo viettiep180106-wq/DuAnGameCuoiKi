@@ -39,13 +39,15 @@ public class BuffDebuffDatabase : ScriptableObject
         {
             if (_instance == null)
             {
-                _instance = Resources.Load<BuffDebuffDatabase>("Database/BuffDebuffDatabase");
-#if UNITY_EDITOR
-                if (_instance == null)
+                var mgr = GameDataManager.Instance;
+                if (mgr != null && mgr.BuffDebuffDatabase != null)
                 {
-                    _instance = UnityEditor.AssetDatabase.LoadAssetAtPath<BuffDebuffDatabase>("Assets/Project/Resources/Database/BuffDebuffDatabase.asset");
+                    _instance = mgr.BuffDebuffDatabase;
                 }
-#endif
+                else
+                {
+                    _instance = Resources.Load<BuffDebuffDatabase>("Database/BuffDebuffDatabase");
+                }
             }
             return _instance;
         }

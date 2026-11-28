@@ -1,0 +1,97 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4274777926167029741
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2496618723364367727}
+  - component: {fileID: 8230263134757894035}
+  m_Layer: 0
+  m_Name: GameDataManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2496618723364367727
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4274777926167029741}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8230263134757894035
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4274777926167029741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a74b79dec6e0ca429b8ae6fc943fe15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameDataManager
+  levelCurrent: 0
+  levelDataArray: []
+  buffDebuffDatabase: {fileID: 11400000, guid: c49f17e2484ae6147b6a16a2f407a203, type: 2}
+  dialogueDatabase: {fileID: 11400000, guid: 3d10c7e7372bcde4c8afa130df77e00f, type: 2}
+  enemyDatabase: {fileID: 11400000, guid: 5fb586074e8613a45af69a940f66abd1, type: 2}
+  defaultPlayerData: {fileID: 11400000, guid: 09e2d1d222bc5f147b2a20eede9e4781, type: 2}
+  bannerFont: {fileID: 11400000, guid: 4d8e6acac410c1b4287ee5eb3930ea06, type: 2}
+  skillContainerPrefab: {fileID: 2000000000000000001, guid: 58e92cb1f04369a4c84a8677c7704b2a, type: 3}
+  enemyProjectilePrefab: {fileID: 7650939085847864197, guid: dc7ef62635ee62d4ca78db4bdaf0b485, type: 3}
+  defaultEnemyPrefab: {fileID: 208695350607123520, guid: 7fcf6c88881b6a842930284a3432163e, type: 3}
+  stonePrefabs:
+  - {fileID: 1882609295449643171, guid: 49e2f15671ab0da458528423ab518658, type: 3}
+  - {fileID: 1882609295449643171, guid: 664fd1245de38cd43bf3487dc33c564a, type: 3}
+  - {fileID: 1882609295449643171, guid: 02ddf6e4942fe2e428ac32d086b62456, type: 3}
+  - {fileID: 1882609295449643171, guid: d0b544177452ddb49970900ca7091cd0, type: 3}
+  - {fileID: 1882609295449643171, guid: 19be217528f024747a4b8cca244569f8, type: 3}
+  - {fileID: 1882609295449643171, guid: 2c788024c444bb64a82a9f7e204ffd5c, type: 3}
+  - {fileID: 1882609295449643171, guid: 39a3b69e7f50bfd49b9de8d36809ed4e, type: 3}
+  - {fileID: 1882609295449643171, guid: 3651aecd2747bfa4f9ccb6c23537cb1d, type: 3}
+  enemyAttackVfxArt: {fileID: 11400000, guid: a95624b170b2c9c4a9cbc0592c97b6d1, type: 2}
+  enemySkillVfxPrefabs:
+  - {fileID: 3425342508397562106, guid: 15ebc899adbc53a4180911a7ce5fd45e, type: 3}
+  - {fileID: 56698663631015839, guid: 304cf68274dfde543991d381bb171e42, type: 3}
+  - {fileID: 1860127793957926892, guid: 9462fd53daef95a45ac7b1816fde8c3e, type: 3}
+  - {fileID: 8403465292228824606, guid: a39539b4f3540bd45848e66c8acb00eb, type: 3}
+  - {fileID: 7600098023970260554, guid: 828951e387c360f419afdc970a62e4df, type: 3}
+  - {fileID: 7703777137476805540, guid: e07850a5edd1225478496e07943927ab, type: 3}
+  matchStoneVfxPrefabs:
+  - {fileID: 5068089388530021705, guid: 2cb045cbdec8cf546979ce485727e2e9, type: 3}
+  - {fileID: 6805519449643372359, guid: 9dfbef2d957d8ad4db2079b346d1a913, type: 3}
+  - {fileID: 4759439763793214233, guid: bd9c83540b2527045a5c34e070d7433d, type: 3}
+  - {fileID: 7103651180232581739, guid: 846c1e5c45d78224e93fba492f06e348, type: 3}
+  - {fileID: 6084318297588677474, guid: 1e47d068617c55e4d8eba2144417050c, type: 3}
+  - {fileID: 2353012183530044742, guid: e94ed32a5fd487045bd652764c2a8f75, type: 3}
+  - {fileID: 1115179828917746960, guid: 6cbd20f07af3d2c4ba47379afe185c9e, type: 3}
+  - {fileID: 2501478636190533487, guid: 7db079104476e6f439c88c9ade5c05f2, type: 3}
+  - {fileID: 3218608788654539265, guid: 7aa62ce3e8b050c4ab87053c81adde55, type: 3}
+  - {fileID: 4576865034299283906, guid: c8c2b887a48d49f45906309dfe2aee32, type: 3}
+  waterSpriteShader: {fileID: 4800000, guid: 7f8e693eb5c54dac88ecc1c79385bf62, type: 3}
+  earthCommonAtlas: {fileID: 2800000, guid: bbf9792666b843b1adf2b697c3bf061d, type: 3}
+  earthBossesAtlas: {fileID: 2800000, guid: fea84cd259ae4096897fc4366bb51aa9, type: 3}
+  metalCommonAtlas: {fileID: 2800000, guid: 901ef1f065a845cca3d836916456603e, type: 3}
+  metalBossesAtlas: {fileID: 2800000, guid: 6caa7dd4bf004efba67a3474f0d5c4ee, type: 3}
+  waterCommonAtlas: {fileID: 2800000, guid: ca0494843b0d4743954668622fc3afa2, type: 3}
+  waterBossesAtlas: {fileID: 2800000, guid: 79575ed09b5f432789ec2732133dec8c, type: 3}
+  woodCommonAtlas: {fileID: 2800000, guid: aacee3b96f0a4bda9e1935e22edd3d35, type: 3}
+  woodBossesAtlas: {fileID: 2800000, guid: 954916f25bc84b02bdf5543c6102465a, type: 3}
+  enemyStatusAtlas: {fileID: 2800000, guid: 10bbc8abfbecb5b469594ad3a74a23e0, type: 3}
+  enemyStatusBurnShader: {fileID: 4800000, guid: df2e00b5b37476d4baaebcc48fbea998, type: 3}
+  homeSceneName: HomeScene
+  mainSceneName: MainScene

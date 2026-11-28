@@ -191,13 +191,15 @@ public class RoundNotificationBannerUI : MonoBehaviour
 
         if (bannerFont == null)
         {
-            bannerFont = Resources.Load<TMP_FontAsset>("Fonts/Nunito_Black_SDF");
-#if UNITY_EDITOR
-            if (bannerFont == null)
+            var mgr = GameDataManager.Instance;
+            if (mgr != null && mgr.BannerFont != null)
             {
-                bannerFont = UnityEditor.AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/Project/Fonts/Nunito_Black_SDF.asset");
+                bannerFont = mgr.BannerFont;
             }
-#endif
+            else
+            {
+                bannerFont = Resources.Load<TMP_FontAsset>("Fonts/Nunito_Black_SDF");
+            }
         }
 
         if (bannerBackground == null)

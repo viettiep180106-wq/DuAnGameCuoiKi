@@ -141,7 +141,7 @@ public class SkillFire : SkillPassive
         }
 
         // Hiệu ứng nổ phình to kèm VFX Lửa rực rỡ
-        Camera.main?.transform.DOShakePosition(0.18f, new Vector3(0.25f, 0.25f, 0f), 10, 90f, false, true);
+        TriggerCameraShake(0.18f, new Vector3(0.25f, 0.25f, 0f), 10);
         if (burstPrefab)
         {
             var pool = ObjectPoolingManager.Instance;

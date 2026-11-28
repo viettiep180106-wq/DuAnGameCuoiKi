@@ -33,13 +33,44 @@ internal sealed class EnemyStatusVfx : MonoBehaviour, EnemyStatusAnimation.ICanv
     private int order;
     private float depth;
 
+    internal static void PreloadAssets()
+    {
+        EnsureAtlasLoaded();
+        EnsureBurnMaterialLoaded();
+    }
+
+    private static Texture2D EnsureAtlasLoaded()
+    {
+        if (!atlas)
+        {
+            var mgr = GameDataManager.Instance;
+            atlas = (mgr != null && mgr.EnemyStatusAtlas != null)
+                ? mgr.EnemyStatusAtlas
+                : Resources.Load<Texture2D>(EnemyStatusAnimation.AtlasResource);
+        }
+        return atlas;
+    }
+
+    private static Material EnsureBurnMaterialLoaded()
+    {
+        if (!burnMaterial)
+        {
+            var mgr = GameDataManager.Instance;
+            var shader = (mgr != null && mgr.EnemyStatusBurnShader != null)
+                ? mgr.EnemyStatusBurnShader
+                : Resources.Load<Shader>(EnemyStatusAnimation.BurnShaderResource);
+            if (shader && shader.isSupported)
+                burnMaterial = new Material(shader) { hideFlags = HideFlags.HideAndDontSave };
+        }
+        return burnMaterial;
+    }
+
     internal static void Show(BaseCharacter character, Kind kind)
     {
         if (!Application.isPlaying || character is not EnemyBase target || !target ||
             !target.isActiveAndEnabled || target.CurrentHP <= 0f) return;
 
-        if (!atlas) atlas = Resources.Load<Texture2D>(EnemyStatusAnimation.AtlasResource);
-        if (!atlas) return;
+        if (!EnsureAtlasLoaded()) return;
         if (!target.TryGetComponent(out EnemyStatusVfx visual))
             visual = target.gameObject.AddComponent<EnemyStatusVfx>();
         visual.enemy = target;
@@ -151,13 +182,7 @@ internal sealed class EnemyStatusVfx : MonoBehaviour, EnemyStatusAnimation.ICanv
 
     public void DrawFlames(Vector2 feet, float unit, Vector4 motion)
     {
-        if (!burnMaterial)
-        {
-            var shader = Resources.Load<Shader>(EnemyStatusAnimation.BurnShaderResource);
-            if (shader && shader.isSupported)
-                burnMaterial = new Material(shader) { hideFlags = HideFlags.HideAndDontSave };
-        }
-        if (!burnMaterial)
+        if (!EnsureBurnMaterialLoaded())
         {
             Draw(EnemyStatusAnimation.BurnFallback, feet, unit * .44f, motion.z, 0f, true, 1f);
             return;

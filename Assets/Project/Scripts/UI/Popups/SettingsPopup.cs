@@ -78,7 +78,12 @@ public class SettingsPopup : MonoBehaviour
     private void ReturnToHome()
     {
         Time.timeScale = 1f;
-        // Chuyển về HomeScene nếu có trong BuildSettings, hoặc tải lại scene 0
+        if (GameDataManager.HasInstance)
+        {
+            GameDataManager.Instance.LoadHomeScene();
+            return;
+        }
+
         if (Application.CanStreamedLevelBeLoaded("HomeScene"))
         {
             SceneManager.LoadScene("HomeScene");

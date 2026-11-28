@@ -53,6 +53,12 @@ public class PausePopup : MonoBehaviour
     public void RestartGame()
     {
         Time.timeScale = 1f;
+        if (GameDataManager.HasInstance)
+        {
+            GameDataManager.Instance.RestartCurrentScene();
+            return;
+        }
+
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 

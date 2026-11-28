@@ -96,13 +96,15 @@ public class EnemyDatabaseSO : ScriptableObject
         {
             if (_instance == null)
             {
-                _instance = Resources.Load<EnemyDatabaseSO>("Database/EnemyDatabase");
-#if UNITY_EDITOR
-                if (_instance == null)
+                var mgr = GameDataManager.Instance;
+                if (mgr != null && mgr.EnemyDatabase != null)
                 {
-                    _instance = UnityEditor.AssetDatabase.LoadAssetAtPath<EnemyDatabaseSO>("Assets/Project/Resources/Database/EnemyDatabase.asset");
+                    _instance = mgr.EnemyDatabase;
                 }
-#endif
+                else
+                {
+                    _instance = Resources.Load<EnemyDatabaseSO>("Database/EnemyDatabase");
+                }
             }
             return _instance;
         }

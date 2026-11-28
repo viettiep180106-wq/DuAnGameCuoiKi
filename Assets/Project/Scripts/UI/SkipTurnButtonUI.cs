@@ -162,6 +162,9 @@ public class SkipTurnButtonUI : MonoBehaviour
 
     public void OnSkipButtonClicked()
     {
+        if (BoardController.instance != null && BoardController.instance.IsResolvingMatch) return;
+        if (CombatCameraController.Instance != null && CombatCameraController.Instance.IsZooming) return;
+
         if (CombatTurnManager.Instance != null && CombatTurnManager.Instance.IsPlayerTurn)
         {
             // Hiệu ứng click nén nhẹ

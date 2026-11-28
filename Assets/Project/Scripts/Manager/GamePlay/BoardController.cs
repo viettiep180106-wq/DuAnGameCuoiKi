@@ -51,6 +51,16 @@ public class BoardController : MonoBehaviour
     private readonly MatchStoneVfxGraph matchVfxGraph = new();
     private MatchStoneVfx matchVfx;
 
+    [Header("----Combat Feel (Match >= 6 Zoom)----")]
+    [SerializeField] private int bigMatchZoomThreshold = 6;
+    [SerializeField] private float bigMatchZoomDuration = 1.0f;
+    [SerializeField] private bool zoomOnCascadeMatch = false;
+
+    private bool _isResolvingMatch = false;
+    private readonly List<SkillPassiveManager.QueuedMatchAttack> _pendingMatchBatchBuffer = new List<SkillPassiveManager.QueuedMatchAttack>(8);
+
+    public bool IsResolvingMatch => _isResolvingMatch;
+
     private void Awake()
     {  
         instance = this;
@@ -154,12 +164,20 @@ public class BoardController : MonoBehaviour
     private void OnDisable()
     {
         OnSwapStone -= Trans;
+        _isResolvingMatch = false;
+        _pendingMatchBatchBuffer.Clear();
         if (matchVfx) matchVfx.Clear();
     }
 
     public void LoadPrefabFromResource()
     {
         prefabs.Clear();
+        var mgr = GameDataManager.Instance;
+        if (mgr != null && mgr.TryCopyStonePrefabsTo(prefabs))
+        {
+            return;
+        }
+
         string path = "Prefab/Base/Stone";
         StoneBase[] request = Resources.LoadAll<StoneBase>(path);
         foreach (StoneBase stone in request)
@@ -210,6 +228,8 @@ public class BoardController : MonoBehaviour
 
     public void ClearOldBoard()
     {
+        _isResolvingMatch = false;
+        _pendingMatchBatchBuffer.Clear();
         if (matchVfx) matchVfx.Clear();
         if (grid != null)
         {
@@ -562,10 +582,11 @@ public class BoardController : MonoBehaviour
         return stone;
     }
 
-    public IEnumerator MatchAllBoard() => MatchAllBoard(null);
+    public IEnumerator MatchAllBoard() => MatchAllBoard(null, false);
 
-    private IEnumerator MatchAllBoard(Vector2Int? origin)
+    private IEnumerator MatchAllBoard(Vector2Int? origin, bool isCascade = false)
     {
+        _isResolvingMatch = true;
         HashSet<Vector2Int> listMatch = new HashSet<Vector2Int>();
         matchVfxGraph.Clear();
         for (int x = 0; x < cols; x++)
@@ -609,22 +630,22 @@ public class BoardController : MonoBehaviour
 
         if (listMatch.Count == 0)
         {
+            _isResolvingMatch = false;
             canTrans = true;
             yield break;
         }
-        else
+
+        int totalMatchedStones = listMatch.Count;
+        _pendingMatchBatchBuffer.Clear();
+        if (SkillPassiveManager.instance != null)
         {
-            if (SkillPassiveManager.instance != null)
+            try
             {
-                try
-                {
-                    // Tấn công ngay lập tức theo đúng thứ tự match stone, không chờ hàng đợi nữa!
-                    SkillPassiveManager.instance.ExecuteInstantMatchAttacks(listMatch, grid);
-                }
-                catch (System.Exception ex)
-                {
-                    Debug.LogError($"[BoardController] Lỗi khi thực thi tấn công kỹ năng: {ex.Message}");
-                }
+                totalMatchedStones = SkillPassiveManager.instance.PrepareMatchAttacks(listMatch, grid, _pendingMatchBatchBuffer);
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"[BoardController] Lỗi khi chuẩn bị tấn công kỹ năng: {ex.Message}");
             }
         }
 
@@ -679,7 +700,43 @@ public class BoardController : MonoBehaviour
         }
 
         yield return new WaitForSeconds(maxTime + 0.05f);
-        StartCoroutine(MatchAllBoard());
+
+        bool shouldPlayZoom = totalMatchedStones >= bigMatchZoomThreshold
+            && (!isCascade || zoomOnCascadeMatch)
+            && CombatCameraController.Instance != null;
+
+        if (shouldPlayZoom)
+        {
+            Player activePlayer = SkillPassiveManager.instance != null
+                ? SkillPassiveManager.instance.GetActivePlayer()
+                : (Player.Instance != null ? Player.Instance : FindFirstObjectByType<Player>());
+            if (activePlayer != null)
+            {
+                yield return CombatCameraController.Instance.PlayFocusZoomRoutine(activePlayer.transform, bigMatchZoomDuration);
+            }
+        }
+
+        if (GameManager.instance != null && !GameManager.instance.IsWaveCombatActive)
+        {
+            _pendingMatchBatchBuffer.Clear();
+            _isResolvingMatch = false;
+            yield break;
+        }
+
+        if (SkillPassiveManager.instance != null && _pendingMatchBatchBuffer.Count > 0)
+        {
+            try
+            {
+                SkillPassiveManager.instance.ExecutePreparedMatchBatch(_pendingMatchBatchBuffer);
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"[BoardController] Lỗi khi thực thi tấn công kỹ năng: {ex.Message}");
+            }
+            _pendingMatchBatchBuffer.Clear();
+        }
+
+        StartCoroutine(MatchAllBoard(null, true));
     }
 
     public void Trans(Direction type, StoneBase stone)
@@ -701,6 +758,7 @@ public class BoardController : MonoBehaviour
         if (!CheckTrans(type, stone.GetOriginIndex())) return;
 
         canTrans = false;
+        _isResolvingMatch = true;
         StartCoroutine(TryMatch(type, stone));
     }
 
@@ -722,6 +780,7 @@ public class BoardController : MonoBehaviour
     public void UnlockBoardInteractions()
     {
         canTrans = true;
+        _isResolvingMatch = false;
         if (GameManager.instance != null && GameManager.instance.LockBoard != null)
         {
             GameManager.instance.LockBoard.gameObject.SetActive(false);
@@ -755,6 +814,7 @@ public class BoardController : MonoBehaviour
             {
                 stoneB.transform.DOShakePosition(0.2f, 6f);
             }
+            _isResolvingMatch = false;
             canTrans = true;
             yield break;
         }
@@ -772,13 +832,14 @@ public class BoardController : MonoBehaviour
             {
                 CombatTurnManager.Instance.TryConsumeMatchEnergy();
             }
-            StartCoroutine(MatchAllBoard(firstStoneMatched ? IndexB : Index));
+            StartCoroutine(MatchAllBoard(firstStoneMatched ? IndexB : Index, false));
         }
         else
         {
             TrySwap(stone, stoneB);
             grid[Index.x][Index.y].SwapStoneToSlot(grid[IndexB.x][IndexB.y]);
             yield return new WaitForSeconds(0.35f);
+            _isResolvingMatch = false;
             canTrans = true;
         }
     }

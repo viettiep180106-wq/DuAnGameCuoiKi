@@ -17,6 +17,7 @@ public class EnemyProjectile : MonoBehaviour, IPoolable
     private bool _hasHit = false;
     private float _ignoreDefPercent = 0f;
     private bool _ignoreShield = false;
+    private CameraShakeTier _shakeTier = CameraShakeTier.None;
     private Tween _moveTween;
     private EnemyAttackVfx _attackVfx;
     private bool _hasCustomVisuals;
@@ -41,6 +42,7 @@ public class EnemyProjectile : MonoBehaviour, IPoolable
     public void OnSpawn()
     {
         _hasHit = false;
+        _shakeTier = CameraShakeTier.None;
         transform.localScale = Vector3.one * 18.0f;
         if (_visualRenderer != null)
         {
@@ -60,6 +62,7 @@ public class EnemyProjectile : MonoBehaviour, IPoolable
     public void OnDespawn()
     {
         DetachAttackVfx();
+        _shakeTier = CameraShakeTier.None;
         _moveTween?.Kill();
         _moveTween = null;
         if (_trailRenderer != null)
@@ -72,13 +75,14 @@ public class EnemyProjectile : MonoBehaviour, IPoolable
     /// <summary>
     /// Bắn đạn hướng về phía mục tiêu với màu sắc theo hệ nguyên tố của quái
     /// </summary>
-    public void Launch(float damage, ElementType element, Vector3 spawnPos, Vector3 targetPos, float speed = 5.0f, float ignoreDefPercent = 0f, bool ignoreShield = false)
+    public void Launch(float damage, ElementType element, Vector3 spawnPos, Vector3 targetPos, float speed = 5.0f, float ignoreDefPercent = 0f, bool ignoreShield = false, CameraShakeTier shakeTier = CameraShakeTier.None)
     {
         DetachAttackVfx();
         _damage = damage;
         _element = element;
         _ignoreDefPercent = ignoreDefPercent;
         _ignoreShield = ignoreShield;
+        _shakeTier = shakeTier;
         _hasHit = false;
 
         transform.position = spawnPos;
@@ -204,7 +208,21 @@ public class EnemyProjectile : MonoBehaviour, IPoolable
             player.TakeDamage(_damage, false, _element, _ignoreDefPercent, _ignoreShield);
             if (!customImpact)
                 EnemyBase.SpawnSkillVFX(transform.position, _element);
-            Camera.main?.transform.DOShakePosition(0.15f, new Vector3(0.2f, 0.2f, 0f), 10, 90f, false, true);
+            if (_shakeTier != CameraShakeTier.None)
+            {
+                if (CombatCameraController.Instance != null)
+                {
+                    CombatCameraController.Instance.TriggerShake(_shakeTier);
+                }
+                else
+                {
+                    Vector3 fallbackStrength = _shakeTier == CameraShakeTier.Heavy
+                        ? new Vector3(0.7f, 0.7f, 0f)
+                        : new Vector3(0.2f, 0.2f, 0f);
+                    float fallbackDuration = _shakeTier == CameraShakeTier.Heavy ? 0.35f : 0.15f;
+                    Camera.main?.transform.DOShakePosition(fallbackDuration, fallbackStrength, 10, 90f, false, true);
+                }
+            }
         }
 
         // Hiệu ứng nổ nhỏ khi trúng mục tiêu rồi biến mất

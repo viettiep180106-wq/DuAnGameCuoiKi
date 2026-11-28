@@ -235,6 +235,11 @@ public class GameManager : MonoBehaviour
             SkillPassiveManager.instance.CancelPendingAttacks();
         }
 
+        if (CombatCameraController.Instance != null)
+        {
+            CombatCameraController.Instance.ResetImmediate(toCombatRest: true);
+        }
+
         // 2. Khóa bàn cờ (stone trên bàn không thể match) & trượt bàn cờ xuống
         if (BoardController.instance != null)
         {
@@ -363,6 +368,10 @@ public class GameManager : MonoBehaviour
         {
             CameraWavePreview.Instance.ResetCameraPosition();
         }
+        else if (CombatCameraController.Instance != null)
+        {
+            CombatCameraController.Instance.ResetImmediate(toCombatRest: false);
+        }
         if (BoardController.instance != null)
         {
             BoardController.instance.StopAllCoroutines();
@@ -406,6 +415,14 @@ public class GameManager : MonoBehaviour
         if (InterWaveEventManager.Instance != null)
         {
             InterWaveEventManager.Instance.StopAllCoroutines();
+        }
+        if (CameraWavePreview.Instance != null)
+        {
+            CameraWavePreview.Instance.ResetCameraPosition();
+        }
+        else if (CombatCameraController.Instance != null)
+        {
+            CombatCameraController.Instance.ResetImmediate(toCombatRest: false);
         }
         if (BoardController.instance != null)
         {

@@ -40,6 +40,12 @@ public class EnemyBase : BaseCharacter
         set => _isDynamicBoss = value;
     }
 
+    public bool IsFinalBoss => enemyData != null && enemyData.category == EnemyCategory.FinalBoss;
+
+    [Header("Combat Feel (Zoom & Shake)")]
+    [SerializeField] private bool shakeOnEnemyNormalAttack = true;
+    private CameraShakeTier _activeTurnShakeTier = CameraShakeTier.None;
+
     public override float CurrentDEF => currentDef;
     public override float MoveSpeed => enemyData != null ? BlockMetrics.ConvertSpeedToWorldUnits(enemyData.speed) : 0.4f;
     public override float CurrentATK => currentAtk;
@@ -226,8 +232,76 @@ public class EnemyBase : BaseCharacter
 
     public bool IsSkillMeleeDash() => GetSkillActionType() == EnemySkillActionType.MeleeDash;
 
+    public bool IsOffensiveActiveSkill()
+    {
+        if (GetSkillActionType() == EnemySkillActionType.DefensiveSelf)
+        {
+            return false;
+        }
+
+        return type switch
+        {
+            EnemyType.QuyRung or
+            EnemyType.BoRac or
+            EnemyType.TinhLinhHoiMau or
+            EnemyType.ReCayAnThit or
+            EnemyType.PhapSuBuaChu or
+            EnemyType.CoThuNganNam or
+            EnemyType.GolemThep or
+            EnemyType.KySiSat or
+            EnemyType.CoMayXayThit or
+            EnemyType.SlimeBun or
+            EnemyType.LinhDat or
+            EnemyType.BoCapDa or
+            EnemyType.HatNhamThach => false,
+            _ => true
+        };
+    }
+
+    public CameraShakeTier GetSkillShakeTier(bool isSkill)
+    {
+        if (isSkill)
+        {
+            if (!IsOffensiveActiveSkill()) return CameraShakeTier.None;
+            return IsFinalBoss ? CameraShakeTier.Heavy : CameraShakeTier.Light;
+        }
+
+        return shakeOnEnemyNormalAttack ? CameraShakeTier.Light : CameraShakeTier.None;
+    }
+
+    public bool ShouldZoomOnActiveSkill(bool isSkill)
+    {
+        if (!isSkill || CombatCameraController.Instance == null) return false;
+
+        return CombatCameraController.Instance.ZoomScope switch
+        {
+            EnemyZoomScope.AllActiveSkills => true,
+            EnemyZoomScope.OffensiveActiveOnly => IsOffensiveActiveSkill(),
+            EnemyZoomScope.BossAndFinalBossOnly => isBoss,
+            EnemyZoomScope.FinalBossOnly => IsFinalBoss,
+            _ => true
+        };
+    }
+
+    protected void TriggerAttackShake(CameraShakeTier tier)
+    {
+        if (tier == CameraShakeTier.None) return;
+
+        if (CombatCameraController.Instance != null)
+        {
+            CombatCameraController.Instance.TriggerShake(tier);
+        }
+        else
+        {
+            Vector3 strength = tier == CameraShakeTier.Heavy ? new Vector3(0.75f, 0.75f, 0f) : new Vector3(0.25f, 0.25f, 0f);
+            float duration = tier == CameraShakeTier.Heavy ? 0.38f : 0.2f;
+            Camera.main?.transform.DOShakePosition(duration, strength, 10, 90f, false, true);
+        }
+    }
+
     /// <summary>
     /// Thực thi lượt hành động của quái trong hệ thống Turn-based 5v1:
+    /// - Nếu dùng chiêu active (isSkill) -> zoom 1s vào quái trước rồi mới chạy animation + sự kiện chiêu.
     /// - Phân biệt chính xác dựa trên ActionType của chiêu thức thay vì role:
     /// - Đánh thường: Cận chiến (MeleeDash) lao sang Player; Tầm xa (RangedSpell) đứng tại chỗ bắn.
     /// - Dùng skill: MeleeDash lao sang Player; DefensiveSelf / RangedSpell đứng tại chỗ thi triển.
@@ -245,10 +319,19 @@ public class EnemyBase : BaseCharacter
         Vector3 originalPos = transform.position;
         bool isSkill = (skillCooldownRound <= 0);
 
+        if (ShouldZoomOnActiveSkill(isSkill))
+        {
+            yield return CombatCameraController.Instance.PlayFocusZoomRoutine(transform, 1.0f);
+            if (HP <= 0 || !gameObject.activeInHierarchy || _cachedPlayer == null || _cachedPlayer.CurrentHP <= 0)
+            {
+                yield break;
+            }
+        }
+
         // PHÂN BIỆT DỰA VÀO HÌNH THÁI CỦA ĐÚNG CHIÊU THỨC ĐANG THI TRIỂN:
         EnemySkillActionType currentActionType = isSkill ? GetSkillActionType() : GetNormalAttackActionType();
         bool shouldDashToPlayer = (currentActionType == EnemySkillActionType.MeleeDash);
-        Attack(isSkill ? 2:1); // Animation
+        Attack(isSkill ? 2 : 1); // Animation chỉ chạy sau khi zoom xong trở lại bình thường
         var attackVfx = EnemyAttackVfx.Begin(this, _cachedPlayer, isSkill);
         if (shouldDashToPlayer)
         {
@@ -282,6 +365,7 @@ public class EnemyBase : BaseCharacter
     private void PerformTurnAttack(Player target, bool isSkill, EnemyAttackVfx attackVfx)
     {
         _pendingAttackVfx = attackVfx;
+        _activeTurnShakeTier = GetSkillShakeTier(isSkill);
         if (attackVfx) attackVfx.BeforeGameplay();
         try
         {
@@ -298,6 +382,7 @@ public class EnemyBase : BaseCharacter
         finally
         {
             _pendingAttackVfx = null;
+            _activeTurnShakeTier = CameraShakeTier.None;
         }
 
         if (attackVfx)
@@ -355,6 +440,7 @@ public class EnemyBase : BaseCharacter
         else
         {
             targetPlayer.TakeDamage(atkDmg, false, currentElement, ignoreDef, ignoreShield);
+            TriggerAttackShake(_activeTurnShakeTier);
         }
 
         // Passive: Rễ Cây Ăn Thịt hút máu 10% sát thương gây ra
@@ -383,7 +469,7 @@ public class EnemyBase : BaseCharacter
                 break;
             case EnemyType.ChoSanDiaNguc:
                 targetPlayer.TakeDamage(currentAtk * 1.60f, false, currentElement);
-                Camera.main?.transform.DOShakePosition(0.2f, new Vector3(0.25f, 0.25f, 0f), 10, 90f, false, true);
+                TriggerAttackShake(_activeTurnShakeTier);
                 break;
             case EnemyType.HoaQuyNho:
                 ShootProjectile(targetPlayer, currentAtk * 1.80f);
@@ -483,7 +569,7 @@ public class EnemyBase : BaseCharacter
                 break;
             case EnemyType.ThuyQuaiNho:
                 targetPlayer.TakeDamage(currentAtk * 1.60f, false, currentElement);
-                Camera.main?.transform.DOShakePosition(0.2f, new Vector3(0.25f, 0.25f, 0f), 10, 90f, false, true);
+                TriggerAttackShake(_activeTurnShakeTier);
                 break;
             case EnemyType.KeTromKyNang:
                 ManipulatePlayerEnergy(targetPlayer, 5, false, 0.10f);
@@ -526,7 +612,7 @@ public class EnemyBase : BaseCharacter
         {
             targetPlayer.TakeDamage(skillDmg, false, currentElement, ignoreDefPercent, ignoreShield);
             if (!customMetalVfx) SpawnSkillVFX(targetPlayer.transform.position, currentElement);
-            Camera.main?.transform.DOShakePosition(0.2f, new Vector3(0.25f, 0.25f, 0f), 10, 90f, false, true);
+            TriggerAttackShake(_activeTurnShakeTier);
         }
         else
         {
@@ -543,7 +629,7 @@ public class EnemyBase : BaseCharacter
         {
             targetPlayer.TakeDamage(skillDmg, false, currentElement);
             if (!customMetalVfx) SpawnSkillVFX(targetPlayer.transform.position, currentElement);
-            Camera.main?.transform.DOShakePosition(0.2f, new Vector3(0.25f, 0.25f, 0f), 10, 90f, false, true);
+            TriggerAttackShake(_activeTurnShakeTier);
         }
         else
         {
@@ -858,8 +944,14 @@ public class EnemyBase : BaseCharacter
     public static void SpawnSkillVFX(Vector3 pos, ElementType element)
     {
         if (!Application.isPlaying) return;
-        string vfxPath = $"Prefab/VFX/VFX_Template_{element}";
-        GameObject prefab = Resources.Load<GameObject>(vfxPath);
+
+        GameObject prefab = null;
+        var mgr = GameDataManager.Instance;
+        if (mgr == null || !mgr.TryGetEnemySkillVfxPrefab(element, out prefab))
+        {
+            prefab = Resources.Load<GameObject>($"Prefab/VFX/VFX_Template_{element}");
+        }
+
         if (prefab != null)
         {
             if (ObjectPoolingManager.Instance != null)
@@ -887,14 +979,18 @@ public class EnemyBase : BaseCharacter
     /// <summary>
     /// Kỹ năng đánh xa: Bắn chưởng ma thuật đổi màu theo hệ nguyên tố của quái
     /// </summary>
-    protected virtual void ShootProjectile(Player targetPlayer, float damage = 0f, float ignoreDefPercent = 0f, bool ignoreShield = false)
+    protected virtual void ShootProjectile(Player targetPlayer, float damage = 0f, float ignoreDefPercent = 0f, bool ignoreShield = false, CameraShakeTier? shakeTierOverride = null)
     {
         if (targetPlayer == null) return;
         float finalDmg = damage > 0 ? damage : currentAtk;
+        CameraShakeTier effectiveShake = shakeTierOverride ?? _activeTurnShakeTier;
 
         if (_projectilePrefab == null)
         {
-            _projectilePrefab = Resources.Load<GameObject>("Prefab/Base/Enemy/EnemyProjectile");
+            var mgr = GameDataManager.Instance;
+            _projectilePrefab = (mgr != null && mgr.EnemyProjectilePrefab != null)
+                ? mgr.EnemyProjectilePrefab
+                : Resources.Load<GameObject>("Prefab/Base/Enemy/EnemyProjectile");
         }
 
         Vector3 spawnPos = transform.position;
@@ -916,7 +1012,7 @@ public class EnemyBase : BaseCharacter
             if (proj != null)
             {
                 const float speed = 22f;
-                proj.Launch(finalDmg, currentElement, spawnPos, targetPos, speed, ignoreDefPercent, ignoreShield);
+                proj.Launch(finalDmg, currentElement, spawnPos, targetPos, speed, ignoreDefPercent, ignoreShield, effectiveShake);
                 if (_pendingAttackVfx && !_pendingAttackVfx.HasProjectile)
                     proj.AttachAttackVfx(_pendingAttackVfx, targetPlayer, spawnPos, targetPos, speed);
             }
@@ -929,6 +1025,7 @@ public class EnemyBase : BaseCharacter
         {
             // Fallback nếu không tải được prefab
             targetPlayer.TakeDamage(finalDmg, false, currentElement, ignoreDefPercent, ignoreShield);
+            TriggerAttackShake(effectiveShake);
         }
     }
 
@@ -1299,6 +1396,7 @@ public class EnemyBase : BaseCharacter
     {
         base.OnDespawn();
         _cachedPlayer = null;
+        _activeTurnShakeTier = CameraShakeTier.None;
         if (EnemyController.instance != null)
         {
             EnemyController.instance.UnregisterEnemy(this);

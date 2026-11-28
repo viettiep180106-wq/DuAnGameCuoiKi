@@ -108,6 +108,12 @@ public class EnemyDataSO : ScriptableObject
 
     public static EnemyDataSO Get(EnemyType type)
     {
+        var mgr = GameDataManager.Instance;
+        if (mgr != null && mgr.TryGetEnemyData(type, out var preloaded) && preloaded != null)
+        {
+            return preloaded;
+        }
+
         if (!_initialized || _loadedAssets.Count == 0)
         {
             LoadAllFromResources();
@@ -124,6 +130,17 @@ public class EnemyDataSO : ScriptableObject
     public static void LoadAllFromResources()
     {
         _loadedAssets.Clear();
+        var mgr = GameDataManager.Instance;
+        if (mgr != null)
+        {
+            mgr.CopyEnemyDataTo(_loadedAssets);
+            if (_loadedAssets.Count > 0)
+            {
+                _initialized = true;
+                return;
+            }
+        }
+
         EnemyDataSO[] all = Resources.LoadAll<EnemyDataSO>("ScriptObject/Character/Enemies");
         for (int i = 0; i < all.Length; i++)
         {

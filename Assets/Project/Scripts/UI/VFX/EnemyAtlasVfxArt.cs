@@ -23,9 +23,20 @@ internal sealed class EnemyAtlasVfxArt
     internal static EnemyAtlasVfxArt Load(string folder, string prefix, RectInt[] cells,
         Vector2Int? commonSize = null, Vector2Int? bossSize = null)
     {
-        var common = Resources.Load<Texture2D>(folder + prefix + "Common");
-        var bosses = Resources.Load<Texture2D>(folder + prefix + "Bosses");
-        var shader = Resources.Load<Shader>("VFX/EnemyWater/WaterSprite");
+        Texture2D common = null;
+        Texture2D bosses = null;
+        Shader shader = null;
+
+        var mgr = GameDataManager.Instance;
+        if (mgr != null)
+        {
+            mgr.TryGetEnemyAtlasVfxAssets(prefix, out common, out bosses, out shader);
+        }
+
+        if (!common) common = Resources.Load<Texture2D>(folder + prefix + "Common");
+        if (!bosses) bosses = Resources.Load<Texture2D>(folder + prefix + "Bosses");
+        if (!shader) shader = Resources.Load<Shader>("VFX/EnemyWater/WaterSprite");
+
         Vector2Int expectedCommon = commonSize ?? new Vector2Int(1402, 1122);
         Vector2Int expectedBoss = bossSize ?? new Vector2Int(1619, 971);
         if (!common || common.width != expectedCommon.x || common.height != expectedCommon.y ||

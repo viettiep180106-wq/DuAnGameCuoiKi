@@ -132,6 +132,18 @@ public class SkillPassive : MonoBehaviour, IPoolable
         return (raw, isCrit);
     }
 
+    protected static void TriggerCameraShake(float duration, Vector3 strength, int vibrato = 10)
+    {
+        if (CombatCameraController.Instance != null)
+        {
+            CombatCameraController.Instance.TriggerCustomShake(duration, strength, vibrato, 90f, CameraShakeTier.Light);
+        }
+        else if (Camera.main != null)
+        {
+            Camera.main.transform.DOShakePosition(duration, strength, vibrato, 90f, false, true);
+        }
+    }
+
     public virtual void Active()
     {
         DOVirtual.DelayedCall(timeToLive, () =>

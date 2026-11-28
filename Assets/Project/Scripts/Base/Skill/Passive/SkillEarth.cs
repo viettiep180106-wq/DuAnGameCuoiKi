@@ -102,10 +102,7 @@ public class SkillEarth : SkillPassive
         fall.OnComplete(() =>
         {
             // Rung chấn mặt đất (khóa trục Z để không rung làm lệch camera frustum)
-            if (Camera.main != null)
-            {
-                Camera.main.transform.DOShakePosition(0.25f, new Vector3(0.35f, 0.35f, 0f), 14, 90f, false, true);
-            }
+            TriggerCameraShake(0.25f, new Vector3(0.35f, 0.35f, 0f), 14);
             if (fallingVisual)
             {
                 foreach (var enemy in cleaveTargets)
@@ -170,11 +167,7 @@ public class SkillEarth : SkillPassive
         }
 
         // Rung nhẹ camera tạo cảm giác uy lực
-        Camera cam = Camera.main;
-        if (cam != null)
-        {
-            cam.transform.DOShakePosition(0.2f, new Vector3(0.15f, 0.15f, 0f), 15, 90f, false, true);
-        }
+        TriggerCameraShake(0.2f, new Vector3(0.15f, 0.15f, 0f), 15);
     }
 
     private void DespawnSelf()

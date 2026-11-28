@@ -13,6 +13,7 @@ public class CameraWavePreview : MonoBehaviour
 
     private Vector3 originalCameraPos;
     private Tween cameraTween;
+    private CombatCameraController combatCamera;
 
     private void Awake()
     {
@@ -28,6 +29,24 @@ public class CameraWavePreview : MonoBehaviour
         {
             originalCameraPos = targetCamera.transform.position;
         }
+
+        EnsureCombatCamera();
+    }
+
+    public CombatCameraController EnsureCombatCamera()
+    {
+        if (targetCamera == null) targetCamera = Camera.main;
+        if (combatCamera == null)
+        {
+            GameObject host = targetCamera != null ? targetCamera.gameObject : gameObject;
+            combatCamera = host.GetComponent<CombatCameraController>();
+            if (combatCamera == null)
+            {
+                combatCamera = host.AddComponent<CombatCameraController>();
+            }
+            combatCamera.Initialize(targetCamera, originalCameraPos, combatCenterX);
+        }
+        return combatCamera;
     }
 
     /// <summary>
@@ -44,6 +63,13 @@ public class CameraWavePreview : MonoBehaviour
 
         cameraTween?.Kill();
         Vector3 targetPos = new Vector3(combatCenterX, originalCameraPos.y, originalCameraPos.z);
+        var ctrl = EnsureCombatCamera();
+        if (ctrl != null)
+        {
+            ctrl.PanBasePosition(targetPos, panSpeed, Ease.InOutCubic, true, onComplete);
+            return;
+        }
+
         cameraTween = targetCamera.transform.DOMove(targetPos, panSpeed)
             .SetEase(Ease.InOutCubic)
             .OnComplete(() =>
@@ -67,6 +93,13 @@ public class CameraWavePreview : MonoBehaviour
 
         cameraTween?.Kill();
         Vector3 targetPos = new Vector3(originalCameraPos.x, originalCameraPos.y, originalCameraPos.z);
+        var ctrl = EnsureCombatCamera();
+        if (ctrl != null)
+        {
+            ctrl.PanBasePosition(targetPos, panSpeed, Ease.InOutCubic, false, onComplete);
+            return;
+        }
+
         cameraTween = targetCamera.transform.DOMove(targetPos, panSpeed)
             .SetEase(Ease.InOutCubic)
             .OnComplete(() =>
@@ -92,6 +125,11 @@ public class CameraWavePreview : MonoBehaviour
     public void ResetCameraPosition()
     {
         cameraTween?.Kill();
+        if (combatCamera != null)
+        {
+            combatCamera.ResetImmediate(false);
+            return;
+        }
         if (targetCamera != null)
         {
             targetCamera.transform.position = originalCameraPos;

@@ -24,7 +24,10 @@ public sealed class EnemyAttackVfxArt : ScriptableObject
     {
         if (!cached)
         {
-            cached = Resources.Load<EnemyAttackVfxArt>("ScriptObject/VFX/EnemyFireAttackArt");
+            var mgr = GameDataManager.Instance;
+            cached = (mgr != null && mgr.EnemyAttackVfxArt != null)
+                ? mgr.EnemyAttackVfxArt
+                : Resources.Load<EnemyAttackVfxArt>("ScriptObject/VFX/EnemyFireAttackArt");
             if (cached)
             {
                 cached.IsReady = cached.effectShader && cached.smokeShader && cached.effects is { Length: 18 }

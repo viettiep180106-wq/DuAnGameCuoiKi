@@ -373,6 +373,11 @@ public class CombatTurnManager : MonoBehaviour
             _enemyTurnCoroutine = null;
         }
 
+        if (CombatCameraController.Instance != null)
+        {
+            CombatCameraController.Instance.ResetImmediate(toCombatRest: true);
+        }
+
         SetState(isWin ? CombatTurnState.BattleWon : CombatTurnState.BattleLost);
 
         if (BoardController.instance != null)

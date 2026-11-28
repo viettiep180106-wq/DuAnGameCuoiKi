@@ -116,10 +116,21 @@ internal sealed class MatchStoneVfx : MonoBehaviour
     {
         int pool = Index(element, link);
         if (prefabs[pool]) return true;
-        var path = MatchStoneVfxProfile.ResourceFolder + "/" + MatchStoneVfxProfile.PrefabName(element, link);
-        var prefab = Resources.Load<GameObject>(path);
-        if (!prefab || !prefab.TryGetComponent(out RawImage image) ||
-            !image.material.shader.isSupported || !image.material.HasProperty("_Kind")) return false;
+
+        RawImage image = null;
+        var mgr = GameDataManager.Instance;
+        if (mgr != null && mgr.TryGetMatchStoneVfxPrefab(element, link, out RawImage cachedImage))
+        {
+            image = cachedImage;
+        }
+        else
+        {
+            var path = MatchStoneVfxProfile.ResourceFolder + "/" + MatchStoneVfxProfile.PrefabName(element, link);
+            var prefab = Resources.Load<GameObject>(path);
+            if (!prefab || !prefab.TryGetComponent(out image)) return false;
+        }
+
+        if (!image || !image.material.shader.isSupported || !image.material.HasProperty("_Kind")) return false;
         prefabs[pool] = image;
         return true;
     }

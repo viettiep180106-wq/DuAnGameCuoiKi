@@ -104,6 +104,12 @@ public class EnemyController : MonoBehaviour
     public void LoadPrefabFromResource()
     {
         listEnemy.Clear();
+        var mgr = GameDataManager.Instance;
+        if (mgr != null && mgr.TryCopyEnemyPrefabsTo(listEnemy, ref defaultEnemyPrefab))
+        {
+            return;
+        }
+
         string path = "Prefab/Base/Enemy";
         EnemyBase[] request = Resources.LoadAll<EnemyBase>(path);
         foreach (EnemyBase enemy in request)
